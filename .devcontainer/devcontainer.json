@@ -1,0 +1,31 @@
+{
+    "$schema": "https://raw.githubusercontent.com/devcontainers/spec/main/schemas/devContainer.schema.json",
+    "name": "apub-lite",
+    "dockerComposeFile": [
+        "../compose.yaml",
+        "./compose.extend.yaml"
+    ],
+    "service": "app",
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "lldb.executable": "/usr/bin/lldb",
+                // VS Code don't watch files under ./target
+                "files.watcherExclude": {
+                    "**/target/**": true
+                },
+                "rust-analyzer.checkOnSave.command": "clippy",
+            },
+            "extensions": [
+                "rust-lang.rust-analyzer",
+                "vadimcn.vscode-lldb",
+                "tamasfe.even-better-toml",
+                "fill-labs.dependi",
+                "streetsidesoftware.code-spell-checker",
+                "mhutchie.git-graph"
+            ],
+        },
+    },
+    "remoteUser": "vscode",
+    "workspaceFolder": "/workspaces"
+}
