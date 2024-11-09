@@ -1,4 +1,4 @@
-use std::{marker::PhantomData, str::FromStr};
+use std::{marker::PhantomData, ops::Deref, str::FromStr};
 
 use axum::http::{uri::Scheme, Uri};
 use serde::{Deserialize, Serialize};
@@ -11,7 +11,7 @@ use serde::{Deserialize, Serialize};
 pub struct ResourceUri(#[serde(with = "uri_serde")] Uri);
 
 #[derive(Debug, thiserror::Error, PartialEq)]
-pub enum InvalidResourceUri {
+pub enum ResourceUriError {
     /// Uriとして不正
     #[error("invalid uri")]
     InvalidUri,
@@ -26,23 +26,30 @@ pub enum InvalidResourceUri {
     MissingHost,
 }
 
-fn valid_resource_uri(uri: &Uri) -> Result<(), InvalidResourceUri> {
+fn valid_resource_uri(uri: &Uri) -> Result<(), ResourceUriError> {
     match uri.scheme() {
         Some(s) => {
             let is_http_or_https = *s == Scheme::HTTP || *s == Scheme::HTTPS;
             if !is_http_or_https {
-                return Err(InvalidResourceUri::InvalidSchema);
+                return Err(ResourceUriError::InvalidSchema);
             }
         }
-        _ => return Err(InvalidResourceUri::MissingSchema),
+        _ => return Err(ResourceUriError::MissingSchema),
     }
 
     match uri.host() {
         Some(_) => {}
-        _ => return Err(InvalidResourceUri::MissingHost),
+        _ => return Err(ResourceUriError::MissingHost),
     }
 
     Ok(())
+}
+
+impl Deref for ResourceUri {
+    type Target = Uri;
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
 }
 
 impl AsRef<Uri> for ResourceUri {
@@ -52,7 +59,7 @@ impl AsRef<Uri> for ResourceUri {
 }
 
 impl TryFrom<Uri> for ResourceUri {
-    type Error = InvalidResourceUri;
+    type Error = ResourceUriError;
 
     fn try_from(uri: Uri) -> Result<Self, Self::Error> {
         match valid_resource_uri(&uri) {
@@ -63,11 +70,9 @@ impl TryFrom<Uri> for ResourceUri {
 }
 
 impl FromStr for ResourceUri {
-    type Err = InvalidResourceUri;
+    type Err = ResourceUriError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let uri = s
-            .parse::<Uri>()
-            .map_err(|_| InvalidResourceUri::InvalidUri)?;
+        let uri = s.parse::<Uri>().map_err(|_| ResourceUriError::InvalidUri)?;
         uri.try_into()
     }
 }
@@ -105,20 +110,6 @@ mod uri_serde {
                 Ok(_) => Ok(uri),
                 Err(e) => Err(de::Error::custom(e)),
             }
-        }
-
-        fn visit_string<E>(self, v: String) -> Result<Self::Value, E>
-        where
-            E: de::Error,
-        {
-            self.visit_str(&v)
-        }
-
-        fn visit_some<D>(self, deserializer: D) -> Result<Self::Value, D::Error>
-        where
-            D: Deserializer<'de>,
-        {
-            deserializer.deserialize_str(self)
         }
     }
 
@@ -161,7 +152,7 @@ mod tests {
         let uri = "https://";
         assert_eq!(
             uri.parse::<ResourceUri>().unwrap_err(),
-            InvalidResourceUri::InvalidUri
+            ResourceUriError::InvalidUri
         );
     }
 
@@ -170,7 +161,7 @@ mod tests {
         let uri = "/foo/bar";
         assert_eq!(
             uri.parse::<ResourceUri>().unwrap_err(),
-            InvalidResourceUri::MissingSchema
+            ResourceUriError::MissingSchema
         );
     }
 
@@ -179,7 +170,7 @@ mod tests {
         let uri = "s3://foo/bar";
         assert_eq!(
             uri.parse::<ResourceUri>().unwrap_err(),
-            InvalidResourceUri::InvalidSchema
+            ResourceUriError::InvalidSchema
         );
     }
 }
