@@ -173,4 +173,24 @@ mod tests {
             ResourceUriError::InvalidSchema
         );
     }
+
+    #[test]
+    fn serialize_resource_uri() {
+        let original = "https://example.com/foo/bar";
+        let acct = ResourceUri::from_str(original).unwrap();
+
+        let serialized = serde_json::to_string(&acct).unwrap();
+
+        assert_eq!(serialized, format!(r#""{}""#, original));
+    }
+
+    #[test]
+    fn deserialize_resource_uri() {
+        let original = r#""https://example.com/foo/bar""#;
+        let deserialized = serde_json::from_str::<ResourceUri>(original).unwrap();
+
+        let expected = ResourceUri(Uri::from_static("https://example.com/foo/bar"));
+
+        assert_eq!(deserialized, expected);
+    }
 }
