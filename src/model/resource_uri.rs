@@ -10,6 +10,17 @@ use serde::{Deserialize, Serialize};
 #[serde(transparent)]
 pub struct ResourceUri(#[serde(with = "uri_serde")] Uri);
 
+impl ResourceUri {
+    /// `ResourceUri`は生成時にホストが存在することを確認しているので安全
+    pub fn host(&self) -> &str {
+        self.0.host().unwrap()
+    }
+    /// `ResourceUri`は`http`か`https`であることを確認しているので安全
+    pub fn scheme(&self) -> &Scheme {
+        self.0.scheme().unwrap()
+    }
+}
+
 #[derive(Debug, thiserror::Error, PartialEq)]
 pub enum ResourceUriError {
     /// Uriとして不正

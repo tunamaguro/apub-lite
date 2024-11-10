@@ -19,3 +19,6 @@ RUN rustup component add rustfmt clippy
 RUN echo "source /usr/share/bash-completion/completions/git" >> ~/.bashrc
 RUN echo "source <( rustup completions bash )" >> ~/.bashrc
 RUN echo "source <( rustup completions bash cargo )" >> ~/.bashrc
+
+# Install tools
+RUN cargo install cargo-watch --locked

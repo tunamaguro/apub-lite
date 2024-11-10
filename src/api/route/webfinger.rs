@@ -1,0 +1,32 @@
+use std::sync::Arc;
+
+use axum::{
+    extract::{Query, State},
+    http::header,
+    response::IntoResponse,
+    Json,
+};
+use serde::Deserialize;
+
+use crate::{
+    api::handler::webfinger::{webfinger_handler, WebFingerError},
+    model::acct_uri::AcctUri,
+    registry::AppRegistry,
+    shared::AppConfig,
+};
+
+#[derive(Debug, Deserialize)]
+pub struct WebFingerQuery {
+    resource: AcctUri,
+}
+
+#[tracing::instrument(skip_all)]
+pub async fn webfinger(
+    Query(query): Query<WebFingerQuery>,
+    State(registry): State<AppRegistry>,
+    State(config): State<Arc<AppConfig>>,
+) -> Result<impl IntoResponse, WebFingerError> {
+    let res = webfinger_handler(&query.resource, &registry, &config).await?;
+
+    Ok(([(header::CONTENT_TYPE, "application/jrd+json")], Json(res)))
+}
