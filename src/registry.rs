@@ -7,6 +7,12 @@ pub struct AppRegistry {
     user_repository: Arc<dyn UserRepository>,
 }
 
+impl Default for AppRegistry {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl AppRegistry {
     pub fn new() -> Self {
         AppRegistry {
