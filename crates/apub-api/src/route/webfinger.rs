@@ -11,7 +11,7 @@ use axum::{
 };
 use serde::Deserialize;
 
-use crate::api::handler::webfinger::{webfinger_handler, WebFingerError};
+use crate::handler::webfinger::{webfinger_handler, WebFingerError};
 
 #[derive(Debug, Deserialize)]
 pub struct WebFingerQuery {

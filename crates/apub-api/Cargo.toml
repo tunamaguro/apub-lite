@@ -7,6 +7,7 @@ edition = "2021"
 apub-shared = { workspace = true }
 apub-kernel = { workspace = true }
 apub-registry = { workspace = true }
+apub-activitypub = { workspace = true }
 
 axum = { workspace = true }
 
@@ -18,3 +19,5 @@ typed-builder = { workspace = true }
 
 pretty_assertions = { workspace = true }
 rstest = { workspace = true }
+
+tracing = { workspace = true }

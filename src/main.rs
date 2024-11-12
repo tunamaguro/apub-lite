@@ -6,7 +6,7 @@ use apub_shared::config::AppConfig;
 use axum::{http::StatusCode, routing, Router};
 use tokio::net::TcpListener;
 
-use apub_lite::route;
+use apub_api::route::webfinger;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
@@ -26,10 +26,7 @@ async fn bootstrap() -> anyhow::Result<()> {
 
     let app = Router::new()
         .route("/health", routing::get(health_check))
-        .route(
-            "/.well-known/webfinger",
-            routing::get(route::webfinger::webfinger),
-        )
+        .route("/.well-known/webfinger", routing::get(webfinger::webfinger))
         .layer(
             ServiceBuilder::new()
                 .layer(NormalizePathLayer::trim_trailing_slash())
