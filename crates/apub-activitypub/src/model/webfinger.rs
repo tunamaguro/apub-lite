@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use typed_builder::TypedBuilder;
 
-use super::resource_uri::ResourceUri;
+use apub_shared::model::resource_uri::ResourceUri;
 
 /// ActivityPub WebFinger  
 /// See https://swicg.github.io/activitypub-webfinger

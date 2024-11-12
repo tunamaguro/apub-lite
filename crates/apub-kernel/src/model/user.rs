@@ -1,8 +1,5 @@
+use apub_shared::{config::AppConfig, model::resource_uri::ResourceUri};
 use axum::http::uri;
-
-use crate::shared::AppConfig;
-
-use super::resource_uri::ResourceUri;
 
 /// このアプリで扱うユーザの構造体
 ///

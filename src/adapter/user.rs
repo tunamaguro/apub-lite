@@ -3,10 +3,9 @@ use std::{
     sync::{Arc, Mutex},
 };
 
-use crate::{
-    model::user::{CreateUser, User},
-    repository::users::UserRepository,
-};
+use apub_kernel::model::user::{CreateUser, User};
+
+use crate::repository::users::UserRepository;
 
 #[derive(Clone, Default)]
 pub(crate) struct InMemoryUserRepo {

@@ -16,7 +16,7 @@ use serde::{
 ///
 /// See https://datatracker.ietf.org/doc/html/rfc7565
 #[derive(Debug, PartialEq, Clone)]
-pub(crate) struct AcctUri {
+pub struct AcctUri {
     pub host: String,
     pub user: String,
 }
@@ -74,7 +74,7 @@ impl<'de> Deserialize<'de> for AcctUri {
 }
 
 #[derive(Debug, Clone, PartialEq, thiserror::Error)]
-pub(crate) enum AcctUriError {
+pub enum AcctUriError {
     /// `acct:`から始まらない
     #[error("must start `acct:`")]
     InvalidScheme,

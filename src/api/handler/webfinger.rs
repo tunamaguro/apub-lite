@@ -1,13 +1,11 @@
+use apub_activitypub::model::{
+    acct_uri::AcctUri,
+    webfinger::{WebFinger, WebFingerLink},
+};
+use apub_shared::config::AppConfig;
 use axum::{http::StatusCode, response::IntoResponse};
 
-use crate::{
-    model::{
-        acct_uri::AcctUri,
-        webfinger::{WebFinger, WebFingerLink},
-    },
-    registry::AppRegistry,
-    shared::AppConfig,
-};
+use crate::registry::AppRegistry;
 
 #[derive(Debug, thiserror::Error)]
 pub enum WebFingerError {

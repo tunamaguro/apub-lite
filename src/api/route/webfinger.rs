@@ -1,5 +1,7 @@
 use std::sync::Arc;
 
+use apub_activitypub::model::acct_uri::AcctUri;
+use apub_shared::config::AppConfig;
 use axum::{
     extract::{Query, State},
     http::header,
@@ -10,9 +12,7 @@ use serde::Deserialize;
 
 use crate::{
     api::handler::webfinger::{webfinger_handler, WebFingerError},
-    model::acct_uri::AcctUri,
     registry::AppRegistry,
-    shared::AppConfig,
 };
 
 #[derive(Debug, Deserialize)]
