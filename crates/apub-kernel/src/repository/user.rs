@@ -1,4 +1,4 @@
-use apub_kernel::model::user::{CreateUser, User};
+use crate::model::user::{CreateUser, User};
 
 #[async_trait::async_trait]
 pub trait UserRepository: Send + Sync {

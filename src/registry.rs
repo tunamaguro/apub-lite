@@ -1,6 +1,7 @@
 use std::sync::Arc;
 
-use crate::{adapter::user::InMemoryUserRepo, repository::users::UserRepository};
+use apub_adapter::repository::user::InMemoryUserRepo;
+use apub_kernel::repository::user::UserRepository;
 
 #[derive(Clone)]
 pub struct AppRegistry {

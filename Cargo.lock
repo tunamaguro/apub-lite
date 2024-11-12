@@ -53,6 +53,20 @@ dependencies = [
 [[package]]
 name = "apub-adapter"
 version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "apub-kernel",
+ "apub-shared",
+ "async-trait",
+ "axum",
+ "pretty_assertions",
+ "rstest",
+ "serde",
+ "serde_json",
+ "thiserror",
+ "tracing",
+ "typed-builder",
+]
 
 [[package]]
 name = "apub-api"
@@ -64,6 +78,7 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "apub-shared",
+ "async-trait",
  "axum",
  "pretty_assertions",
  "rstest",

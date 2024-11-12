@@ -3,17 +3,15 @@ use std::{
     sync::{Arc, Mutex},
 };
 
-use apub_kernel::model::user::{CreateUser, User};
-
-use crate::repository::users::UserRepository;
+use apub_kernel::{model::user::{CreateUser, User}, repository::user::UserRepository};
 
 #[derive(Clone, Default)]
-pub(crate) struct InMemoryUserRepo {
+pub struct InMemoryUserRepo {
     map: Arc<Mutex<BTreeMap<String, User>>>,
 }
 
 impl InMemoryUserRepo {
-    pub(crate) fn new() -> Self {
+    pub fn new() -> Self {
         let mut map = BTreeMap::new();
 
         map.entry("alice".to_string()).or_insert(User {
