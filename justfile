@@ -16,11 +16,12 @@ alias r:= ready
 # Install tools
 install:
     cargo install cargo-binstall 
-    cargo binstall cargo-watch
+    cargo binstall cargo-watch taplo-cli
 
 # Format `.rs` files
 format:
     cargo fmt
+    taplo format
 
 # Run clippy
 lint:
@@ -38,7 +39,7 @@ ready:
 
 # Find unused deps
 udeps:
-    cargo install cargo-udeps --locked
+    cargo binstall cargo-udeps --locked
     rustup install nightly
     cargo +nightly udeps --workspace --all-targets
 

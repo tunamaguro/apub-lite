@@ -4,16 +4,16 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-apub-kernel = { workspace = true }
 apub-adapter = { workspace = true }
+apub-kernel = { workspace = true }
 
 axum = { workspace = true }
 
+anyhow = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
-anyhow = { workspace = true }
 thiserror = { workspace = true }
-typed-builder = {workspace = true}
+typed-builder = { workspace = true }
 
-pretty_assertions ={ workspace = true }
+pretty_assertions = { workspace = true }
 rstest = { workspace = true }

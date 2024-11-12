@@ -4,16 +4,16 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-apub-shared = { workspace = true }
+apub-activitypub = { workspace = true }
 apub-kernel = { workspace = true }
 apub-registry = { workspace = true }
-apub-activitypub = { workspace = true }
+apub-shared = { workspace = true }
 
 axum = { workspace = true }
 
+anyhow = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
-anyhow = { workspace = true }
 thiserror = { workspace = true }
 typed-builder = { workspace = true }
 
