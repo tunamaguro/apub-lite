@@ -1,6 +1,7 @@
 use std::sync::Arc;
 
 use apub_activitypub::model::acct_uri::AcctUri;
+use apub_registry::AppRegistry;
 use apub_shared::config::AppConfig;
 use axum::{
     extract::{Query, State},
@@ -10,10 +11,7 @@ use axum::{
 };
 use serde::Deserialize;
 
-use crate::{
-    api::handler::webfinger::{webfinger_handler, WebFingerError},
-    registry::AppRegistry,
-};
+use crate::api::handler::webfinger::{webfinger_handler, WebFingerError};
 
 #[derive(Debug, Deserialize)]
 pub struct WebFingerQuery {

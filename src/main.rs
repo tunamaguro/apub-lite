@@ -1,10 +1,11 @@
 use std::net::{Ipv4Addr, SocketAddr};
 
+use apub_registry::AppRegistry;
 use apub_shared::config::AppConfig;
 use axum::{http::StatusCode, routing, Router};
 use tokio::net::TcpListener;
 
-use apub_lite::{registry::AppRegistry, route, shared::AppState};
+use apub_lite::{route, shared::AppState};
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {

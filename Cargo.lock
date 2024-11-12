@@ -118,6 +118,18 @@ dependencies = [
 [[package]]
 name = "apub-registry"
 version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "apub-adapter",
+ "apub-kernel",
+ "axum",
+ "pretty_assertions",
+ "rstest",
+ "serde",
+ "serde_json",
+ "thiserror",
+ "typed-builder",
+]
 
 [[package]]
 name = "apub-shared"
