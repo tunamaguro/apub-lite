@@ -60,7 +60,7 @@ SERVEO_PID := "serveo_pid.txt"
 [unix]
 start_serveo:
     #!/usr/bin/bash
-    ssh -R 80:localhost:3000 serveo.net > ${SERVEO_ADDR} 2>&1 &
+    ssh -R 80:localhost:8080 serveo.net > ${SERVEO_ADDR} 2>&1 &
     echo $! > ${SERVEO_PID}
 
     while true; do
