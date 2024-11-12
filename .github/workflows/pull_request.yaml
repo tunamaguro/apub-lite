@@ -27,10 +27,12 @@ jobs:
         uses: moonrepo/setup-rust@v1
         with:
           components: rustfmt
+          bins: taplo-cli
           cache-base: main
       - name: Run format
         run: |
           cargo fmt --all --check
+          taplo format --check
   lint: 
     name: Lint
     runs-on: ubuntu-latest

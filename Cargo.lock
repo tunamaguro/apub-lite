@@ -36,10 +36,27 @@ dependencies = [
 ]
 
 [[package]]
-name = "apub-lite"
+name = "apub-activitypub"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "apub-shared",
+ "axum",
+ "pretty_assertions",
+ "rstest",
+ "serde",
+ "serde_json",
+ "thiserror",
+ "typed-builder",
+]
+
+[[package]]
+name = "apub-adapter"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "apub-kernel",
+ "apub-shared",
  "async-trait",
  "axum",
  "pretty_assertions",
@@ -47,12 +64,100 @@ dependencies = [
  "serde",
  "serde_json",
  "thiserror",
+ "tracing",
+ "typed-builder",
+]
+
+[[package]]
+name = "apub-api"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "apub-activitypub",
+ "apub-kernel",
+ "apub-registry",
+ "apub-shared",
+ "axum",
+ "pretty_assertions",
+ "rstest",
+ "serde",
+ "serde_json",
+ "thiserror",
+ "tracing",
+ "typed-builder",
+]
+
+[[package]]
+name = "apub-kernel"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "apub-shared",
+ "async-trait",
+ "axum",
+ "pretty_assertions",
+ "rstest",
+ "serde",
+ "serde_json",
+ "thiserror",
+ "typed-builder",
+]
+
+[[package]]
+name = "apub-lite"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "apub-activitypub",
+ "apub-adapter",
+ "apub-api",
+ "apub-kernel",
+ "apub-registry",
+ "apub-shared",
+ "apub-tracing",
+ "axum",
  "tokio",
  "tower",
  "tower-http",
  "tracing",
- "tracing-subscriber",
+]
+
+[[package]]
+name = "apub-registry"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "apub-adapter",
+ "apub-kernel",
+ "axum",
+ "pretty_assertions",
+ "rstest",
+ "serde",
+ "serde_json",
+ "thiserror",
  "typed-builder",
+]
+
+[[package]]
+name = "apub-shared"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "axum",
+ "pretty_assertions",
+ "rstest",
+ "serde",
+ "serde_json",
+ "thiserror",
+ "typed-builder",
+]
+
+[[package]]
+name = "apub-tracing"
+version = "0.1.0"
+dependencies = [
+ "tracing",
+ "tracing-subscriber",
 ]
 
 [[package]]
@@ -423,9 +528,9 @@ checksum = "bbd2bcb4c963f2ddae06a2efc7e9f3591312473c50c6685e1f298068316e66fe"
 
 [[package]]
 name = "libc"
-version = "0.2.161"
+version = "0.2.162"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8e9489c2807c139ffd9c1794f4af0ebe86a828db53ecdc7fea2111d0fed085d1"
+checksum = "18d287de67fe55fd7e1581fe933d965a5a9477b38e949cfa9f8574ef01506398"
 
 [[package]]
 name = "lock_api"
@@ -617,7 +722,7 @@ checksum = "b544ef1b4eac5dc2db33ea63606ae9ffcfac26c1416a2806ae0bf5f56b201191"
 dependencies = [
  "aho-corasick",
  "memchr",
- "regex-automata 0.4.8",
+ "regex-automata 0.4.9",
  "regex-syntax 0.8.5",
 ]
 
@@ -632,9 +737,9 @@ dependencies = [
 
 [[package]]
 name = "regex-automata"
-version = "0.4.8"
+version = "0.4.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "368758f23274712b504848e9d5a6f010445cc8b87a7cdb4d7cbee666c1288da3"
+checksum = "809e8dc61f6de73b46c85f4c96486310fe304c434cfa43669d7b40f711150908"
 dependencies = [
  "aho-corasick",
  "memchr",
@@ -730,18 +835,18 @@ checksum = "61697e0a1c7e512e84a621326239844a24d8207b4669b41bc18b32ea5cbf988b"
 
 [[package]]
 name = "serde"
-version = "1.0.214"
+version = "1.0.215"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f55c3193aca71c12ad7890f1785d2b73e1b9f63a0bbc353c08ef26fe03fc56b5"
+checksum = "6513c1ad0b11a9376da888e3e0baa0077f1aed55c17f50e7b2397136129fb88f"
 dependencies = [
  "serde_derive",
 ]
 
 [[package]]
 name = "serde_derive"
-version = "1.0.214"
+version = "1.0.215"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "de523f781f095e28fa605cdce0f8307e451cc0fd14e2eb4cd2e98a355b147766"
+checksum = "ad1e866f866923f252f05c889987993144fb74e722403468a4ebd70c3cd756c0"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -850,18 +955,18 @@ checksum = "a7065abeca94b6a8a577f9bd45aa0867a2238b74e8eb67cf10d492bc39351394"
 
 [[package]]
 name = "thiserror"
-version = "2.0.0"
+version = "2.0.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "15291287e9bff1bc6f9ff3409ed9af665bec7a5fc8ac079ea96be07bca0e2668"
+checksum = "c006c85c7651b3cf2ada4584faa36773bd07bac24acfb39f3c431b36d7e667aa"
 dependencies = [
  "thiserror-impl",
 ]
 
 [[package]]
 name = "thiserror-impl"
-version = "2.0.0"
+version = "2.0.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "22efd00f33f93fa62848a7cab956c3d38c8d43095efda1decfc2b3a5dc0b8972"
+checksum = "f077553d607adc1caf65430528a576c757a71ed73944b66ebb58ef2bbd243568"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -880,9 +985,9 @@ dependencies = [
 
 [[package]]
 name = "tokio"
-version = "1.41.0"
+version = "1.41.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "145f3413504347a2be84393cc8a7d2fb4d863b375909ea59f2158261aa258bbb"
+checksum = "22cfb5bee7a6a52939ca9224d6ac897bb669134078daa8735560897f69de4d33"
 dependencies = [
  "backtrace",
  "bytes",

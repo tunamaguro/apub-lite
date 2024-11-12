@@ -1,0 +1,19 @@
+[package]
+name = "apub-kernel"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+apub-shared = { workspace = true }
+
+axum = { workspace = true }
+
+anyhow = { workspace = true }
+async-trait = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+typed-builder = { workspace = true }
+
+pretty_assertions = { workspace = true }
+rstest = { workspace = true }
