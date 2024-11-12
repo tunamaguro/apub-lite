@@ -1,1 +1,6 @@
 /target
+
+# serveo files
+# see justfile
+/serveo_addr.txt
+/serveo_pid.txt
