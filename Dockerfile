@@ -21,4 +21,4 @@ RUN echo "source <( rustup completions bash )" >> ~/.bashrc
 RUN echo "source <( rustup completions bash cargo )" >> ~/.bashrc
 
 # Install tools
-RUN cargo install cargo-watch --locked
+RUN cargo install just
