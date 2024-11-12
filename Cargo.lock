@@ -71,6 +71,19 @@ dependencies = [
 [[package]]
 name = "apub-api"
 version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "apub-kernel",
+ "apub-registry",
+ "apub-shared",
+ "axum",
+ "pretty_assertions",
+ "rstest",
+ "serde",
+ "serde_json",
+ "thiserror",
+ "typed-builder",
+]
 
 [[package]]
 name = "apub-kernel"
