@@ -1,6 +1,5 @@
 use crate::model::resource_uri::ResourceUri;
 
-
 pub struct AppConfig {
     host_uri: ResourceUri,
 }

@@ -3,7 +3,10 @@ use std::{
     sync::{Arc, Mutex},
 };
 
-use apub_kernel::{model::user::{CreateUser, User}, repository::user::UserRepository};
+use apub_kernel::{
+    model::user::{CreateUser, User},
+    repository::user::UserRepository,
+};
 
 #[derive(Clone, Default)]
 pub struct InMemoryUserRepo {

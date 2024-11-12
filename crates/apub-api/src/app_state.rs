@@ -4,7 +4,6 @@ use apub_registry::AppRegistry;
 use apub_shared::config::AppConfig;
 use axum::extract::FromRef;
 
-
 #[derive(FromRef, Clone)]
 pub struct AppState {
     pub config: Arc<AppConfig>,

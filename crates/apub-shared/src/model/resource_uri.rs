@@ -132,8 +132,6 @@ mod uri_serde {
     }
 }
 
-
-
 #[cfg(test)]
 mod tests {
     use super::*;
