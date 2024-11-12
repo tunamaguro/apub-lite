@@ -136,6 +136,10 @@ dependencies = [
 [[package]]
 name = "apub-tracing"
 version = "0.1.0"
+dependencies = [
+ "tracing",
+ "tracing-subscriber",
+]
 
 [[package]]
 name = "async-trait"

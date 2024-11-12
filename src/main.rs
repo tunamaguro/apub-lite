@@ -8,7 +8,7 @@ use apub_lite::{registry::AppRegistry, route, shared::AppState};
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
-    let _guard = apub_lite::tracing::init();
+    let _guard = apub_tracing::init();
 
     bootstrap().await?;
 
