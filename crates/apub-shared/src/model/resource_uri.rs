@@ -1,4 +1,4 @@
-use std::{marker::PhantomData, ops::Deref, str::FromStr};
+use std::{ops::Deref, str::FromStr};
 
 use axum::http::{uri::Scheme, Uri};
 use serde::{Deserialize, Serialize};

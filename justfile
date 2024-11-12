@@ -14,8 +14,8 @@ alias r:= ready
 
 
 # Install tools
-install-tools:
-    cargo install cargo-binstall
+install:
+    cargo install cargo-binstall 
     cargo binstall cargo-watch
 
 # Format `.rs` files
@@ -35,6 +35,12 @@ ready:
     just format
     just lint
     just test
+
+# Find unused deps
+udeps:
+    cargo install cargo-udeps --locked
+    rustup install nightly
+    cargo +nightly udeps --workspace --all-targets
 
 # Start dev server
 [unix]

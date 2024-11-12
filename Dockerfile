@@ -2,7 +2,11 @@ FROM rust:1.82.0-slim-bookworm as dev
 
 RUN apt-get update -y && \
     apt-get install -y \
-    git 
+    git \
+    # `openssl` dependencies 
+    # see https://docs.rs/openssl/latest/openssl/#automatic
+    pkg-config \
+    libssl-dev
 
 ARG USERNAME=vscode
 ARG GROUPNAME=vscode
