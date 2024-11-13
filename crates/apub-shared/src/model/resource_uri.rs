@@ -135,6 +135,7 @@ mod uri_serde {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use pretty_assertions::assert_eq;
 
     #[test]
     fn valid_resource_uri() {

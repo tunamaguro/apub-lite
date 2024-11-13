@@ -120,6 +120,7 @@ fn parse_acct_uri(s: &str) -> Result<(&str, &str), AcctUriError> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use pretty_assertions::assert_eq;
 
     #[test]
     fn valid_acct_uri() {
