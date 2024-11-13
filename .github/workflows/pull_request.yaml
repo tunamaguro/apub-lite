@@ -57,7 +57,8 @@ jobs:
       - name: Install Rust
         uses: moonrepo/setup-rust@v1
         with:
+          bins: cargo-nextest
           cache-base: main
       - name: Run test
         run: |
-          cargo test --workspace
+          cargo nextest run --workspace

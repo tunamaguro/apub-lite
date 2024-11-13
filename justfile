@@ -27,9 +27,9 @@ format:
 lint:
     cargo clippy  --all-targets --all-features
 
-# Run tests
+# Run all tests
 test:
-    cargo test
+    cargo nextest run --workspace
 
 # Check code is ready
 ready: 
