@@ -11,7 +11,7 @@ cargo install just
 Install other tools:
 
 ```bash
-just install-tools
+just install
 ```
 
 ## Start Server
