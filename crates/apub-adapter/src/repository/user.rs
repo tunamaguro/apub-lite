@@ -1,8 +1,3 @@
-use std::{
-    collections::BTreeMap,
-    sync::{Arc, Mutex},
-};
-
 use apub_kernel::{
     model::user::{CreateUser, User},
     repository::user::UserRepository,
