@@ -2,7 +2,6 @@ _default:
   just --list 
 
 
-set export
 set dotenv-load
 
 
@@ -16,7 +15,7 @@ alias r:= ready
 # Install tools
 install:
     cargo install cargo-binstall 
-    cargo binstall cargo-watch taplo-cli
+    cargo binstall cargo-watch taplo-cli cargo-nextest sqlx-cli
 
 # Format `.rs` files
 format:
@@ -25,11 +24,15 @@ format:
 
 # Run clippy
 lint:
-    cargo clippy  --all-targets --all-features
+    cargo clippy --all-targets --all-features
 
-# Run tests
+# Fix clippy error
+fix:
+    cargo clippy --fix --all-targets --all-features --allow-dirty --allow-staged
+
+# Run all tests
 test:
-    cargo test
+    cargo nextest run --workspace
 
 # Check code is ready
 ready: 
@@ -60,8 +63,8 @@ dev:
     cargo watch -x run
 
 
-SERVEO_ADDR := "serveo_addr.txt"
-SERVEO_PID := "serveo_pid.txt"
+export SERVEO_ADDR := "serveo_addr.txt"
+export SERVEO_PID := "serveo_pid.txt"
     
 # Start serveo 
 [unix]
@@ -95,3 +98,23 @@ finish_serveo:
     if [ -f ${SERVEO_ADDR} ]; then
         rm ${SERVEO_ADDR}
     fi
+
+MIGRATION_DIR := "crates/apub-adapter/migrations"
+
+# Add migrate file
+migrate name:
+    cargo sqlx migrate add -r {{name}} --source {{MIGRATION_DIR}}
+
+# Apply migrate
+apply-db:
+    cargo sqlx migrate run --source {{MIGRATION_DIR}}
+
+# Revert latest migrate
+revert-db:
+    cargo sqlx migrate revert --source {{MIGRATION_DIR}}
+
+# Reset database
+reset-db:
+    cargo sqlx database drop
+    cargo sqlx database create
+    just apply-db

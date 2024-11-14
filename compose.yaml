@@ -6,3 +6,21 @@ services:
       context: .
       dockerfile: Dockerfile
       target: dev
+    depends_on:
+      - valkey
+      - postgres
+    
+  valkey:
+    image: valkey/valkey:8.0.1-bookworm
+  
+  postgres:
+    image: postgres:17.0-bookworm
+    environment:
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: app
+
+
+volumes:
+  db:
+    driver: local

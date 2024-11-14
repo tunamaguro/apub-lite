@@ -1,11 +1,13 @@
 [package]
+edition = "2021"
 name = "apub-adapter"
 version = "0.1.0"
-edition = "2021"
 
 [dependencies]
 apub-kernel = { workspace = true }
 apub-shared = { workspace = true }
+
+sqlx = { workspace = true }
 
 axum = { workspace = true }
 

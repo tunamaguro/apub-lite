@@ -3,7 +3,6 @@ use apub_activitypub::model::{
     webfinger::{WebFinger, WebFingerLink},
 };
 use apub_registry::AppRegistry;
-use apub_shared::config::AppConfig;
 use axum::{http::StatusCode, response::IntoResponse};
 
 #[derive(Debug, thiserror::Error)]
@@ -26,8 +25,8 @@ impl IntoResponse for WebFingerError {
 pub async fn webfinger_handler(
     acct_uri: &AcctUri,
     registry: &AppRegistry,
-    config: &AppConfig,
 ) -> Result<WebFinger, WebFingerError> {
+    let config = registry.config();
     if config.host_uri().host() != acct_uri.host {
         return Err(WebFingerError::OtherDomain);
     }
@@ -39,12 +38,12 @@ pub async fn webfinger_handler(
     let link = WebFingerLink::builder()
         .rel("self".into())
         .kind("application/activity+json".into())
-        .href(user.users_uri(config))
+        .href(user.users_uri(&config))
         .build();
 
     let w = WebFinger::builder()
         .subject(acct_uri.to_string())
-        .aliases(vec![user.users_uri(config)])
+        .aliases(vec![user.users_uri(&config)])
         .links(vec![link])
         .build();
 
