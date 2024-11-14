@@ -2,7 +2,6 @@ _default:
   just --list 
 
 
-set export
 set dotenv-load
 
 
@@ -64,8 +63,8 @@ dev:
     cargo watch -x run
 
 
-SERVEO_ADDR := "serveo_addr.txt"
-SERVEO_PID := "serveo_pid.txt"
+export SERVEO_ADDR := "serveo_addr.txt"
+export SERVEO_PID := "serveo_pid.txt"
     
 # Start serveo 
 [unix]
