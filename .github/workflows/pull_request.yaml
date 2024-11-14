@@ -15,6 +15,7 @@ concurrency:
 env:
   RUST_LOG: info
   RUST_BACKTRACE: 1
+  RUSTFLAGS: --deny warnings
 
 jobs:
   format: 
@@ -36,6 +37,15 @@ jobs:
   lint: 
     name: Lint
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17.0-bookworm
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_USER: app
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: app
     steps:
       - name: Checkout PR branch
         uses: actions/checkout@v4
@@ -44,13 +54,26 @@ jobs:
         with:
           components: clippy
           cache-base: main
+          bins: sqlx-cli
       - name: Run lint
+        env:
+          DATABASE_URL: postgresql://localhost:5432/app?user=app&password=password
         run: |
-          cargo clippy --all-targets --all-features
+          cargo sqlx migrate run --source crates/apub-adapter/migrations
+          cargo clippy --all-targets --all-features 
 
   test: 
     name: Test
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17.0-bookworm
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_USER: app
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: app
     steps:
       - name: Checkout PR branch
         uses: actions/checkout@v4
@@ -60,5 +83,8 @@ jobs:
           bins: cargo-nextest
           cache-base: main
       - name: Run test
+        env:
+          DATABASE_URL: postgresql://localhost:5432/app?user=app&password=password
         run: |
+          cargo sqlx migrate run --source crates/apub-adapter/migrations
           cargo nextest run --workspace
