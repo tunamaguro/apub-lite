@@ -80,7 +80,7 @@ jobs:
       - name: Install Rust
         uses: moonrepo/setup-rust@v1
         with:
-          bins: cargo-nextest sqlx-cli
+          bins: cargo-nextest,sqlx-cli
           cache-base: main
       - name: Run test
         env:
