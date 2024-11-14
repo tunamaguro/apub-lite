@@ -1,6 +1,6 @@
 use std::net::{Ipv4Addr, SocketAddr};
 
-use apub_api::app_state::AppState;
+use apub_adapter::persistence::postgres::PostgresDb;
 use apub_registry::AppRegistry;
 use apub_shared::config::AppConfig;
 use axum::{http::StatusCode, routing, Router};
@@ -21,8 +21,8 @@ async fn bootstrap() -> anyhow::Result<()> {
     use tower::ServiceBuilder;
     use tower_http::{normalize_path::NormalizePathLayer, trace::TraceLayer};
 
-    let state = init_state();
-    let hosted_uri = state.config.host_uri().to_string();
+    let state = init_registry().await;
+    let hosted_uri = state.config().host_uri().to_string();
 
     let app = Router::new()
         .route("/health", routing::get(health_check))
@@ -48,10 +48,13 @@ async fn health_check() -> StatusCode {
     StatusCode::OK
 }
 
-fn init_state() -> AppState {
+async fn init_registry() -> AppRegistry {
     let app_uri = std::env::var("APUB_LITE_URL").unwrap_or("http://example.com".to_string());
     let config = AppConfig::new(&app_uri);
-    let registry = AppRegistry::new();
+    let postgres_db =
+        PostgresDb::connect("postgresql://postgres:5432/app?user=app&password=password")
+            .await
+            .unwrap();
 
-    AppState::new(config, registry)
+    AppRegistry::new_postgres(postgres_db, config)
 }

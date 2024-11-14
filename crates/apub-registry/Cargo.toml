@@ -1,11 +1,12 @@
 [package]
+edition = "2021"
 name = "apub-registry"
 version = "0.1.0"
-edition = "2021"
 
 [dependencies]
 apub-adapter = { workspace = true }
 apub-kernel = { workspace = true }
+apub-shared = { workspace = true }
 
 axum = { workspace = true }
 
