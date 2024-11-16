@@ -20,7 +20,7 @@ pub struct Person {
     #[builder(default)]
     kind: PersonKind,
     #[serde()]
-    preferred_username:String,
+    preferred_username: String,
     inbox: ResourceUri,
 }
 
@@ -46,6 +46,7 @@ mod tests {
                 "@context": "https://www.w3.org/ns/activitystreams",
                 "id": "https://example.com/user/foo",
                 "type": "Person",
+                "preferredUsername": "foo",
                 "inbox": "https://example.com/user/foo/inbox"
             }
         "#;
