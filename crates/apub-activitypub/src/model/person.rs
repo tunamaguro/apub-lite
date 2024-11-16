@@ -11,6 +11,7 @@ pub enum PersonKind {
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, TypedBuilder)]
+#[serde(rename_all = "camelCase")]
 pub struct Person {
     #[serde(rename = "@context")]
     context: Context,
@@ -18,6 +19,8 @@ pub struct Person {
     #[serde(rename = "type")]
     #[builder(default)]
     kind: PersonKind,
+    #[serde()]
+    preferred_username:String,
     inbox: ResourceUri,
 }
 

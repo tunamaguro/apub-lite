@@ -1,12 +1,13 @@
 use std::net::{Ipv4Addr, SocketAddr};
 
 use apub_adapter::persistence::postgres::PostgresDb;
+use apub_kernel::model::user::CreateUser;
 use apub_registry::AppRegistry;
 use apub_shared::config::AppConfig;
 use axum::{http::StatusCode, routing, Router};
 use tokio::net::TcpListener;
 
-use apub_api::route::webfinger;
+use apub_api::route::{person, webfinger};
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
@@ -22,10 +23,13 @@ async fn bootstrap() -> anyhow::Result<()> {
     use tower_http::{normalize_path::NormalizePathLayer, trace::TraceLayer};
 
     let state = init_registry().await;
+    seed_db(&state).await?;
+
     let hosted_uri = state.config().host_uri().to_string();
 
     let app = Router::new()
         .route("/health", routing::get(health_check))
+        .route("/users/:username", routing::get(person::person))
         .route("/.well-known/webfinger", routing::get(webfinger::webfinger))
         .layer(
             ServiceBuilder::new()
@@ -57,4 +61,22 @@ async fn init_registry() -> AppRegistry {
             .unwrap();
 
     AppRegistry::new_postgres(postgres_db, config)
+}
+
+async fn seed_db(registry: &AppRegistry) -> anyhow::Result<()> {
+    let user_repo = registry.user_repository();
+
+    let _ = user_repo
+        .create(CreateUser {
+            name: "alice".to_string(),
+        })
+        .await;
+
+    let _ = user_repo
+        .create(CreateUser {
+            name: "bob".to_string(),
+        })
+        .await;
+
+    Ok(())
 }

@@ -1,3 +1,4 @@
+use apub_activitypub::model::person::Person;
 use apub_shared::{config::AppConfig, model::resource_uri::ResourceUri};
 use axum::http::uri;
 use typed_builder::TypedBuilder;
@@ -14,7 +15,7 @@ pub struct User {
 
 impl User {
     /// `/users/{username}`
-    pub fn users_uri(&self, config: &AppConfig) -> ResourceUri {
+    pub fn user_uri(&self, config: &AppConfig) -> ResourceUri {
         let host_uri = config.host_uri();
         let user_uri = uri::Builder::new()
             .scheme(host_uri.scheme().clone())
@@ -37,6 +38,15 @@ impl User {
             .unwrap();
 
         ResourceUri::try_from(inbox_uri).unwrap()
+    }
+
+    pub fn to_person(&self, config: &AppConfig) -> Person {
+        Person::builder()
+            .id(self.user_uri(config))
+            .preferred_username(self.name.clone())
+            .inbox(self.inbox_uri(config))
+            .context(vec!["https://www.w3.org/ns/activitystreams".parse().unwrap()].into())
+            .build()
     }
 }
 
@@ -72,7 +82,7 @@ mod tests {
 
     #[test]
     fn test_user_uri() {
-        let user = test_user().users_uri(&test_config());
+        let user = test_user().user_uri(&test_config());
         assert_eq!(user, "https://example.com/users/foo".parse().unwrap())
     }
 

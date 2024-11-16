@@ -1,10 +1,8 @@
-use apub_activitypub::model::acct_uri::AcctUri;
+use apub_activitypub::{jrd::JRD_CONTENT_TYPE, model::acct_uri::AcctUri};
 use apub_registry::AppRegistry;
 use axum::{
     extract::{Query, State},
-    http::header,
     response::IntoResponse,
-    Json,
 };
 use serde::Deserialize;
 
@@ -22,5 +20,5 @@ pub async fn webfinger(
 ) -> Result<impl IntoResponse, WebFingerError> {
     let res = webfinger_handler(&query.resource, &registry).await?;
 
-    Ok(([(header::CONTENT_TYPE, "application/jrd+json")], Json(res)))
+    Ok(([JRD_CONTENT_TYPE], res))
 }
