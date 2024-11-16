@@ -2,17 +2,19 @@ use apub_kernel::{
     model::user::{CreateUser, User},
     repository::user::UserRepository,
 };
+use sqlx::types::Uuid;
 
 use crate::persistence::postgres::PostgresDb;
 
 pub struct UserRow {
+    id: Uuid,
     name: String,
 }
 
 impl From<UserRow> for User {
     fn from(value: UserRow) -> Self {
-        let UserRow { name, .. } = value;
-        User { name }
+        let UserRow { name, id } = value;
+        User::builder().name(name).id(id).build()
     }
 }
 
@@ -22,7 +24,7 @@ impl UserRepository for PostgresDb {
     async fn find_by_name(&self, name: &str) -> anyhow::Result<User> {
         let row = sqlx::query_as!(
             UserRow,
-            r#"SELECT name FROM users WHERE users.name = $1"#,
+            r#"SELECT id, name FROM users WHERE users.name = $1"#,
             name
         )
         .fetch_one(self.inner_ref())
@@ -32,12 +34,14 @@ impl UserRepository for PostgresDb {
 
     #[tracing::instrument(skip(self))]
     async fn create(&self, event: CreateUser) -> anyhow::Result<()> {
+        let user = User::from(event);
         sqlx::query!(
             r#"
-            INSERT INTO users (name)
-            VALUES ($1)
+            INSERT INTO users (id, name)
+            VALUES ($1, $2)
         "#,
-            event.name
+            user.id,
+            user.name
         )
         .execute(self.inner_ref())
         .await?;

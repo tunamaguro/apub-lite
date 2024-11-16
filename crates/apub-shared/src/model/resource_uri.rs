@@ -88,6 +88,12 @@ impl FromStr for ResourceUri {
     }
 }
 
+impl std::fmt::Display for ResourceUri {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.0)
+    }
+}
+
 mod uri_serde {
     use super::valid_resource_uri;
     use axum::http::Uri;

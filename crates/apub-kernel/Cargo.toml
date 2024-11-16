@@ -1,9 +1,10 @@
 [package]
+edition = "2021"
 name = "apub-kernel"
 version = "0.1.0"
-edition = "2021"
 
 [dependencies]
+apub-activitypub = { workspace = true }
 apub-shared = { workspace = true }
 
 axum = { workspace = true }
@@ -14,6 +15,8 @@ serde = { workspace = true }
 serde_json = { workspace = true }
 thiserror = { workspace = true }
 typed-builder = { workspace = true }
+
+uuid = { workspace = true }
 
 pretty_assertions = { workspace = true }
 rstest = { workspace = true }

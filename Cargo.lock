@@ -111,6 +111,7 @@ name = "apub-kernel"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "apub-activitypub",
  "apub-shared",
  "async-trait",
  "axum",
@@ -120,6 +121,7 @@ dependencies = [
  "serde_json",
  "thiserror 2.0.3",
  "typed-builder",
+ "uuid",
 ]
 
 [[package]]
@@ -1859,6 +1861,7 @@ dependencies = [
  "tokio-stream",
  "tracing",
  "url",
+ "uuid",
 ]
 
 [[package]]
@@ -1939,6 +1942,7 @@ dependencies = [
  "stringprep",
  "thiserror 1.0.69",
  "tracing",
+ "uuid",
  "whoami",
 ]
 
@@ -1977,6 +1981,7 @@ dependencies = [
  "stringprep",
  "thiserror 1.0.69",
  "tracing",
+ "uuid",
  "whoami",
 ]
 
@@ -2001,6 +2006,7 @@ dependencies = [
  "sqlx-core",
  "tracing",
  "url",
+ "uuid",
 ]
 
 [[package]]
@@ -2070,7 +2076,7 @@ dependencies = [
  "fastrand",
  "once_cell",
  "rustix",
- "windows-sys 0.52.0",
+ "windows-sys 0.59.0",
 ]
 
 [[package]]
@@ -2405,6 +2411,28 @@ name = "utf8_iter"
 version = "1.0.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b6c140620e7ffbb22c2dee59cafe6084a59b5ffc27a8859a5f0d494b5d52b6be"
+
+[[package]]
+name = "uuid"
+version = "1.11.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f8c5f0a0af699448548ad1a2fbf920fb4bee257eae39953ba95cb84891a0446a"
+dependencies = [
+ "getrandom",
+ "serde",
+ "uuid-macro-internal",
+]
+
+[[package]]
+name = "uuid-macro-internal"
+version = "1.11.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6b91f57fe13a38d0ce9e28a03463d8d3c2468ed03d75375110ec71d93b449a08"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
 
 [[package]]
 name = "valuable"
