@@ -2,21 +2,8 @@ use apub_kernel::{
     model::user::{CreateUser, User},
     repository::user::UserRepository,
 };
-use sqlx::types::Uuid;
 
-use crate::persistence::postgres::PostgresDb;
-
-pub struct UserRow {
-    id: Uuid,
-    name: String,
-}
-
-impl From<UserRow> for User {
-    fn from(value: UserRow) -> Self {
-        let UserRow { name, id } = value;
-        User::builder().name(name).id(id).build()
-    }
-}
+use crate::{model::user::UserRow, persistence::postgres::PostgresDb};
 
 #[async_trait::async_trait]
 impl UserRepository for PostgresDb {
@@ -40,7 +27,7 @@ impl UserRepository for PostgresDb {
             INSERT INTO users (id, name)
             VALUES ($1, $2)
         "#,
-            user.id,
+            *user.id,
             user.name
         )
         .execute(self.inner_ref())

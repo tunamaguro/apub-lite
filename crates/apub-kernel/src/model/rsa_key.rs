@@ -6,14 +6,14 @@ use rsa::{
     pkcs8::{DecodePrivateKey, DecodePublicKey, EncodePrivateKey, EncodePublicKey},
     sha2::Sha256,
     signature::{Keypair, RandomizedSigner, Verifier},
-    RsaPrivateKey as PrivateKey, RsaPublicKey as PublicKey,
+    RsaPrivateKey, RsaPublicKey,
 };
 
-pub struct RsaPublicKey {
+pub struct RsaVerifyingKey {
     verifying_key: VerifyingKey<Sha256>,
 }
 
-impl RsaPublicKey {
+impl RsaVerifyingKey {
     pub fn verify(&self, msg: &[u8], signature: &[u8]) -> anyhow::Result<()> {
         let signature = Signature::try_from(signature)?;
         self.verifying_key.verify(msg, &signature)?;
@@ -22,17 +22,17 @@ impl RsaPublicKey {
     }
 
     pub fn from_pem(pem: &str) -> anyhow::Result<Self> {
-        RsaPublicKey::from_pkcs1(pem).or_else(|_| RsaPublicKey::from_pkcs8(pem))
+        RsaVerifyingKey::from_pkcs1(pem).or_else(|_| RsaVerifyingKey::from_pkcs8(pem))
     }
 
     pub fn from_pkcs1(pem: &str) -> anyhow::Result<Self> {
-        let public_key = PublicKey::from_pkcs1_pem(pem)?;
+        let public_key = RsaPublicKey::from_pkcs1_pem(pem)?;
         let verifying_key = VerifyingKey::<Sha256>::new(public_key);
         Ok(Self { verifying_key })
     }
 
     pub fn from_pkcs8(pem: &str) -> anyhow::Result<Self> {
-        let public_key = PublicKey::from_public_key_pem(pem)?;
+        let public_key = RsaPublicKey::from_public_key_pem(pem)?;
         let verifying_key = VerifyingKey::<Sha256>::new(public_key);
         Ok(Self { verifying_key })
     }
@@ -50,14 +50,14 @@ impl RsaPublicKey {
     }
 }
 
-impl FromStr for RsaPublicKey {
+impl FromStr for RsaVerifyingKey {
     type Err = anyhow::Error;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        RsaPublicKey::from_pem(s)
+        RsaVerifyingKey::from_pem(s)
     }
 }
 
-impl std::fmt::Display for RsaPublicKey {
+impl std::fmt::Display for RsaVerifyingKey {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(
             f,
@@ -67,15 +67,15 @@ impl std::fmt::Display for RsaPublicKey {
     }
 }
 
-pub struct RsaPrivateKey {
+pub struct RsaSingingKey {
     signing_key: SigningKey<Sha256>,
 }
 
-impl RsaPrivateKey {
+impl RsaSingingKey {
     pub fn new() -> anyhow::Result<Self> {
         const KEY_BITS: usize = 4096;
         let mut rng = rand::thread_rng();
-        let private_key = PrivateKey::new(&mut rng, KEY_BITS)?;
+        let private_key = RsaPrivateKey::new(&mut rng, KEY_BITS)?;
         let signing_key = SigningKey::<Sha256>::new(private_key);
         Ok(Self { signing_key })
     }
@@ -87,42 +87,42 @@ impl RsaPrivateKey {
     }
 
     pub fn from_pem(pem: &str) -> anyhow::Result<Self> {
-        RsaPrivateKey::from_pkcs1(pem).or_else(|_| RsaPrivateKey::from_pkcs8(pem))
+        RsaSingingKey::from_pkcs1(pem).or_else(|_| RsaSingingKey::from_pkcs8(pem))
     }
 
     pub fn from_pkcs1(pem: &str) -> anyhow::Result<Self> {
-        let private_key = PrivateKey::from_pkcs1_pem(pem)?;
+        let private_key = RsaPrivateKey::from_pkcs1_pem(pem)?;
         let signing_key = SigningKey::<Sha256>::new(private_key);
         Ok(Self { signing_key })
     }
 
     pub fn from_pkcs8(pem: &str) -> anyhow::Result<Self> {
-        let private_key = PrivateKey::from_pkcs8_pem(pem)?;
+        let private_key = RsaPrivateKey::from_pkcs8_pem(pem)?;
         let signing_key = SigningKey::<Sha256>::new(private_key);
         Ok(Self { signing_key })
     }
 
     pub fn to_pkcs1(&self) -> anyhow::Result<String> {
-        let s: &PrivateKey = self.signing_key.as_ref();
+        let s: &RsaPrivateKey = self.signing_key.as_ref();
         s.to_pkcs1_pem(rsa::pkcs8::LineEnding::LF)
             .map_err(|e| e.into())
             .map(|pem| pem.to_string())
     }
 
     pub fn to_pkcs8(&self) -> anyhow::Result<String> {
-        let s: &PrivateKey = self.signing_key.as_ref();
+        let s: &RsaPrivateKey = self.signing_key.as_ref();
         s.to_pkcs8_pem(rsa::pkcs8::LineEnding::LF)
             .map_err(|e| e.into())
             .map(|pem| pem.to_string())
     }
 
-    pub fn to_public_key(&self) -> RsaPublicKey {
+    pub fn to_public_key(&self) -> RsaVerifyingKey {
         let verifying_key = self.signing_key.verifying_key();
-        RsaPublicKey { verifying_key }
+        RsaVerifyingKey { verifying_key }
     }
 }
 
-impl FromStr for RsaPrivateKey {
+impl FromStr for RsaSingingKey {
     type Err = anyhow::Error;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         Self::from_pem(s)

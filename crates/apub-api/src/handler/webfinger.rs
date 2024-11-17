@@ -2,7 +2,7 @@ use apub_activitypub::model::{
     acct_uri::AcctUri,
     webfinger::{WebFinger, WebFingerLink},
 };
-use apub_registry::AppRegistry;
+use apub_registry::{AppRegistry, AppRegistryExt};
 use axum::{http::StatusCode, response::IntoResponse, Json};
 
 #[derive(Debug, thiserror::Error)]
