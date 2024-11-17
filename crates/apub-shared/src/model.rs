@@ -1,2 +1,2 @@
-pub mod resource_uri;
 pub mod id;
+pub mod resource_uri;

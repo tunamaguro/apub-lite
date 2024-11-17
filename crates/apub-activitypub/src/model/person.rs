@@ -2,7 +2,7 @@ use apub_shared::model::resource_uri::ResourceUri;
 use serde::{Deserialize, Serialize};
 use typed_builder::TypedBuilder;
 
-use super::{actor::Actor, context::Context};
+use super::{actor::Actor, context::Context, key::PublicKeyPem};
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
 pub enum PersonKind {
@@ -22,7 +22,6 @@ pub struct Person {
     #[serde(rename = "type")]
     #[builder(default)]
     kind: PersonKind,
-    #[serde()]
     preferred_username: String,
     inbox: ResourceUri,
 }
@@ -34,6 +33,24 @@ impl Actor for Person {
 
     fn inbox(&self) -> &ResourceUri {
         &self.inbox
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, TypedBuilder)]
+#[serde(rename_all = "camelCase")]
+pub struct SecurityPerson {
+    #[serde(flatten)]
+    person: Person,
+    public_key: PublicKeyPem,
+}
+
+impl Actor for SecurityPerson {
+    fn id(&self) -> &ResourceUri {
+        self.person.id()
+    }
+
+    fn inbox(&self) -> &ResourceUri {
+        self.person.inbox()
     }
 }
 

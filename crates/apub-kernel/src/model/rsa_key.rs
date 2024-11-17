@@ -9,11 +9,13 @@ use rsa::{
     RsaPrivateKey, RsaPublicKey,
 };
 
+#[derive(Debug, Clone)]
 pub struct RsaVerifyingKey {
     verifying_key: VerifyingKey<Sha256>,
 }
 
 impl RsaVerifyingKey {
+    #[tracing::instrument(skip(self))]
     pub fn verify(&self, msg: &[u8], signature: &[u8]) -> anyhow::Result<()> {
         let signature = Signature::try_from(signature)?;
         self.verifying_key.verify(msg, &signature)?;
@@ -21,8 +23,9 @@ impl RsaVerifyingKey {
         Ok(())
     }
 
+    #[tracing::instrument]
     pub fn from_pem(pem: &str) -> anyhow::Result<Self> {
-        RsaVerifyingKey::from_pkcs1(pem).or_else(|_| RsaVerifyingKey::from_pkcs8(pem))
+        RsaVerifyingKey::from_pkcs8(pem).or_else(|_| RsaVerifyingKey::from_pkcs1(pem))
     }
 
     pub fn from_pkcs1(pem: &str) -> anyhow::Result<Self> {
@@ -62,16 +65,18 @@ impl std::fmt::Display for RsaVerifyingKey {
         write!(
             f,
             "{}",
-            self.to_pkcs1().unwrap_or("Encoding failed".to_string())
+            self.to_pkcs8().unwrap_or("Encoding failed".to_string())
         )
     }
 }
 
+#[derive(Debug, Clone)]
 pub struct RsaSingingKey {
     signing_key: SigningKey<Sha256>,
 }
 
 impl RsaSingingKey {
+    #[tracing::instrument]
     pub fn new() -> anyhow::Result<Self> {
         const KEY_BITS: usize = 4096;
         let mut rng = rand::thread_rng();
@@ -80,14 +85,16 @@ impl RsaSingingKey {
         Ok(Self { signing_key })
     }
 
+    #[tracing::instrument(skip(self))]
     pub fn sign(&self, msg: &[u8]) -> Box<[u8]> {
         let mut rng = rand::thread_rng();
         let signature = self.signing_key.sign_with_rng(&mut rng, msg);
         signature.into()
     }
 
+    #[tracing::instrument]
     pub fn from_pem(pem: &str) -> anyhow::Result<Self> {
-        RsaSingingKey::from_pkcs1(pem).or_else(|_| RsaSingingKey::from_pkcs8(pem))
+        RsaSingingKey::from_pkcs8(pem).or_else(|_| RsaSingingKey::from_pkcs1(pem))
     }
 
     pub fn from_pkcs1(pem: &str) -> anyhow::Result<Self> {
@@ -116,6 +123,7 @@ impl RsaSingingKey {
             .map(|pem| pem.to_string())
     }
 
+    #[tracing::instrument(skip(self))]
     pub fn to_public_key(&self) -> RsaVerifyingKey {
         let verifying_key = self.signing_key.verifying_key();
         RsaVerifyingKey { verifying_key }

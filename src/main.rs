@@ -23,7 +23,7 @@ async fn bootstrap() -> anyhow::Result<()> {
     use tower_http::{normalize_path::NormalizePathLayer, trace::TraceLayer};
 
     let state = init_registry().await;
-    seed_db(&state).await?;
+    let _ = seed_db(&state).await.inspect_err(|e| tracing::error!(?e));
 
     let hosted_uri = state.config().host_uri().to_string();
 
@@ -66,17 +66,17 @@ async fn init_registry() -> AppRegistry {
 async fn seed_db(registry: &AppRegistry) -> anyhow::Result<()> {
     let user_repo = registry.user_repository();
 
-    let _ = user_repo
+    user_repo
         .create(CreateUser {
             name: "alice".to_string(),
         })
-        .await;
+        .await?;
 
-    let _ = user_repo
+    user_repo
         .create(CreateUser {
             name: "bob".to_string(),
         })
-        .await;
+        .await?;
 
     Ok(())
 }

@@ -11,6 +11,7 @@ use crate::persistence::postgres::PostgresDb;
 
 #[async_trait::async_trait]
 impl RsaKeyRepository for PostgresDb {
+    #[tracing::instrument(skip(self))]
     async fn find_public_key(&self, user_id: &UserId) -> anyhow::Result<RsaVerifyingKey> {
         let row = sqlx::query_as!(
             UserPublicRsaKeyRow,
@@ -24,7 +25,7 @@ impl RsaKeyRepository for PostgresDb {
 
         row.try_into()
     }
-
+    #[tracing::instrument(skip(self))]
     async fn find_private_key(&self, user_id: &UserId) -> anyhow::Result<RsaSingingKey> {
         let row = sqlx::query_as!(
             UserPrivateRsaKeyRow,
@@ -38,13 +39,15 @@ impl RsaKeyRepository for PostgresDb {
 
         row.try_into()
     }
-
+    #[tracing::instrument(skip(self))]
     async fn generate(&self, user_id: &UserId) -> anyhow::Result<(RsaSingingKey, RsaVerifyingKey)> {
         let skey = RsaSingingKey::new()?;
         let pkey = skey.to_public_key();
 
         let skey_pkcs8 = skey.to_pkcs8()?;
         let pkey_pkcs8 = pkey.to_pkcs8()?;
+
+        tracing::debug!(skey_pkcs8, pkey_pkcs8);
 
         sqlx::query!(
             r#"
@@ -57,7 +60,6 @@ impl RsaKeyRepository for PostgresDb {
         )
         .execute(self.inner_ref())
         .await?;
-
         Ok((skey, pkey))
     }
 }
