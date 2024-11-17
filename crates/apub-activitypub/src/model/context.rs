@@ -3,6 +3,9 @@ use std::collections::HashMap;
 use apub_shared::model::resource_uri::ResourceUri;
 use serde::{Deserialize, Serialize};
 
+/// ActivityPub Context
+///
+/// See https://www.w3.org/TR/activitystreams-core/#jsonld
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum Context {

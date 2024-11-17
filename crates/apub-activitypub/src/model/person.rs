@@ -10,6 +10,9 @@ pub enum PersonKind {
     Person,
 }
 
+/// Activity Person object  
+///
+/// See https://www.w3.org/ns/activitystreams#Person
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, TypedBuilder)]
 #[serde(rename_all = "camelCase")]
 pub struct Person {

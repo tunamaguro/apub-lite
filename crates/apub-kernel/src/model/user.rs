@@ -40,6 +40,7 @@ impl User {
         ResourceUri::try_from(inbox_uri).unwrap()
     }
 
+    /// Create Person actor
     pub fn to_person(&self, config: &AppConfig) -> Person {
         Person::builder()
             .id(self.user_uri(config))
