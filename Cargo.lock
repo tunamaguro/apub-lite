@@ -116,10 +116,13 @@ dependencies = [
  "async-trait",
  "axum",
  "pretty_assertions",
+ "rand",
+ "rsa",
  "rstest",
  "serde",
  "serde_json",
  "thiserror 2.0.3",
+ "tracing",
  "typed-builder",
  "uuid",
 ]
@@ -172,6 +175,7 @@ dependencies = [
  "serde_json",
  "thiserror 2.0.3",
  "typed-builder",
+ "uuid",
 ]
 
 [[package]]
@@ -1523,6 +1527,7 @@ dependencies = [
  "pkcs1",
  "pkcs8",
  "rand_core",
+ "sha2",
  "signature",
  "spki",
  "subtle",

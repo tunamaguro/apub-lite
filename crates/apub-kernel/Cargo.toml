@@ -16,7 +16,11 @@ serde_json = { workspace = true }
 thiserror = { workspace = true }
 typed-builder = { workspace = true }
 
+rand = { workspace = true }
+rsa = { workspace = true }
 uuid = { workspace = true }
+
+tracing = { workspace = true }
 
 pretty_assertions = { workspace = true }
 rstest = { workspace = true }

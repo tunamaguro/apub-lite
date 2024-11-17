@@ -1,15 +1,19 @@
 use apub_activitypub::model::person::Person;
-use apub_shared::{config::AppConfig, model::resource_uri::ResourceUri};
+use apub_shared::{
+    config::AppConfig,
+    model::{id::Id, resource_uri::ResourceUri},
+};
 use axum::http::uri;
 use typed_builder::TypedBuilder;
-use uuid::Uuid;
+
+pub type UserId = Id<User>;
 
 /// このアプリで扱うユーザの構造体
 ///
 /// `ActivityPub`にするときは別途変換して使う
 #[derive(Debug, Clone, PartialEq, TypedBuilder)]
 pub struct User {
-    pub id: Uuid,
+    pub id: UserId,
     pub name: String,
 }
 
@@ -40,6 +44,7 @@ impl User {
         ResourceUri::try_from(inbox_uri).unwrap()
     }
 
+    /// Create Person actor
     pub fn to_person(&self, config: &AppConfig) -> Person {
         Person::builder()
             .id(self.user_uri(config))
@@ -58,7 +63,7 @@ pub struct CreateUser {
 impl From<CreateUser> for User {
     fn from(value: CreateUser) -> Self {
         let CreateUser { name, .. } = value;
-        let id = Uuid::now_v7();
+        let id = Id::new();
         User { id, name }
     }
 }
@@ -71,7 +76,7 @@ mod tests {
 
     fn test_user() -> User {
         User {
-            id: uuid!("0193351b-82ce-7c2d-9bb6-4a71b1b62c44"),
+            id: uuid!("0193351b-82ce-7c2d-9bb6-4a71b1b62c44").into(),
             name: "foo".to_string(),
         }
     }

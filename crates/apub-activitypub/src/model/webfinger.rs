@@ -3,7 +3,8 @@ use typed_builder::TypedBuilder;
 
 use apub_shared::model::resource_uri::ResourceUri;
 
-/// ActivityPub WebFinger  
+/// ActivityPub WebFinger
+///
 /// See https://swicg.github.io/activitypub-webfinger
 #[derive(Debug, Serialize, Deserialize, PartialEq, TypedBuilder)]
 pub struct WebFinger {
@@ -14,6 +15,7 @@ pub struct WebFinger {
     links: Vec<WebFingerLink>,
 }
 
+/// WebFinger link item
 #[derive(Debug, Serialize, Deserialize, PartialEq, TypedBuilder)]
 pub struct WebFingerLink {
     rel: String,
