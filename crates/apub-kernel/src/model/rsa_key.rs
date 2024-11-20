@@ -4,14 +4,24 @@ use rsa::{
     pkcs1::{DecodeRsaPrivateKey, DecodeRsaPublicKey, EncodeRsaPrivateKey, EncodeRsaPublicKey},
     pkcs1v15::{Signature, SigningKey, VerifyingKey},
     pkcs8::{DecodePrivateKey, DecodePublicKey, EncodePrivateKey, EncodePublicKey},
-    sha2::Sha256,
     signature::{Keypair, RandomizedSigner, Verifier},
     RsaPrivateKey, RsaPublicKey,
 };
+use sha2::Sha256;
+
+pub trait KeyType {
+    fn key_type() -> &'static str;
+}
 
 #[derive(Debug, Clone)]
 pub struct RsaVerifyingKey {
     verifying_key: VerifyingKey<Sha256>,
+}
+
+impl KeyType for RsaVerifyingKey {
+    fn key_type() -> &'static str {
+        "rsa-key"
+    }
 }
 
 impl RsaVerifyingKey {
