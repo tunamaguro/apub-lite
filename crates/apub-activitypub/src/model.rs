@@ -11,7 +11,7 @@ pub mod activity;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(untagged)]
-enum SingleOrVec<T> {
+pub enum SingleOrVec<T> {
     Single(T),
     Vec(Vec<T>),
 }

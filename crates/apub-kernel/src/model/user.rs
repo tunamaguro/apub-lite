@@ -54,7 +54,7 @@ impl User {
         let key_uri = uri::Builder::new()
             .scheme(host_uri.scheme().clone())
             .authority(host_uri.host())
-            .path_and_query(format!("/users/{}/{}", self.name, T::key_type()))
+            .path_and_query(format!("/users/{}#{}", self.name, T::key_type()))
             .build()
             .unwrap();
         ResourceUri::try_from(key_uri).unwrap()

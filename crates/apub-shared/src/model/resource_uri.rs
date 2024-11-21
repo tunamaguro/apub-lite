@@ -177,6 +177,15 @@ mod tests {
     }
 
     #[test]
+    fn no_lost_date() {
+        let s = "https://www.w3.org/ns/activitystreams#Public";
+
+        let aa = Uri::from_str(s).unwrap();
+
+        assert_eq!(s, aa.to_string())
+    }
+
+    #[test]
     fn serialize_resource_uri() {
         let original = "https://example.com/foo/bar";
         let acct = ResourceUri::from_str(original).unwrap();

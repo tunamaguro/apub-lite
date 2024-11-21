@@ -28,8 +28,8 @@ pub struct Note {
     #[builder(setter(!strip_option))]
     content: String,
     published: Option<String>,
-    to: Option<SingleOrVec<ResourceUri>>,
-    in_reply_to: Option<UriId<Person>>,
+    to: Option<SingleOrVec<String>>,
+    in_reply_to: Option<UriId<Note>>,
 }
 
 #[cfg(test)]
