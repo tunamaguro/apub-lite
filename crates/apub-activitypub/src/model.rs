@@ -17,13 +17,14 @@ pub enum SingleOrVec<T> {
 }
 
 impl<T> SingleOrVec<T> {
+    #[allow(dead_code)]
     fn as_single(&self) -> Option<&T> {
         match self {
             SingleOrVec::Single(v) => Some(v),
             _ => None,
         }
     }
-
+    #[allow(dead_code)]
     fn as_vec(&self) -> Option<&Vec<T>> {
         match self {
             SingleOrVec::Vec(v) => Some(v),
