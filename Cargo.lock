@@ -72,7 +72,6 @@ dependencies = [
 name = "apub-activitypub"
 version = "0.1.0"
 dependencies = [
- "anyhow",
  "apub-shared",
  "axum",
  "pretty_assertions",
@@ -177,8 +176,6 @@ dependencies = [
  "apub-kernel",
  "apub-shared",
  "axum",
- "pretty_assertions",
- "rstest",
  "serde",
  "serde_json",
  "thiserror 2.0.3",
@@ -189,14 +186,12 @@ dependencies = [
 name = "apub-shared"
 version = "0.1.0"
 dependencies = [
- "anyhow",
  "axum",
  "pretty_assertions",
  "rstest",
  "serde",
  "serde_json",
  "thiserror 2.0.3",
- "typed-builder",
  "uuid",
 ]
 
