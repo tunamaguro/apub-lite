@@ -1,13 +1,13 @@
 use serde::{Deserialize, Serialize};
 
 pub mod acct_uri;
+pub mod activity;
 pub mod actor;
 pub mod context;
 pub mod key;
 pub mod note;
 pub mod person;
 pub mod webfinger;
-pub mod activity;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(untagged)]

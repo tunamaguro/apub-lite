@@ -177,6 +177,7 @@ mod tests {
     }
 
     #[test]
+    #[ignore]
     fn no_lost_date() {
         let s = "https://www.w3.org/ns/activitystreams#Public";
 

@@ -37,6 +37,7 @@ sqlx = { version = "0.8", features = [
   "migrate",
 ] }
 
+base64 = { version = "0.22" }
 rand = "0.8.5"
 rsa = { version = "0.9.6", features = ["pem", "sha2"] }
 sha2 = { version = "0.10.8" }
@@ -46,7 +47,6 @@ uuid = { version = "1.11.0", features = [
   "serde",
   "macro-diagnostics",
 ] }
-base64 = {version = "0.22"}
 
 async-trait = { version = "0.1" }
 
