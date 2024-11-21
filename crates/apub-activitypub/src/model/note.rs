@@ -1,9 +1,9 @@
-use apub_shared::model::{id::UriId, resource_uri::ResourceUri};
+use apub_shared::model::id::UriId;
 use serde::{Deserialize, Serialize};
 use serde_with::skip_serializing_none;
 use typed_builder::TypedBuilder;
 
-use super::{context::Context, person::Person, SingleOrVec};
+use super::{context::Context, SingleOrVec};
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
 pub enum NoteKind {
@@ -35,6 +35,7 @@ pub struct Note {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use apub_shared::model::resource_uri::ResourceUri;
     use pretty_assertions::assert_eq;
 
     #[test]
