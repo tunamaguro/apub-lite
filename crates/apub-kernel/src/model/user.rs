@@ -6,6 +6,8 @@ use apub_shared::{
 use axum::http::uri;
 use typed_builder::TypedBuilder;
 
+use super::rsa_key::KeyType;
+
 pub type UserId = Id<User>;
 
 /// このアプリで扱うユーザの構造体
@@ -42,6 +44,20 @@ impl User {
             .unwrap();
 
         ResourceUri::try_from(inbox_uri).unwrap()
+    }
+
+    pub fn user_key_uri<T>(&self, config: &AppConfig) -> ResourceUri
+    where
+        T: KeyType,
+    {
+        let host_uri = config.host_uri();
+        let key_uri = uri::Builder::new()
+            .scheme(host_uri.scheme().clone())
+            .authority(host_uri.host())
+            .path_and_query(format!("/users/{}#{}", self.name, T::key_type()))
+            .build()
+            .unwrap();
+        ResourceUri::try_from(key_uri).unwrap()
     }
 
     /// Create Person actor
