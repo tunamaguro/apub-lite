@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 use serde_with::skip_serializing_none;
 use typed_builder::TypedBuilder;
 
-use super::{context::Context, note::Note, person::Person, SingleOrVec};
+use super::{context::Context, note::Note, person::Person, SingleOrMany};
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
 pub enum CreateKind {
@@ -27,7 +27,7 @@ pub struct Create<T> {
     actor: UrlId<Person>,
     object: T,
     #[builder(default, setter(strip_option))]
-    to: Option<SingleOrVec<UrlId<Person>>>,
+    to: Option<SingleOrMany<UrlId<Person>>>,
 }
 
 pub type CreateNote = Create<Note>;

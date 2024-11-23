@@ -3,15 +3,12 @@ use std::{collections::HashMap, sync::LazyLock};
 use apub_shared::model::resource_url::ResourceUrl;
 use serde::{Deserialize, Serialize};
 
+use super::SingleOrMany;
+
 /// ActivityPub Context
 ///
 /// See https://www.w3.org/TR/activitystreams-core/#jsonld
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-#[serde(untagged)]
-pub enum Context {
-    Many(Vec<ContextInner>),
-    Single(ContextInner),
-}
+pub type Context = SingleOrMany<ContextInner>;
 
 impl Context {
     pub fn activity_context_url() -> &'static ContextInner {
@@ -25,18 +22,6 @@ impl Context {
     }
 }
 
-impl From<ContextInner> for Context {
-    fn from(value: ContextInner) -> Self {
-        Context::Single(value)
-    }
-}
-
-impl From<Vec<ContextInner>> for Context {
-    fn from(value: Vec<ContextInner>) -> Self {
-        Context::Many(value)
-    }
-}
-
 impl From<ResourceUrl> for Context {
     fn from(value: ResourceUrl) -> Self {
         Self::Single(value.into())
@@ -45,8 +30,11 @@ impl From<ResourceUrl> for Context {
 
 impl From<Vec<ResourceUrl>> for Context {
     fn from(value: Vec<ResourceUrl>) -> Self {
-        let arr = value.into_iter().map(|v| v.into()).collect::<Vec<_>>();
-        Self::Many(arr)
+        let arr = value
+            .into_iter()
+            .map(|v| v.into())
+            .collect::<Vec<ContextInner>>();
+        arr.into()
     }
 }
 

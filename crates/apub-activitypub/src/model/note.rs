@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 use serde_with::skip_serializing_none;
 use typed_builder::TypedBuilder;
 
-use super::{context::Context, SingleOrVec};
+use super::{context::Context, SingleOrMany};
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
 pub enum NoteKind {
@@ -30,7 +30,7 @@ pub struct Note {
     #[builder(setter(!strip_option))]
     content: String,
     published: Option<String>,
-    to: Option<SingleOrVec<ResourceUrl>>,
+    to: Option<SingleOrMany<ResourceUrl>>,
     in_reply_to: Option<UrlId<Note>>,
 }
 
