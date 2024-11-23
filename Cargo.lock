@@ -72,7 +72,6 @@ dependencies = [
 name = "apub-activitypub"
 version = "0.1.0"
 dependencies = [
- "anyhow",
  "apub-shared",
  "axum",
  "pretty_assertions",
@@ -189,14 +188,13 @@ dependencies = [
 name = "apub-shared"
 version = "0.1.0"
 dependencies = [
- "anyhow",
  "axum",
  "pretty_assertions",
  "rstest",
  "serde",
  "serde_json",
  "thiserror 2.0.3",
- "typed-builder",
+ "url",
  "uuid",
 ]
 
@@ -204,6 +202,8 @@ dependencies = [
 name = "apub-tracing"
 version = "0.1.0"
 dependencies = [
+ "pretty_assertions",
+ "rstest",
  "tracing",
  "tracing-subscriber",
 ]
@@ -2869,6 +2869,7 @@ dependencies = [
  "form_urlencoded",
  "idna",
  "percent-encoding",
+ "serde",
 ]
 
 [[package]]

@@ -42,7 +42,7 @@ ready:
 
 # Find unused deps
 udeps:
-    cargo binstall cargo-udeps --locked
+    cargo install cargo-udeps --locked
     rustup install nightly
     cargo +nightly udeps --workspace --all-targets
 

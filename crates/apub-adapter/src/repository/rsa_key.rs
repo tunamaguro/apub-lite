@@ -47,8 +47,6 @@ impl RsaKeyRepository for PostgresDb {
         let skey_pkcs8 = skey.to_pkcs8()?;
         let pkey_pkcs8 = pkey.to_pkcs8()?;
 
-        tracing::debug!(skey_pkcs8, pkey_pkcs8);
-
         sqlx::query!(
             r#"
             INSERT INTO user_rsa_keys (user_id, private_key, public_key) 

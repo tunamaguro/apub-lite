@@ -1,6 +1,6 @@
-use apub_shared::model::resource_uri::ResourceUri;
+use apub_shared::model::resource_url::ResourceUrl;
 
 pub trait Actor {
-    fn id(&self) -> &ResourceUri;
-    fn inbox(&self) -> &ResourceUri;
+    fn id(&self) -> &ResourceUrl;
+    fn inbox(&self) -> &ResourceUrl;
 }

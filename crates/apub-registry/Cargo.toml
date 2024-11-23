@@ -16,5 +16,6 @@ serde_json = { workspace = true }
 thiserror = { workspace = true }
 typed-builder = { workspace = true }
 
+[dev-dependencies]
 pretty_assertions = { workspace = true }
 rstest = { workspace = true }

@@ -1,9 +1,8 @@
-use apub_activitypub::model::person::Person;
+use apub_activitypub::model::{context::Context, person::Person};
 use apub_shared::{
     config::AppConfig,
-    model::{id::Id, resource_uri::ResourceUri},
+    model::{id::Id, resource_url::ResourceUrl},
 };
-use axum::http::uri;
 use typed_builder::TypedBuilder;
 
 use super::rsa_key::KeyType;
@@ -21,43 +20,36 @@ pub struct User {
 
 impl User {
     /// `/users/{username}`
-    pub fn user_uri(&self, config: &AppConfig) -> ResourceUri {
-        let host_uri = config.host_uri();
-        let user_uri = uri::Builder::new()
-            .scheme(host_uri.scheme().clone())
-            .authority(host_uri.host())
-            .path_and_query(format!("/users/{}", self.name))
-            .build()
-            .unwrap();
-
-        ResourceUri::try_from(user_uri).unwrap()
+    pub fn user_uri(&self, config: &AppConfig) -> ResourceUrl {
+        let user_uri = config
+            .host_uri()
+            .clone()
+            .set_path(&format!("/users/{}", self.name))
+            .to_owned();
+        user_uri
     }
 
     /// `/users/{username}/inbox`
-    pub fn inbox_uri(&self, config: &AppConfig) -> ResourceUri {
-        let host_uri = config.host_uri();
-        let inbox_uri = uri::Builder::new()
-            .scheme(host_uri.scheme().clone())
-            .authority(host_uri.host())
-            .path_and_query(format!("/users/{}/inbox", self.name))
-            .build()
-            .unwrap();
-
-        ResourceUri::try_from(inbox_uri).unwrap()
+    pub fn inbox_uri(&self, config: &AppConfig) -> ResourceUrl {
+        let inbox_uri = config
+            .host_uri()
+            .clone()
+            .set_path(&format!("/users/{}/inbox", self.name))
+            .to_owned();
+        inbox_uri
     }
 
-    pub fn user_key_uri<T>(&self, config: &AppConfig) -> ResourceUri
+    pub fn user_key_uri<T>(&self, config: &AppConfig) -> ResourceUrl
     where
         T: KeyType,
     {
-        let host_uri = config.host_uri();
-        let key_uri = uri::Builder::new()
-            .scheme(host_uri.scheme().clone())
-            .authority(host_uri.host())
-            .path_and_query(format!("/users/{}#{}", self.name, T::key_type()))
-            .build()
-            .unwrap();
-        ResourceUri::try_from(key_uri).unwrap()
+        let key_uri = config
+            .host_uri()
+            .clone()
+            .set_path(&format!("/users/{}", self.name))
+            .set_fragment(T::key_type())
+            .to_owned();
+        key_uri
     }
 
     /// Create Person actor
@@ -66,7 +58,7 @@ impl User {
             .id(self.user_uri(config))
             .preferred_username(self.name.clone())
             .inbox(self.inbox_uri(config))
-            .context(vec!["https://www.w3.org/ns/activitystreams".parse().unwrap()].into())
+            .context(Context::activity_context_url().clone().into())
             .build()
     }
 }

@@ -2,47 +2,47 @@ use std::{marker::PhantomData, ops::Deref, str::FromStr};
 
 use serde::{Deserialize, Serialize};
 
-use crate::model::resource_uri::ResourceUri;
+use crate::model::resource_url::ResourceUrl;
 
-use super::resource_uri::ResourceUriError;
+use super::resource_url::ResourceUrlError;
 
-/// リソースにつけられた`Uri`
+/// ある特定のリソースを示す`Url``
 #[derive(Debug, Clone, Deserialize, Serialize, PartialEq)]
 #[serde(transparent)]
-pub struct UriId<T> {
-    resource_uri: ResourceUri,
+pub struct UrlId<T> {
+    resource_url: ResourceUrl,
     _marker: PhantomData<T>,
 }
 
-impl<T> Deref for UriId<T> {
-    type Target = ResourceUri;
+impl<T> Deref for UrlId<T> {
+    type Target = ResourceUrl;
 
     fn deref(&self) -> &Self::Target {
-        &self.resource_uri
+        &self.resource_url
     }
 }
 
-impl<T> From<ResourceUri> for UriId<T> {
-    fn from(uri: ResourceUri) -> Self {
+impl<T> From<ResourceUrl> for UrlId<T> {
+    fn from(uri: ResourceUrl) -> Self {
         Self {
-            resource_uri: uri,
+            resource_url: uri,
             _marker: PhantomData,
         }
     }
 }
 
-impl<T> std::fmt::Display for UriId<T> {
+impl<T> std::fmt::Display for UrlId<T> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.resource_uri)
+        write!(f, "{}", self.resource_url)
     }
 }
 
-impl<T> FromStr for UriId<T> {
-    type Err = ResourceUriError;
+impl<T> FromStr for UrlId<T> {
+    type Err = ResourceUrlError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let uri = s.parse()?;
         Ok(Self {
-            resource_uri: uri,
+            resource_url: uri,
             _marker: PhantomData,
         })
     }

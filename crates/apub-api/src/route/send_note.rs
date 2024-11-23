@@ -1,10 +1,10 @@
-use apub_activitypub::model::{activity::Create, note::Note};
+use apub_activitypub::model::{activity::Create, context::Context, note::Note};
 use apub_kernel::{
     model::rsa_key::RsaVerifyingKey,
-    repository::activity::{generate_acitivity_uri, generate_note_uri},
+    repository::activity::{generate_activity_uri, generate_note_uri},
 };
 use apub_registry::{AppRegistry, AppRegistryExt};
-use apub_shared::model::resource_uri::ResourceUri;
+use apub_shared::model::resource_url::ResourceUrl;
 use axum::{
     extract::{Query, State},
     http::StatusCode,
@@ -15,7 +15,7 @@ use serde::Deserialize;
 #[derive(Deserialize)]
 pub struct SendNoteQuery {
     message: String,
-    inbox: ResourceUri,
+    inbox: ResourceUrl,
     user: String,
 }
 
@@ -56,28 +56,21 @@ pub async fn send_note(
         .id(note_uri.into())
         .content(format!("<p>{}</p>", query.message))
         .in_reply_to(
-            "https://activitypub.academy/@brauta_orgleoss/113521016036162806"
-                .parse::<ResourceUri>()
+            "https://activitypub.academy/@dodatus_dranapat/113530116833625285"
+                .parse::<ResourceUrl>()
                 .unwrap()
                 .into(),
         )
-        .to("https://www.w3.org/ns/activitystreams#Public"
-            .to_string()
-            .into())
+        .to(Note::public_address().clone().into())
         .build();
 
     tracing::info!(note=?note);
 
-    let create_uri = generate_acitivity_uri(&config);
+    let create_uri = generate_activity_uri(&config);
     let create = Create::builder()
         .object(note)
         .actor(user.user_uri(&config).into())
-        .context(
-            "https://www.w3.org/ns/activitystreams"
-                .parse::<ResourceUri>()
-                .unwrap()
-                .into(),
-        )
+        .context(Context::activity_context_url().clone().into())
         .id(create_uri.into())
         .build();
 

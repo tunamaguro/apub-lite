@@ -8,12 +8,12 @@ apub-shared = { workspace = true }
 
 axum = { workspace = true }
 
-anyhow = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
 serde_with = { workspace = true }
 thiserror = { workspace = true }
 typed-builder = { workspace = true }
 
+[dev-dependencies]
 pretty_assertions = { workspace = true }
 rstest = { workspace = true }

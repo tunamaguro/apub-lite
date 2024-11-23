@@ -1,9 +1,9 @@
-use apub_shared::model::id::UriId;
+use apub_shared::model::id::UrlId;
 use serde::{Deserialize, Serialize};
 use serde_with::skip_serializing_none;
 use typed_builder::TypedBuilder;
 
-use super::{context::Context, note::Note, person::Person, SingleOrVec};
+use super::{context::Context, note::Note, person::Person, SingleOrMany};
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
 pub enum CreateKind {
@@ -20,14 +20,14 @@ pub enum CreateKind {
 pub struct Create<T> {
     #[serde(rename = "@context")]
     context: Context,
-    id: UriId<Create<T>>,
+    id: UrlId<Create<T>>,
     #[serde(rename = "type")]
     #[builder(default)]
     kind: CreateKind,
-    actor: UriId<Person>,
+    actor: UrlId<Person>,
     object: T,
     #[builder(default, setter(strip_option))]
-    to: Option<SingleOrVec<UriId<Person>>>,
+    to: Option<SingleOrMany<UrlId<Person>>>,
 }
 
 pub type CreateNote = Create<Note>;
@@ -35,7 +35,7 @@ pub type CreateNote = Create<Note>;
 #[cfg(test)]
 mod tests {
     use super::*;
-    use apub_shared::model::resource_uri::ResourceUri;
+    use apub_shared::model::resource_url::ResourceUrl;
     use pretty_assertions::assert_eq;
 
     #[test]
@@ -63,7 +63,7 @@ mod tests {
         let expected = CreateNote::builder()
             .context(
                 "https://www.w3.org/ns/activitystreams"
-                    .parse::<ResourceUri>()
+                    .parse::<ResourceUrl>()
                     .unwrap()
                     .into(),
             )

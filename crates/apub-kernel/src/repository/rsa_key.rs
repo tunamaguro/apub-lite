@@ -22,7 +22,6 @@ pub trait RsaKeyRepository: Send + Sync {
             Ok(pkey) => Ok(pkey),
             Err(_) => {
                 let (_, pkey) = self.generate(user_id).await?;
-                tracing::info!(?pkey);
                 Ok(pkey)
             }
         }

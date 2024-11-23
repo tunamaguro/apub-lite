@@ -1,9 +1,11 @@
-use apub_shared::model::id::UriId;
+use std::sync::LazyLock;
+
+use apub_shared::model::{id::UrlId, resource_url::ResourceUrl};
 use serde::{Deserialize, Serialize};
 use serde_with::skip_serializing_none;
 use typed_builder::TypedBuilder;
 
-use super::{context::Context, SingleOrVec};
+use super::{context::Context, SingleOrMany};
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
 pub enum NoteKind {
@@ -21,21 +23,35 @@ pub enum NoteKind {
 pub struct Note {
     #[serde(rename = "@context")]
     context: Option<Context>,
-    id: Option<UriId<Note>>,
+    id: Option<UrlId<Note>>,
     #[serde(rename = "type")]
     #[builder(setter(!strip_option))]
     kind: NoteKind,
     #[builder(setter(!strip_option))]
     content: String,
     published: Option<String>,
-    to: Option<SingleOrVec<String>>,
-    in_reply_to: Option<UriId<Note>>,
+    to: Option<SingleOrMany<ResourceUrl>>,
+    in_reply_to: Option<UrlId<Note>>,
+}
+
+impl Note {
+    /// Return public address  
+    ///
+    /// See https://w3c.github.io/activitypub/#public-addressing
+    pub fn public_address() -> &'static ResourceUrl {
+        static PUBLIC: LazyLock<ResourceUrl> = LazyLock::new(|| {
+            "https://www.w3.org/ns/activitystreams#Public"
+                .parse::<ResourceUrl>()
+                .unwrap()
+        });
+        &PUBLIC
+    }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use apub_shared::model::resource_uri::ResourceUri;
+    use apub_shared::model::resource_url::ResourceUrl;
     use pretty_assertions::assert_eq;
 
     #[test]
@@ -56,7 +72,7 @@ mod tests {
             .content("Looks like it is going to rain today. Bring an umbrella!".to_string())
             .context(
                 "https://www.w3.org/ns/activitystreams"
-                    .parse::<ResourceUri>()
+                    .parse::<ResourceUrl>()
                     .unwrap()
                     .into(),
             )
