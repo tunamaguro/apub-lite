@@ -1,4 +1,4 @@
-use apub_shared::model::resource_uri::ResourceUri;
+use apub_shared::model::resource_uri::ResourceUrl;
 use serde::{Deserialize, Serialize};
 use typed_builder::TypedBuilder;
 
@@ -18,20 +18,20 @@ pub enum PersonKind {
 pub struct Person {
     #[serde(rename = "@context")]
     context: Context,
-    id: ResourceUri,
+    id: ResourceUrl,
     #[serde(rename = "type")]
     #[builder(default)]
     kind: PersonKind,
     preferred_username: String,
-    inbox: ResourceUri,
+    inbox: ResourceUrl,
 }
 
 impl Actor for Person {
-    fn id(&self) -> &ResourceUri {
+    fn id(&self) -> &ResourceUrl {
         &self.id
     }
 
-    fn inbox(&self) -> &ResourceUri {
+    fn inbox(&self) -> &ResourceUrl {
         &self.inbox
     }
 }
@@ -45,11 +45,11 @@ pub struct SecurityPerson {
 }
 
 impl Actor for SecurityPerson {
-    fn id(&self) -> &ResourceUri {
+    fn id(&self) -> &ResourceUrl {
         self.person.id()
     }
 
-    fn inbox(&self) -> &ResourceUri {
+    fn inbox(&self) -> &ResourceUrl {
         self.person.inbox()
     }
 }

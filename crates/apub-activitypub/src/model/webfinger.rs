@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use typed_builder::TypedBuilder;
 
-use apub_shared::model::resource_uri::ResourceUri;
+use apub_shared::model::resource_uri::ResourceUrl;
 
 /// ActivityPub WebFinger
 ///
@@ -11,7 +11,7 @@ pub struct WebFinger {
     subject: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(setter(strip_option))]
-    aliases: Option<Vec<ResourceUri>>,
+    aliases: Option<Vec<ResourceUrl>>,
     links: Vec<WebFingerLink>,
 }
 
@@ -25,8 +25,8 @@ pub struct WebFingerLink {
     kind: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(setter(strip_option))]
-    href: Option<ResourceUri>,
+    href: Option<ResourceUrl>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
-    template: Option<ResourceUri>,
+    template: Option<ResourceUrl>,
 }

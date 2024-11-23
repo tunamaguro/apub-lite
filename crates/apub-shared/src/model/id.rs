@@ -2,28 +2,28 @@ use std::{marker::PhantomData, ops::Deref, str::FromStr};
 
 use serde::{Deserialize, Serialize};
 
-use crate::model::resource_uri::ResourceUri;
+use crate::model::resource_uri::ResourceUrl;
 
-use super::resource_uri::ResourceUriError;
+use super::resource_uri::ResourceUrlError;
 
 /// ある特定のリソースを示す`Url``
 #[derive(Debug, Clone, Deserialize, Serialize, PartialEq)]
 #[serde(transparent)]
 pub struct UrlId<T> {
-    resource_uri: ResourceUri,
+    resource_uri: ResourceUrl,
     _marker: PhantomData<T>,
 }
 
 impl<T> Deref for UrlId<T> {
-    type Target = ResourceUri;
+    type Target = ResourceUrl;
 
     fn deref(&self) -> &Self::Target {
         &self.resource_uri
     }
 }
 
-impl<T> From<ResourceUri> for UrlId<T> {
-    fn from(uri: ResourceUri) -> Self {
+impl<T> From<ResourceUrl> for UrlId<T> {
+    fn from(uri: ResourceUrl) -> Self {
         Self {
             resource_uri: uri,
             _marker: PhantomData,
@@ -38,7 +38,7 @@ impl<T> std::fmt::Display for UrlId<T> {
 }
 
 impl<T> FromStr for UrlId<T> {
-    type Err = ResourceUriError;
+    type Err = ResourceUrlError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let uri = s.parse()?;
         Ok(Self {

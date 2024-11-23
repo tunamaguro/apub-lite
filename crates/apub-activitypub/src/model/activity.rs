@@ -35,7 +35,7 @@ pub type CreateNote = Create<Note>;
 #[cfg(test)]
 mod tests {
     use super::*;
-    use apub_shared::model::resource_uri::ResourceUri;
+    use apub_shared::model::resource_uri::ResourceUrl;
     use pretty_assertions::assert_eq;
 
     #[test]
@@ -63,7 +63,7 @@ mod tests {
         let expected = CreateNote::builder()
             .context(
                 "https://www.w3.org/ns/activitystreams"
-                    .parse::<ResourceUri>()
+                    .parse::<ResourceUrl>()
                     .unwrap()
                     .into(),
             )

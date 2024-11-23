@@ -1,10 +1,10 @@
-use apub_shared::model::resource_uri::ResourceUri;
+use apub_shared::model::resource_uri::ResourceUrl;
 
 use super::rsa_key::RsaSingingKey;
 
 pub struct SendActivity<T> {
     pub activity: T,
     pub signer: RsaSingingKey,
-    pub inbox: ResourceUri,
-    pub key_uri: ResourceUri,
+    pub inbox: ResourceUrl,
+    pub key_uri: ResourceUrl,
 }

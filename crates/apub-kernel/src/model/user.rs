@@ -1,7 +1,7 @@
 use apub_activitypub::model::person::Person;
 use apub_shared::{
     config::AppConfig,
-    model::{id::Id, resource_uri::ResourceUri},
+    model::{id::Id, resource_uri::ResourceUrl},
 };
 use typed_builder::TypedBuilder;
 
@@ -20,7 +20,7 @@ pub struct User {
 
 impl User {
     /// `/users/{username}`
-    pub fn user_uri(&self, config: &AppConfig) -> ResourceUri {
+    pub fn user_uri(&self, config: &AppConfig) -> ResourceUrl {
         let user_uri = config
             .host_uri()
             .clone()
@@ -30,7 +30,7 @@ impl User {
     }
 
     /// `/users/{username}/inbox`
-    pub fn inbox_uri(&self, config: &AppConfig) -> ResourceUri {
+    pub fn inbox_uri(&self, config: &AppConfig) -> ResourceUrl {
         let inbox_uri = config
             .host_uri()
             .clone()
@@ -39,7 +39,7 @@ impl User {
         inbox_uri
     }
 
-    pub fn user_key_uri<T>(&self, config: &AppConfig) -> ResourceUri
+    pub fn user_key_uri<T>(&self, config: &AppConfig) -> ResourceUrl
     where
         T: KeyType,
     {

@@ -4,7 +4,7 @@ use apub_kernel::{
     repository::activity::{generate_activity_uri, generate_note_uri},
 };
 use apub_registry::{AppRegistry, AppRegistryExt};
-use apub_shared::model::resource_uri::ResourceUri;
+use apub_shared::model::resource_uri::ResourceUrl;
 use axum::{
     extract::{Query, State},
     http::StatusCode,
@@ -15,7 +15,7 @@ use serde::Deserialize;
 #[derive(Deserialize)]
 pub struct SendNoteQuery {
     message: String,
-    inbox: ResourceUri,
+    inbox: ResourceUrl,
     user: String,
 }
 
@@ -57,7 +57,7 @@ pub async fn send_note(
         .content(format!("<p>{}</p>", query.message))
         .in_reply_to(
             "https://activitypub.academy/@brauta_orgleoss/113521016036162806"
-                .parse::<ResourceUri>()
+                .parse::<ResourceUrl>()
                 .unwrap()
                 .into(),
         )
@@ -74,7 +74,7 @@ pub async fn send_note(
         .actor(user.user_uri(&config).into())
         .context(
             "https://www.w3.org/ns/activitystreams"
-                .parse::<ResourceUri>()
+                .parse::<ResourceUrl>()
                 .unwrap()
                 .into(),
         )

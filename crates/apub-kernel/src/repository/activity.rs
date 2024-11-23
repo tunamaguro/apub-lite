@@ -1,5 +1,5 @@
 use apub_activitypub::model::activity::CreateNote;
-use apub_shared::{config::AppConfig, model::resource_uri::ResourceUri};
+use apub_shared::{config::AppConfig, model::resource_uri::ResourceUrl};
 
 use crate::model::rsa_key::RsaSingingKey;
 
@@ -9,13 +9,13 @@ pub trait ActivityRepository: Send + Sync {
     async fn post_note(
         &self,
         activity: &CreateNote,
-        inbox: &ResourceUri,
+        inbox: &ResourceUrl,
         signer: &RsaSingingKey,
-        key_uri: &ResourceUri,
+        key_uri: &ResourceUrl,
     ) -> anyhow::Result<()>;
 }
 
-pub fn generate_note_uri(config: &AppConfig) -> ResourceUri {
+pub fn generate_note_uri(config: &AppConfig) -> ResourceUrl {
     let id = uuid::Uuid::now_v7();
     let note_uri = config
         .host_uri()
@@ -26,7 +26,7 @@ pub fn generate_note_uri(config: &AppConfig) -> ResourceUri {
     note_uri
 }
 
-pub fn generate_activity_uri(config: &AppConfig) -> ResourceUri {
+pub fn generate_activity_uri(config: &AppConfig) -> ResourceUrl {
     let id = uuid::Uuid::now_v7();
     let activity_uri = config
         .host_uri()

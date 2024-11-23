@@ -1,7 +1,7 @@
-use crate::model::resource_uri::ResourceUri;
+use crate::model::resource_uri::ResourceUrl;
 
 pub struct AppConfig {
-    host_uri: ResourceUri,
+    host_uri: ResourceUrl,
 }
 
 impl AppConfig {
@@ -11,7 +11,7 @@ impl AppConfig {
         }
     }
 
-    pub fn host_uri(&self) -> &ResourceUri {
+    pub fn host_uri(&self) -> &ResourceUrl {
         &self.host_uri
     }
 }

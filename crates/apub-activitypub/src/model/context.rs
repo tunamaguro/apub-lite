@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use apub_shared::model::resource_uri::ResourceUri;
+use apub_shared::model::resource_uri::ResourceUrl;
 use serde::{Deserialize, Serialize};
 
 /// ActivityPub Context
@@ -13,14 +13,14 @@ pub enum Context {
     Single(ContextInner),
 }
 
-impl From<ResourceUri> for Context {
-    fn from(value: ResourceUri) -> Self {
+impl From<ResourceUrl> for Context {
+    fn from(value: ResourceUrl) -> Self {
         Self::Single(value.into())
     }
 }
 
-impl From<Vec<ResourceUri>> for Context {
-    fn from(value: Vec<ResourceUri>) -> Self {
+impl From<Vec<ResourceUrl>> for Context {
+    fn from(value: Vec<ResourceUrl>) -> Self {
         let arr = value.into_iter().map(|v| v.into()).collect::<Vec<_>>();
         Self::Many(arr)
     }
@@ -29,13 +29,13 @@ impl From<Vec<ResourceUri>> for Context {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum ContextInner {
-    Uri(ResourceUri),
+    Uri(ResourceUrl),
     Object(HashMap<String, serde_json::Value>),
     Unknown(serde_json::Value),
 }
 
-impl From<ResourceUri> for ContextInner {
-    fn from(value: ResourceUri) -> Self {
+impl From<ResourceUrl> for ContextInner {
+    fn from(value: ResourceUrl) -> Self {
         Self::Uri(value)
     }
 }

@@ -1,7 +1,7 @@
 use crate::persistence::http_client::HttpClient;
 use apub_activitypub::{activity_json::APPLICATION_ACTIVITY_JSON, model::activity::CreateNote};
 use apub_kernel::{model::rsa_key::RsaSingingKey, repository::activity::ActivityRepository};
-use apub_shared::model::resource_uri::ResourceUri;
+use apub_shared::model::resource_uri::ResourceUrl;
 use axum::http::{header, HeaderMap, HeaderName, HeaderValue};
 use base64::{prelude::BASE64_STANDARD, Engine};
 use serde::Serialize;
@@ -11,9 +11,9 @@ use sha2::{Digest, Sha256};
 async fn post_activity<T: Serialize + Sync>(
     client: &HttpClient,
     activity: &T,
-    inbox: &ResourceUri,
+    inbox: &ResourceUrl,
     signer: &RsaSingingKey,
-    key_uri: &ResourceUri,
+    key_uri: &ResourceUrl,
 ) -> anyhow::Result<()> {
     {
         let a = serde_json::to_string_pretty(activity).unwrap();
@@ -81,9 +81,9 @@ impl ActivityRepository for HttpClient {
     async fn post_note(
         &self,
         activity: &CreateNote,
-        inbox: &ResourceUri,
+        inbox: &ResourceUrl,
         signer: &RsaSingingKey,
-        key_uri: &ResourceUri,
+        key_uri: &ResourceUrl,
     ) -> anyhow::Result<()> {
         post_activity(self, activity, inbox, signer, key_uri).await
     }
