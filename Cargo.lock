@@ -192,6 +192,7 @@ dependencies = [
  "serde",
  "serde_json",
  "thiserror 2.0.3",
+ "url",
  "uuid",
 ]
 
@@ -2864,6 +2865,7 @@ dependencies = [
  "form_urlencoded",
  "idna",
  "percent-encoding",
+ "serde",
 ]
 
 [[package]]

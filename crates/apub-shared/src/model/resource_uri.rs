@@ -1,32 +1,56 @@
 use std::{ops::Deref, str::FromStr};
 
-use axum::http::{uri::Scheme, Uri};
 use serde::{Deserialize, Serialize};
+use url::Url;
 
 /// リソースを示す`Uri`
 ///
-/// `http`もしくは`https`で始まることを保証する
+/// `http`もしくは`https`で始まり、ホストも存在することを保証する
 #[derive(Debug, Clone, Deserialize, Serialize, PartialEq)]
-#[serde(transparent)]
-pub struct ResourceUri(#[serde(with = "uri_serde")] Uri);
+#[serde(try_from = "Url", into = "Url")]
+pub struct ResourceUri(Url);
 
 impl ResourceUri {
     /// `ResourceUri`は生成時にホストが存在することを確認しているので安全
     pub fn host(&self) -> &str {
-        self.0.host().unwrap()
+        self.0.host_str().unwrap()
     }
-    /// `ResourceUri`は`http`か`https`であることを確認しているので安全
-    pub fn scheme(&self) -> &Scheme {
-        self.0.scheme().unwrap()
+    pub fn scheme(&self) -> &str {
+        self.0.scheme()
+    }
+
+    pub fn set_path(&mut self, path: &str) -> &mut Self {
+        self.0.set_path(path);
+        self
+    }
+
+    pub fn set_query(&mut self, query: &str) -> &mut Self {
+        self.0.set_query(query.into());
+        self
+    }
+
+    pub fn clear_query(&mut self) -> &mut Self {
+        self.0.set_query(None);
+        self
+    }
+
+    pub fn set_fragment(&mut self, fragment: &str) -> &mut Self {
+        self.0.set_fragment(fragment.into());
+        self
+    }
+
+    pub fn clear_fragment(&mut self) -> &mut Self {
+        self.0.set_fragment(None);
+        self
     }
 }
 
 #[derive(Debug, thiserror::Error, PartialEq)]
 pub enum ResourceUriError {
-    /// Uriとして不正
-    #[error("invalid uri")]
-    InvalidUri,
-    /// スキーマが存在しない
+    /// Urlとして不正
+    #[error("invalid url")]
+    InvalidUrl,
+    /// スキーマが存在しない。一応用意してあるが`Url`のため起きないはず
     #[error("missing schema")]
     MissingSchema,
     /// `http`か`https`でない
@@ -35,106 +59,71 @@ pub enum ResourceUriError {
     /// schemaがありホストがないのは通常`InvalidUri`だが念のため存在している
     #[error("missing host")]
     MissingHost,
+    /// Authorityにユーザ名やパスワードが含まれている
+    #[error("invalid authority")]
+    InvalidAuthority,
 }
 
-fn valid_resource_uri(uri: &Uri) -> Result<(), ResourceUriError> {
-    match uri.scheme() {
-        Some(s) => {
-            let is_http_or_https = *s == Scheme::HTTP || *s == Scheme::HTTPS;
-            if !is_http_or_https {
-                return Err(ResourceUriError::InvalidSchema);
-            }
-        }
-        _ => return Err(ResourceUriError::MissingSchema),
+fn valid_resource_uri(url: Url) -> Result<ResourceUri, (ResourceUriError, Url)> {
+    const HTTPS: &str = "https";
+    const HTTP: &str = "http";
+
+    match url.scheme() {
+        HTTPS | HTTP => {}
+        "" => return Err((ResourceUriError::MissingSchema, url)),
+        _ => return Err((ResourceUriError::InvalidSchema, url)),
     }
 
-    match uri.host() {
-        Some(_) => {}
-        _ => return Err(ResourceUriError::MissingHost),
+    if !url.has_host() {
+        return Err((ResourceUriError::MissingHost, url));
     }
 
-    Ok(())
+    let has_password = url.password().is_some();
+    let has_username = !url.username().is_empty();
+    if has_password || has_username {
+        return Err((ResourceUriError::InvalidAuthority, url));
+    }
+
+    Ok(ResourceUri(url))
 }
 
 impl Deref for ResourceUri {
-    type Target = Uri;
+    type Target = Url;
     fn deref(&self) -> &Self::Target {
         &self.0
     }
 }
 
-impl AsRef<Uri> for ResourceUri {
-    fn as_ref(&self) -> &Uri {
+impl AsRef<Url> for ResourceUri {
+    fn as_ref(&self) -> &Url {
         &self.0
     }
 }
 
-impl TryFrom<Uri> for ResourceUri {
+impl TryFrom<Url> for ResourceUri {
     type Error = ResourceUriError;
-
-    fn try_from(uri: Uri) -> Result<Self, Self::Error> {
-        match valid_resource_uri(&uri) {
-            Ok(_) => Ok(ResourceUri(uri)),
-            Err(e) => Err(e),
-        }
+    fn try_from(value: Url) -> Result<Self, Self::Error> {
+        valid_resource_uri(value).map_err(|(err, _)| err)
     }
 }
 
 impl FromStr for ResourceUri {
     type Err = ResourceUriError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let uri = s.parse::<Uri>().map_err(|_| ResourceUriError::InvalidUri)?;
-        uri.try_into()
+        let url = Url::from_str(s).map_err(|_| ResourceUriError::InvalidUrl)?;
+        url.try_into()
+    }
+}
+
+impl From<ResourceUri> for Url {
+    fn from(value: ResourceUri) -> Self {
+        value.0
     }
 }
 
 impl std::fmt::Display for ResourceUri {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.0)
-    }
-}
-
-mod uri_serde {
-    use super::valid_resource_uri;
-    use axum::http::Uri;
-    use serde::{
-        de::{self, Visitor},
-        Deserializer, Serializer,
-    };
-    pub(super) fn serialize<S>(uri: &Uri, ser: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
-    {
-        ser.collect_str(&uri)
-    }
-
-    struct ResourceUriVisitor;
-
-    impl<'de> Visitor<'de> for ResourceUriVisitor {
-        type Value = Uri;
-
-        fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
-            formatter.write_str("resource uri")
-        }
-
-        fn visit_str<E>(self, v: &str) -> Result<Self::Value, E>
-        where
-            E: serde::de::Error,
-        {
-            let uri = v.parse::<Uri>().map_err(|e| de::Error::custom(e))?;
-
-            match valid_resource_uri(&uri) {
-                Ok(_) => Ok(uri),
-                Err(e) => Err(de::Error::custom(e)),
-            }
-        }
-    }
-
-    pub(super) fn deserialize<'de, D>(de: D) -> Result<Uri, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        de.deserialize_str(ResourceUriVisitor)
     }
 }
 
@@ -154,7 +143,7 @@ mod tests {
         let uri = "https://";
         assert_eq!(
             uri.parse::<ResourceUri>().unwrap_err(),
-            ResourceUriError::InvalidUri
+            ResourceUriError::InvalidUrl
         );
     }
 
@@ -163,7 +152,7 @@ mod tests {
         let uri = "/foo/bar";
         assert_eq!(
             uri.parse::<ResourceUri>().unwrap_err(),
-            ResourceUriError::MissingSchema
+            ResourceUriError::InvalidUrl
         );
     }
 
@@ -177,16 +166,6 @@ mod tests {
     }
 
     #[test]
-    #[ignore]
-    fn no_lost_date() {
-        let s = "https://www.w3.org/ns/activitystreams#Public";
-
-        let aa = Uri::from_str(s).unwrap();
-
-        assert_eq!(s, aa.to_string())
-    }
-
-    #[test]
     fn serialize_resource_uri() {
         let original = "https://example.com/foo/bar";
         let acct = ResourceUri::from_str(original).unwrap();
@@ -197,12 +176,19 @@ mod tests {
     }
 
     #[test]
-    fn deserialize_resource_uri() {
+    fn deserialize_valid_resource_uri() {
         let original = r#""https://example.com/foo/bar""#;
         let deserialized = serde_json::from_str::<ResourceUri>(original).unwrap();
 
-        let expected = ResourceUri(Uri::from_static("https://example.com/foo/bar"));
+        let expected = "https://example.com/foo/bar".parse().unwrap();
 
         assert_eq!(deserialized, expected);
+    }
+
+    #[test]
+    #[should_panic]
+    fn deserialize_invalid_resource_uri() {
+        let original = r#""ftp://example.com/foo/bar""#;
+        serde_json::from_str::<ResourceUri>(original).unwrap();
     }
 }

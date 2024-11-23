@@ -1,6 +1,5 @@
 use apub_activitypub::model::activity::CreateNote;
 use apub_shared::{config::AppConfig, model::resource_uri::ResourceUri};
-use axum::http::uri;
 
 use crate::model::rsa_key::RsaSingingKey;
 
@@ -18,28 +17,22 @@ pub trait ActivityRepository: Send + Sync {
 
 pub fn generate_note_uri(config: &AppConfig) -> ResourceUri {
     let id = uuid::Uuid::now_v7();
-    let host_uri = config.host_uri();
+    let note_uri = config
+        .host_uri()
+        .clone()
+        .set_path(&format!("/notes/{}", id))
+        .to_owned();
 
-    let note_uri = uri::Builder::new()
-        .scheme(host_uri.scheme().clone())
-        .authority(host_uri.host())
-        .path_and_query(format!("/notes/{}", id))
-        .build()
-        .unwrap();
-
-    ResourceUri::try_from(note_uri).unwrap()
+    note_uri
 }
 
-pub fn generate_acitivity_uri(config: &AppConfig) -> ResourceUri {
+pub fn generate_activity_uri(config: &AppConfig) -> ResourceUri {
     let id = uuid::Uuid::now_v7();
-    let host_uri = config.host_uri();
+    let activity_uri = config
+        .host_uri()
+        .clone()
+        .set_path(&format!("/activities/{}", id))
+        .to_owned();
 
-    let note_uri = uri::Builder::new()
-        .scheme(host_uri.scheme().clone())
-        .authority(host_uri.host())
-        .path_and_query(format!("/activities/{}", id))
-        .build()
-        .unwrap();
-
-    ResourceUri::try_from(note_uri).unwrap()
+    activity_uri
 }

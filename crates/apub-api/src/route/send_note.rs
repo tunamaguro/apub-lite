@@ -1,7 +1,7 @@
 use apub_activitypub::model::{activity::Create, note::Note};
 use apub_kernel::{
     model::rsa_key::RsaVerifyingKey,
-    repository::activity::{generate_acitivity_uri, generate_note_uri},
+    repository::activity::{generate_activity_uri, generate_note_uri},
 };
 use apub_registry::{AppRegistry, AppRegistryExt};
 use apub_shared::model::resource_uri::ResourceUri;
@@ -68,7 +68,7 @@ pub async fn send_note(
 
     tracing::info!(note=?note);
 
-    let create_uri = generate_acitivity_uri(&config);
+    let create_uri = generate_activity_uri(&config);
     let create = Create::builder()
         .object(note)
         .actor(user.user_uri(&config).into())
