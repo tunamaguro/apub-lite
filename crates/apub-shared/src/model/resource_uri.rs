@@ -50,9 +50,6 @@ pub enum ResourceUriError {
     /// Urlとして不正
     #[error("invalid url")]
     InvalidUrl,
-    /// スキーマが存在しない。一応用意してあるが`Url`のため起きないはず
-    #[error("missing schema")]
-    MissingSchema,
     /// `http`か`https`でない
     #[error("expected `http` or `https`")]
     InvalidSchema,
@@ -70,7 +67,6 @@ fn valid_resource_uri(url: Url) -> Result<ResourceUri, (ResourceUriError, Url)> 
 
     match url.scheme() {
         HTTPS | HTTP => {}
-        "" => return Err((ResourceUriError::MissingSchema, url)),
         _ => return Err((ResourceUriError::InvalidSchema, url)),
     }
 
@@ -131,6 +127,7 @@ impl std::fmt::Display for ResourceUri {
 mod tests {
     use super::*;
     use pretty_assertions::assert_eq;
+    use rstest::rstest;
 
     #[test]
     fn valid_resource_uri() {
@@ -138,31 +135,14 @@ mod tests {
         assert!(uri.parse::<ResourceUri>().is_ok());
     }
 
+    #[rstest]
     #[test]
-    fn missing_host_uri() {
-        let uri = "https://";
-        assert_eq!(
-            uri.parse::<ResourceUri>().unwrap_err(),
-            ResourceUriError::InvalidUrl
-        );
-    }
-
-    #[test]
-    fn missing_schema_uri() {
-        let uri = "/foo/bar";
-        assert_eq!(
-            uri.parse::<ResourceUri>().unwrap_err(),
-            ResourceUriError::InvalidUrl
-        );
-    }
-
-    #[test]
-    fn invalid_schema_uri() {
-        let uri = "s3://foo/bar";
-        assert_eq!(
-            uri.parse::<ResourceUri>().unwrap_err(),
-            ResourceUriError::InvalidSchema
-        );
+    #[case("https://", ResourceUriError::InvalidUrl)]
+    #[case("/foo/bar", ResourceUriError::InvalidUrl)]
+    #[case("s3://foo/bar", ResourceUriError::InvalidSchema)]
+    #[case("https://foo:password@example.com", ResourceUriError::InvalidAuthority)]
+    fn invalid_resource_uri(#[case] uri: &str, #[case] err: ResourceUriError) {
+        assert_eq!(uri.parse::<ResourceUri>().unwrap_err(), err)
     }
 
     #[test]
