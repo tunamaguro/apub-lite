@@ -21,7 +21,9 @@ pub enum CreateKind {
 
 /// Create activity
 ///
-/// See https://www.w3.org/TR/activitystreams-vocabulary/#dfn-create
+/// See
+/// - https://www.w3.org/TR/activitypub/#create-activity-outbox 
+/// - https://www.w3.org/TR/activitystreams-vocabulary/#dfn-create
 #[skip_serializing_none]
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, TypedBuilder)]
 #[serde(rename_all = "camelCase")]

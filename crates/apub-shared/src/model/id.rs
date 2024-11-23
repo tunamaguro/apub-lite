@@ -7,7 +7,7 @@ use crate::model::resource_url::ResourceUrl;
 use super::resource_url::ResourceUrlError;
 
 /// ある特定のリソースを示す`Url``
-#[derive(Debug, Clone, Deserialize, Serialize, PartialEq)]
+#[derive(Debug, Clone, Deserialize, Serialize, PartialEq, Eq, PartialOrd, Ord)]
 #[serde(transparent)]
 pub struct UrlId<T> {
     resource_url: ResourceUrl,

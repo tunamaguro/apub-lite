@@ -1,3 +1,4 @@
+use apub_shared::model::id::UrlId;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
@@ -16,6 +17,25 @@ impl<T> From<T> for SingleOrMany<T> {
 impl<T> From<Vec<T>> for SingleOrMany<T> {
     fn from(value: Vec<T>) -> Self {
         Self::Many(value)
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum UrlOrObj<T> {
+    Url(UrlId<T>),
+    Obj(T),
+}
+
+impl<T> From<T> for UrlOrObj<T> {
+    fn from(value: T) -> Self {
+        Self::Obj(value)
+    }
+}
+
+impl<T> From<UrlId<T>> for UrlOrObj<T> {
+    fn from(value: UrlId<T>) -> Self {
+        Self::Url(value)
     }
 }
 
