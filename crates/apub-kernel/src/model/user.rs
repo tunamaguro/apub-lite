@@ -1,8 +1,6 @@
 use apub_activitypub::model::{context::Context, person::Person};
-use apub_shared::{
-    config::AppConfig,
-    model::{id::Id, resource_url::ResourceUrl},
-};
+use apub_config::AppConfig;
+use apub_shared::model::{id::Id, resource_url::ResourceUrl};
 use typed_builder::TypedBuilder;
 
 use super::rsa_key::KeyType;

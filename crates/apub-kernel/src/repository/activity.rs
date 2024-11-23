@@ -1,5 +1,6 @@
 use apub_activitypub::model::activity::CreateNote;
-use apub_shared::{config::AppConfig, model::resource_url::ResourceUrl};
+use apub_config::AppConfig;
+use apub_shared::model::resource_url::ResourceUrl;
 
 use crate::model::rsa_key::RsaSingingKey;
 

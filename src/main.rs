@@ -1,9 +1,9 @@
 use std::net::{Ipv4Addr, SocketAddr};
 
 use apub_adapter::persistence::postgres::PostgresDb;
+use apub_config::AppConfig;
 use apub_kernel::model::user::CreateUser;
 use apub_registry::{AppRegistry, AppRegistryExt};
-use apub_shared::config::AppConfig;
 use axum::{http::StatusCode, routing, Router};
 use tokio::net::TcpListener;
 

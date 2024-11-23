@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 use serde_with::skip_serializing_none;
 use typed_builder::TypedBuilder;
 
-use crate::shared::SingleOrMany;
+use crate::{core::object::Object, shared::SingleOrMany};
 
 use super::context::Context;
 
@@ -48,6 +48,10 @@ impl Note {
         });
         &PUBLIC
     }
+}
+
+impl Object for Note {
+    type Kind = NoteKind;
 }
 
 #[cfg(test)]

@@ -1,10 +1,10 @@
 use std::sync::Arc;
 
 use apub_adapter::persistence::{http_client::HttpClient, postgres::PostgresDb};
+use apub_config::AppConfig;
 use apub_kernel::repository::{
     activity::ActivityRepository, rsa_key::RsaKeyRepository, user::UserRepository,
 };
-use apub_shared::config::AppConfig;
 
 #[derive(Clone)]
 pub struct AppRegistry {

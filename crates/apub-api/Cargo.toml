@@ -1,10 +1,11 @@
 [package]
+edition = "2021"
 name = "apub-api"
 version = "0.1.0"
-edition = "2021"
 
 [dependencies]
 apub-activitypub = { workspace = true }
+apub-config = { workspace = true }
 apub-kernel = { workspace = true }
 apub-registry = { workspace = true }
 apub-shared = { workspace = true }
