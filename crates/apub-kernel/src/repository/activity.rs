@@ -1,4 +1,4 @@
-use apub_activitypub::model::activity::CreateNote;
+use apub_activitypub::model::activity::CreatePersonNote;
 use apub_config::AppConfig;
 use apub_shared::model::resource_url::ResourceUrl;
 
@@ -9,7 +9,7 @@ pub trait ActivityRepository: Send + Sync {
     /// `Create``Note`を`inbox`に送信
     async fn post_note(
         &self,
-        activity: &CreateNote,
+        activity: &CreatePersonNote,
         inbox: &ResourceUrl,
         signer: &RsaSingingKey,
         key_uri: &ResourceUrl,
