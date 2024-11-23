@@ -1,5 +1,5 @@
 use crate::handler::person::{person_handler, PersonError};
-use apub_activitypub::activity_json::ACTIVITY_CONTENT_TYPE;
+use apub_activitypub::shared::activity_json::ACTIVITY_CONTENT_TYPE;
 use apub_registry::AppRegistry;
 use axum::{
     extract::{Path, State},

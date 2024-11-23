@@ -10,5 +10,3 @@ pub trait Object: DeserializeOwned + Serialize {
         Self::Kind::default()
     }
 }
-
-

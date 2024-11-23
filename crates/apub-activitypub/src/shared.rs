@@ -19,12 +19,25 @@ impl<T> From<Vec<T>> for SingleOrMany<T> {
     }
 }
 
+use axum::http::{header, HeaderName, HeaderValue};
+
 pub mod jrd {
-    use axum::http::{header, HeaderName, HeaderValue};
+    use super::*;
     /// `webfinger` SHOULD be served with `application/jrd+json`
     /// See https://datatracker.ietf.org/doc/html/rfc7033#section-10.2
     pub const APPLICATION_JRD_JSON: HeaderValue = HeaderValue::from_static("application/jrd+json");
 
     pub const JRD_CONTENT_TYPE: (HeaderName, HeaderValue) =
         (header::CONTENT_TYPE, APPLICATION_JRD_JSON);
+}
+
+pub mod activity_json {
+    use super::*;
+    /// Activity Streams 2.0 mime type
+    /// See https://www.w3.org/TR/activitystreams-core/#media-type
+    pub const APPLICATION_ACTIVITY_JSON: HeaderValue =
+        HeaderValue::from_static("application/activity+json");
+
+    pub const ACTIVITY_CONTENT_TYPE: (HeaderName, HeaderValue) =
+        (header::CONTENT_TYPE, APPLICATION_ACTIVITY_JSON);
 }
