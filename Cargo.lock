@@ -176,6 +176,8 @@ dependencies = [
  "apub-kernel",
  "apub-shared",
  "axum",
+ "pretty_assertions",
+ "rstest",
  "serde",
  "serde_json",
  "thiserror 2.0.3",
@@ -200,6 +202,8 @@ dependencies = [
 name = "apub-tracing"
 version = "0.1.0"
 dependencies = [
+ "pretty_assertions",
+ "rstest",
  "tracing",
  "tracing-subscriber",
 ]
