@@ -1,4 +1,4 @@
-use apub_shared::model::id::UriId;
+use apub_shared::model::id::UrlId;
 use serde::{Deserialize, Serialize};
 use serde_with::skip_serializing_none;
 use typed_builder::TypedBuilder;
@@ -20,14 +20,14 @@ pub enum CreateKind {
 pub struct Create<T> {
     #[serde(rename = "@context")]
     context: Context,
-    id: UriId<Create<T>>,
+    id: UrlId<Create<T>>,
     #[serde(rename = "type")]
     #[builder(default)]
     kind: CreateKind,
-    actor: UriId<Person>,
+    actor: UrlId<Person>,
     object: T,
     #[builder(default, setter(strip_option))]
-    to: Option<SingleOrVec<UriId<Person>>>,
+    to: Option<SingleOrVec<UrlId<Person>>>,
 }
 
 pub type CreateNote = Create<Note>;

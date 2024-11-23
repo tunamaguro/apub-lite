@@ -1,4 +1,4 @@
-use apub_shared::model::{id::UriId, resource_uri::ResourceUri};
+use apub_shared::model::{id::UrlId, resource_uri::ResourceUri};
 use serde::{Deserialize, Serialize};
 use typed_builder::TypedBuilder;
 
@@ -9,6 +9,6 @@ use super::person::Person;
 #[serde(rename_all = "camelCase")]
 pub struct PublicKeyPem {
     id: ResourceUri,
-    owner: UriId<Person>,
+    owner: UrlId<Person>,
     public_key_pem: String,
 }

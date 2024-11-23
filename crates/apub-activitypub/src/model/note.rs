@@ -1,4 +1,4 @@
-use apub_shared::model::id::UriId;
+use apub_shared::model::id::UrlId;
 use serde::{Deserialize, Serialize};
 use serde_with::skip_serializing_none;
 use typed_builder::TypedBuilder;
@@ -21,7 +21,7 @@ pub enum NoteKind {
 pub struct Note {
     #[serde(rename = "@context")]
     context: Option<Context>,
-    id: Option<UriId<Note>>,
+    id: Option<UrlId<Note>>,
     #[serde(rename = "type")]
     #[builder(setter(!strip_option))]
     kind: NoteKind,
@@ -29,7 +29,7 @@ pub struct Note {
     content: String,
     published: Option<String>,
     to: Option<SingleOrVec<String>>,
-    in_reply_to: Option<UriId<Note>>,
+    in_reply_to: Option<UrlId<Note>>,
 }
 
 #[cfg(test)]

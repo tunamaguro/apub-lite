@@ -6,15 +6,15 @@ use crate::model::resource_uri::ResourceUri;
 
 use super::resource_uri::ResourceUriError;
 
-/// リソースにつけられた`Uri`
+/// ある特定のリソースを示す`Url``
 #[derive(Debug, Clone, Deserialize, Serialize, PartialEq)]
 #[serde(transparent)]
-pub struct UriId<T> {
+pub struct UrlId<T> {
     resource_uri: ResourceUri,
     _marker: PhantomData<T>,
 }
 
-impl<T> Deref for UriId<T> {
+impl<T> Deref for UrlId<T> {
     type Target = ResourceUri;
 
     fn deref(&self) -> &Self::Target {
@@ -22,7 +22,7 @@ impl<T> Deref for UriId<T> {
     }
 }
 
-impl<T> From<ResourceUri> for UriId<T> {
+impl<T> From<ResourceUri> for UrlId<T> {
     fn from(uri: ResourceUri) -> Self {
         Self {
             resource_uri: uri,
@@ -31,13 +31,13 @@ impl<T> From<ResourceUri> for UriId<T> {
     }
 }
 
-impl<T> std::fmt::Display for UriId<T> {
+impl<T> std::fmt::Display for UrlId<T> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.resource_uri)
     }
 }
 
-impl<T> FromStr for UriId<T> {
+impl<T> FromStr for UrlId<T> {
     type Err = ResourceUriError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let uri = s.parse()?;
