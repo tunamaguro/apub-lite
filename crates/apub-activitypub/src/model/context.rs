@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use apub_shared::model::resource_uri::ResourceUrl;
+use apub_shared::model::resource_url::ResourceUrl;
 use serde::{Deserialize, Serialize};
 
 /// ActivityPub Context

@@ -1,7 +1,7 @@
 use crate::persistence::http_client::HttpClient;
 use apub_activitypub::{activity_json::APPLICATION_ACTIVITY_JSON, model::activity::CreateNote};
 use apub_kernel::{model::rsa_key::RsaSingingKey, repository::activity::ActivityRepository};
-use apub_shared::model::resource_uri::ResourceUrl;
+use apub_shared::model::resource_url::ResourceUrl;
 use axum::http::{header, HeaderMap, HeaderName, HeaderValue};
 use base64::{prelude::BASE64_STANDARD, Engine};
 use serde::Serialize;

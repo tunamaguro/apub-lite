@@ -1,4 +1,4 @@
-use apub_shared::model::{id::UrlId, resource_uri::ResourceUrl};
+use apub_shared::model::{id::UrlId, resource_url::ResourceUrl};
 use serde::{Deserialize, Serialize};
 use typed_builder::TypedBuilder;
 

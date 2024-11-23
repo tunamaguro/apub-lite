@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use typed_builder::TypedBuilder;
 
-use apub_shared::model::resource_uri::ResourceUrl;
+use apub_shared::model::resource_url::ResourceUrl;
 
 /// ActivityPub WebFinger
 ///

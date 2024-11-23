@@ -1,4 +1,4 @@
-use apub_shared::model::resource_uri::ResourceUrl;
+use apub_shared::model::resource_url::ResourceUrl;
 
 pub trait Actor {
     fn id(&self) -> &ResourceUrl;

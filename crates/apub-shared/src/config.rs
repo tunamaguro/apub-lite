@@ -1,4 +1,4 @@
-use crate::model::resource_uri::ResourceUrl;
+use crate::model::resource_url::ResourceUrl;
 
 pub struct AppConfig {
     host_uri: ResourceUrl,

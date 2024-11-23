@@ -35,7 +35,7 @@ pub struct Note {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use apub_shared::model::resource_uri::ResourceUrl;
+    use apub_shared::model::resource_url::ResourceUrl;
     use pretty_assertions::assert_eq;
 
     #[test]

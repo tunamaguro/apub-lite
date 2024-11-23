@@ -4,7 +4,7 @@ use apub_kernel::{
     repository::activity::{generate_activity_uri, generate_note_uri},
 };
 use apub_registry::{AppRegistry, AppRegistryExt};
-use apub_shared::model::resource_uri::ResourceUrl;
+use apub_shared::model::resource_url::ResourceUrl;
 use axum::{
     extract::{Query, State},
     http::StatusCode,

@@ -1,7 +1,7 @@
 use apub_activitypub::model::person::Person;
 use apub_shared::{
     config::AppConfig,
-    model::{id::Id, resource_uri::ResourceUrl},
+    model::{id::Id, resource_url::ResourceUrl},
 };
 use typed_builder::TypedBuilder;
 
