@@ -3,7 +3,7 @@ use std::{collections::HashMap, sync::LazyLock};
 use apub_shared::model::resource_url::ResourceUrl;
 use serde::{Deserialize, Serialize};
 
-use super::SingleOrMany;
+use crate::shared::SingleOrMany;
 
 /// ActivityPub Context
 ///

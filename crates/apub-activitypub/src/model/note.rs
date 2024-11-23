@@ -5,7 +5,9 @@ use serde::{Deserialize, Serialize};
 use serde_with::skip_serializing_none;
 use typed_builder::TypedBuilder;
 
-use super::{context::Context, SingleOrMany};
+use crate::shared::SingleOrMany;
+
+use super::context::Context;
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
 pub enum NoteKind {

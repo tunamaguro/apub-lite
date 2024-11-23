@@ -1,5 +1,5 @@
-use apub_activitypub::model::{
-    acct_uri::AcctUri,
+use apub_activitypub::{
+    webfinger::AcctUri,
     webfinger::{WebFinger, WebFingerLink},
 };
 use apub_registry::{AppRegistry, AppRegistryExt};
