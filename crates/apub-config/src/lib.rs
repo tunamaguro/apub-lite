@@ -1,6 +1,5 @@
 use apub_shared::model::resource_url::ResourceUrl;
 
-
 pub struct AppConfig {
     host_uri: ResourceUrl,
 }
