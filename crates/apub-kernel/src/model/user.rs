@@ -1,4 +1,7 @@
-use apub_activitypub::model::{context::Context, person::Person};
+use apub_activitypub::model::{
+    context::Context,
+    person::{Person, PersonUrl},
+};
 use apub_config::AppConfig;
 use apub_shared::model::{id::Id, resource_url::ResourceUrl};
 use typed_builder::TypedBuilder;
@@ -18,13 +21,13 @@ pub struct User {
 
 impl User {
     /// `/users/{username}`
-    pub fn user_uri(&self, config: &AppConfig) -> ResourceUrl {
+    pub fn user_uri(&self, config: &AppConfig) -> PersonUrl {
         let user_uri = config
             .host_uri()
             .clone()
             .set_path(&format!("/users/{}", self.name))
             .to_owned();
-        user_uri
+        user_uri.into()
     }
 
     /// `/users/{username}/inbox`

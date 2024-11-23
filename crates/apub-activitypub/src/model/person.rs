@@ -1,14 +1,18 @@
-use apub_shared::model::resource_url::ResourceUrl;
+use apub_shared::model::{id::UrlId, resource_url::ResourceUrl};
 use serde::{Deserialize, Serialize};
 use typed_builder::TypedBuilder;
 
-use super::{actor::Actor, context::Context, key::PublicKeyPem};
+use crate::core::{actor::Actor, object::Object};
+
+use super::{context::Context, key::PublicKeyPem};
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
 pub enum PersonKind {
     #[default]
     Person,
 }
+
+pub type PersonUrl = UrlId<Person>;
 
 /// Activity Person object  
 ///
@@ -18,7 +22,7 @@ pub enum PersonKind {
 pub struct Person {
     #[serde(rename = "@context")]
     context: Context,
-    id: ResourceUrl,
+    id: UrlId<Person>,
     #[serde(rename = "type")]
     #[builder(default)]
     kind: PersonKind,
@@ -26,13 +30,20 @@ pub struct Person {
     inbox: ResourceUrl,
 }
 
+impl Object for Person {
+    type Kind = PersonKind;
+}
+
 impl Actor for Person {
-    fn id(&self) -> &ResourceUrl {
+    type Item = Self;
+    fn id(&self) -> &UrlId<Self> {
         &self.id
     }
-
     fn inbox(&self) -> &ResourceUrl {
         &self.inbox
+    }
+    fn outbox(&self) -> Option<&ResourceUrl> {
+        None
     }
 }
 
@@ -44,13 +55,22 @@ pub struct SecurityPerson {
     public_key: PublicKeyPem,
 }
 
+impl Object for SecurityPerson {
+    type Kind = PersonKind;
+}
+
 impl Actor for SecurityPerson {
-    fn id(&self) -> &ResourceUrl {
+    type Item = Person;
+    fn id(&self) -> &UrlId<Person> {
         self.person.id()
     }
 
     fn inbox(&self) -> &ResourceUrl {
         self.person.inbox()
+    }
+
+    fn outbox(&self) -> Option<&ResourceUrl> {
+        self.person.outbox()
     }
 }
 

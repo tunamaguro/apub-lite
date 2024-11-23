@@ -1,4 +1,7 @@
-use apub_activitypub::model::{actor::Actor, key::PublicKeyPem, person::SecurityPerson};
+use apub_activitypub::{
+    core::actor::Actor as _,
+    model::{key::PublicKeyPem, person::SecurityPerson},
+};
 use apub_kernel::model::rsa_key::RsaVerifyingKey;
 use apub_registry::{AppRegistry, AppRegistryExt};
 use axum::{http::StatusCode, response::IntoResponse, Json};
@@ -35,7 +38,7 @@ pub async fn person_handler(
     let user_key_id = user.user_key_uri::<RsaVerifyingKey>(&config);
 
     let person = user.to_person(&config);
-    let person_id = person.id().clone().into();
+    let person_id = person.id().clone();
     let public_key_pem = PublicKeyPem::builder()
         .public_key_pem(public_key.to_pkcs8()?)
         .id(user_key_id)

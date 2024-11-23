@@ -69,7 +69,7 @@ pub async fn send_note(
     let create_uri = generate_activity_uri(&config);
     let create = Create::builder()
         .object(note)
-        .actor(user.user_uri(&config).into())
+        .actor(user.user_uri(&config))
         .context(Context::activity_context_url().clone().into())
         .id(create_uri.into())
         .build();

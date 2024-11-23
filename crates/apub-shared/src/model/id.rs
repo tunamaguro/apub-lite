@@ -31,6 +31,12 @@ impl<T> From<ResourceUrl> for UrlId<T> {
     }
 }
 
+impl<T> From<UrlId<T>> for ResourceUrl {
+    fn from(value: UrlId<T>) -> Self {
+        value.resource_url
+    }
+}
+
 impl<T> std::fmt::Display for UrlId<T> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.resource_url)

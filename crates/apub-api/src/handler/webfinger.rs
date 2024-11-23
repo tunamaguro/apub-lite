@@ -38,12 +38,12 @@ pub async fn webfinger_handler(
     let link = WebFingerLink::builder()
         .rel("self".into())
         .kind("application/activity+json".into())
-        .href(user.user_uri(&config))
+        .href(user.user_uri(&config).into())
         .build();
 
     let w = WebFinger::builder()
         .subject(acct_uri.to_string())
-        .aliases(vec![user.user_uri(&config)])
+        .aliases(vec![user.user_uri(&config).into()])
         .links(vec![link])
         .build();
 
