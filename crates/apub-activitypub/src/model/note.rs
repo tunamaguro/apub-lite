@@ -1,4 +1,6 @@
-use apub_shared::model::id::UrlId;
+use std::sync::LazyLock;
+
+use apub_shared::model::{id::UrlId, resource_url::ResourceUrl};
 use serde::{Deserialize, Serialize};
 use serde_with::skip_serializing_none;
 use typed_builder::TypedBuilder;
@@ -28,8 +30,22 @@ pub struct Note {
     #[builder(setter(!strip_option))]
     content: String,
     published: Option<String>,
-    to: Option<SingleOrVec<String>>,
+    to: Option<SingleOrVec<ResourceUrl>>,
     in_reply_to: Option<UrlId<Note>>,
+}
+
+impl Note {
+    /// Return public address  
+    ///
+    /// See https://w3c.github.io/activitypub/#public-addressing
+    pub fn public_address() -> &'static ResourceUrl {
+        static PUBLIC: LazyLock<ResourceUrl> = LazyLock::new(|| {
+            "https://www.w3.org/ns/activitystreams#Public"
+                .parse::<ResourceUrl>()
+                .unwrap()
+        });
+        &PUBLIC
+    }
 }
 
 #[cfg(test)]

@@ -1,4 +1,4 @@
-use apub_activitypub::model::person::Person;
+use apub_activitypub::model::{context::Context, person::Person};
 use apub_shared::{
     config::AppConfig,
     model::{id::Id, resource_url::ResourceUrl},
@@ -46,7 +46,7 @@ impl User {
         let key_uri = config
             .host_uri()
             .clone()
-            .set_path(&format!("/users/{}/", self.name))
+            .set_path(&format!("/users/{}", self.name))
             .set_fragment(T::key_type())
             .to_owned();
         key_uri
@@ -58,7 +58,7 @@ impl User {
             .id(self.user_uri(config))
             .preferred_username(self.name.clone())
             .inbox(self.inbox_uri(config))
-            .context(vec!["https://www.w3.org/ns/activitystreams".parse().unwrap()].into())
+            .context(Context::activity_context_url().clone().into())
             .build()
     }
 }

@@ -1,4 +1,4 @@
-use apub_activitypub::model::{activity::Create, note::Note};
+use apub_activitypub::model::{activity::Create, context::Context, note::Note};
 use apub_kernel::{
     model::rsa_key::RsaVerifyingKey,
     repository::activity::{generate_activity_uri, generate_note_uri},
@@ -56,14 +56,12 @@ pub async fn send_note(
         .id(note_uri.into())
         .content(format!("<p>{}</p>", query.message))
         .in_reply_to(
-            "https://activitypub.academy/@brauta_orgleoss/113521016036162806"
+            "https://activitypub.academy/@dodatus_dranapat/113530116833625285"
                 .parse::<ResourceUrl>()
                 .unwrap()
                 .into(),
         )
-        .to("https://www.w3.org/ns/activitystreams#Public"
-            .to_string()
-            .into())
+        .to(Note::public_address().clone().into())
         .build();
 
     tracing::info!(note=?note);
@@ -72,12 +70,7 @@ pub async fn send_note(
     let create = Create::builder()
         .object(note)
         .actor(user.user_uri(&config).into())
-        .context(
-            "https://www.w3.org/ns/activitystreams"
-                .parse::<ResourceUrl>()
-                .unwrap()
-                .into(),
-        )
+        .context(Context::activity_context_url().clone().into())
         .id(create_uri.into())
         .build();
 

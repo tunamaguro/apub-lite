@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, sync::LazyLock};
 
 use apub_shared::model::resource_url::ResourceUrl;
 use serde::{Deserialize, Serialize};
@@ -11,6 +11,30 @@ use serde::{Deserialize, Serialize};
 pub enum Context {
     Many(Vec<ContextInner>),
     Single(ContextInner),
+}
+
+impl Context {
+    pub fn activity_context_url() -> &'static ContextInner {
+        static ACTIVITY_CONTEXT: LazyLock<ContextInner> = LazyLock::new(|| {
+            let context_url = "https://www.w3.org/ns/activitystreams"
+                .parse::<ResourceUrl>()
+                .unwrap();
+            ContextInner::Uri(context_url)
+        });
+        &ACTIVITY_CONTEXT
+    }
+}
+
+impl From<ContextInner> for Context {
+    fn from(value: ContextInner) -> Self {
+        Context::Single(value)
+    }
+}
+
+impl From<Vec<ContextInner>> for Context {
+    fn from(value: Vec<ContextInner>) -> Self {
+        Context::Many(value)
+    }
 }
 
 impl From<ResourceUrl> for Context {
