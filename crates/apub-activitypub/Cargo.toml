@@ -6,6 +6,7 @@ version = "0.1.0"
 [dependencies]
 apub-shared = { workspace = true }
 
+async-trait = { workspace = true }
 axum = { workspace = true }
 
 serde = { workspace = true }

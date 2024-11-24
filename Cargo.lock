@@ -73,6 +73,7 @@ name = "apub-activitypub"
 version = "0.1.0"
 dependencies = [
  "apub-shared",
+ "async-trait",
  "axum",
  "pretty_assertions",
  "rstest",

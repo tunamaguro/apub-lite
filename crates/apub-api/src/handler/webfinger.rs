@@ -27,12 +27,12 @@ pub async fn webfinger_handler(
     registry: &AppRegistry,
 ) -> Result<impl IntoResponse, WebFingerError> {
     let config = registry.config();
-    if config.host_uri().host() != acct_uri.host {
+    if config.host_uri().host() != acct_uri.host() {
         return Err(WebFingerError::OtherDomain);
     }
     let user = registry
         .user_repository()
-        .find_by_name(&acct_uri.user)
+        .find_by_name(acct_uri.user())
         .await?;
 
     let link = WebFingerLink::builder()

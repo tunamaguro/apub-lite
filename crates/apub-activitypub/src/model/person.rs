@@ -1,5 +1,6 @@
 use apub_shared::model::{id::UrlId, resource_url::ResourceUrl};
 use serde::{Deserialize, Serialize};
+use serde_with::skip_serializing_none;
 use typed_builder::TypedBuilder;
 
 use crate::core::{actor::Actor, object::Object};
@@ -17,6 +18,7 @@ pub type PersonUrl = UrlId<Person>;
 /// Activity Person object  
 ///
 /// See https://www.w3.org/ns/activitystreams#Person
+#[skip_serializing_none]
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, TypedBuilder)]
 #[serde(rename_all = "camelCase")]
 pub struct Person {
@@ -28,6 +30,8 @@ pub struct Person {
     kind: PersonKind,
     preferred_username: String,
     inbox: ResourceUrl,
+    #[builder(default)]
+    shared_inbox: Option<ResourceUrl>,
 }
 
 impl Object for Person {

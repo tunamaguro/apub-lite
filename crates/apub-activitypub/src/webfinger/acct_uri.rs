@@ -17,8 +17,18 @@ use serde::{
 /// See https://datatracker.ietf.org/doc/html/rfc7565
 #[derive(Debug, PartialEq, Clone)]
 pub struct AcctUri {
-    pub host: String,
-    pub user: String,
+    host: String,
+    user: String,
+}
+
+impl AcctUri {
+    pub fn host(&self) -> &str {
+        &self.host
+    }
+
+    pub fn user(&self) -> &str {
+        &self.user
+    }
 }
 
 impl fmt::Display for AcctUri {
