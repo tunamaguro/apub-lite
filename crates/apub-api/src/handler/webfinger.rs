@@ -2,6 +2,7 @@ use apub_activitypub::{
     webfinger::AcctUri,
     webfinger::{WebFinger, WebFingerLink},
 };
+use apub_kernel::prelude::*;
 use apub_registry::{AppRegistry, AppRegistryExt};
 use axum::{http::StatusCode, response::IntoResponse, Json};
 

@@ -14,4 +14,8 @@ impl AppConfig {
     pub fn host_uri(&self) -> &ResourceUrl {
         &self.host_uri
     }
+
+    pub fn shared_inbox(&self) -> ResourceUrl {
+        self.host_uri.clone().set_path("/inbox").to_owned()
+    }
 }

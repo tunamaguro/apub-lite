@@ -2,7 +2,7 @@ use apub_activitypub::{
     core::actor::Actor as _,
     model::{key::PublicKeyPem, person::SecurityPerson},
 };
-use apub_kernel::model::rsa_key::RsaVerifyingKey;
+use apub_kernel::{model::rsa_key::RsaVerifyingKey, prelude::*};
 use apub_registry::{AppRegistry, AppRegistryExt};
 use axum::{http::StatusCode, response::IntoResponse, Json};
 
@@ -31,7 +31,7 @@ pub async fn person_handler(
 
     let public_key = registry
         .rsa_key_repository()
-        .find_public_key_or_generate(&user.id)
+        .find_public_key(&user.id)
         .await?;
 
     let config = registry.config();

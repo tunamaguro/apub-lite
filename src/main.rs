@@ -65,6 +65,7 @@ async fn init_registry() -> AppRegistry {
 }
 
 async fn seed_db(registry: &AppRegistry) -> anyhow::Result<()> {
+    use apub_kernel::prelude::*;
     let user_repo = registry.user_repository();
 
     user_repo
