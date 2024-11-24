@@ -22,6 +22,12 @@ impl Context {
     }
 }
 
+impl Default for Context {
+    fn default() -> Self {
+        Self::activity_context_url().clone().into()
+    }
+}
+
 impl From<ResourceUrl> for Context {
     fn from(value: ResourceUrl) -> Self {
         Self::Single(value.into())

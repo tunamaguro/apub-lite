@@ -1,4 +1,4 @@
-use apub_activitypub::model::{context::Context, activity::CreatePersonNote, note::Note};
+use apub_activitypub::model::{activity::CreatePersonNote, context::Context, note::Note};
 use apub_kernel::{
     model::rsa_key::RsaVerifyingKey,
     repository::activity::{generate_activity_uri, generate_note_uri},

@@ -55,6 +55,13 @@ pub struct SecurityPerson {
     public_key: PublicKeyPem,
 }
 
+impl std::ops::Deref for SecurityPerson {
+    type Target = Person;
+    fn deref(&self) -> &Self::Target {
+        &self.person
+    }
+}
+
 impl Object for SecurityPerson {
     type Kind = PersonKind;
 }
@@ -68,7 +75,6 @@ impl Actor for SecurityPerson {
     fn inbox(&self) -> &ResourceUrl {
         self.person.inbox()
     }
-
     fn outbox(&self) -> Option<&ResourceUrl> {
         self.person.outbox()
     }
