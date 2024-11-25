@@ -1,7 +1,5 @@
 use crate::persistence::http_client::HttpClient;
-use apub_activitypub::{
-    model::activity::CreatePersonNote, shared::activity_json::APPLICATION_ACTIVITY_JSON,
-};
+use apub_activitypub::shared::activity_json::APPLICATION_ACTIVITY_JSON;
 use apub_kernel::{model::rsa_key::RsaSingingKey, repository::activity::ActivityRepository};
 use apub_shared::model::resource_url::ResourceUrl;
 use axum::http::{header, HeaderMap, HeaderName, HeaderValue};
@@ -10,7 +8,7 @@ use serde::Serialize;
 use sha2::{Digest, Sha256};
 
 /// Activityを署名して送信する
-async fn post_activity<T: Serialize + Sync>(
+async fn post_activity<T: Serialize>(
     client: &HttpClient,
     activity: &T,
     inbox: &ResourceUrl,
@@ -80,9 +78,9 @@ async fn post_activity<T: Serialize + Sync>(
 #[async_trait::async_trait]
 impl ActivityRepository for HttpClient {
     #[tracing::instrument(skip(self, activity, signer))]
-    async fn post_note(
+    async fn post_activity<T: Serialize + Sync>(
         &self,
-        activity: &CreatePersonNote,
+        activity: &T,
         inbox: &ResourceUrl,
         signer: &RsaSingingKey,
         key_uri: &ResourceUrl,

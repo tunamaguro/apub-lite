@@ -9,6 +9,7 @@ export RUST_BACKTRACE := "1"
 
 alias f:= format
 alias l:= lint
+alias lf:= lint-fix
 alias r:= ready
 
 
@@ -24,7 +25,11 @@ format:
 
 # Run clippy
 lint:
-    cargo clippy --all-targets --all-features
+    cargo clippy --all-targets --all-features --fix
+
+# Fix clippy errors if dirty or staged
+lint-fix:
+    cargo clippy --all-targets --all-features --fix --allow-dirty --allow-staged
 
 # Fix clippy error
 fix:
