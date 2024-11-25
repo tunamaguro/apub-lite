@@ -6,7 +6,7 @@ use url::Url;
 /// リソースを示す`Url`
 ///
 /// `http`もしくは`https`で始まり、ホストも存在することを保証する
-#[derive(Debug, Clone, Deserialize, Serialize, PartialEq)]
+#[derive(Debug, Clone, Deserialize, Serialize, PartialEq, Eq, PartialOrd, Ord)]
 #[serde(try_from = "Url", into = "Url")]
 pub struct ResourceUrl(Url);
 

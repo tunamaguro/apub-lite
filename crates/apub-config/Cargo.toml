@@ -1,0 +1,7 @@
+[package]
+edition = "2021"
+name = "apub-config"
+version = "0.1.0"
+
+[dependencies]
+apub-shared = { workspace = true }

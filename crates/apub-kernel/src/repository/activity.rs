@@ -1,18 +1,38 @@
-use apub_activitypub::model::activity::CreateNote;
-use apub_shared::{config::AppConfig, model::resource_url::ResourceUrl};
+use apub_activitypub::model::activity::CreatePersonNote;
+use apub_config::AppConfig;
+use apub_shared::model::resource_url::ResourceUrl;
+use serde::{de::DeserializeOwned, Serialize};
 
 use crate::model::rsa_key::RsaSingingKey;
 
 #[async_trait::async_trait]
 pub trait ActivityRepository: Send + Sync {
-    /// `Create``Note`を`inbox`に送信
-    async fn post_note(
+    /// Activityに署名して`inbox`に`post`する
+    async fn post_activity<T: Serialize + Sync>(
         &self,
-        activity: &CreateNote,
+        activity: &T,
         inbox: &ResourceUrl,
         signer: &RsaSingingKey,
         key_uri: &ResourceUrl,
     ) -> anyhow::Result<()>;
+    /// reqに署名してGetリクエストする
+    async fn get_activity<T: DeserializeOwned>(
+        &self,
+        req: &ResourceUrl,
+        signer: &RsaSingingKey,
+        key_uri: &ResourceUrl,
+    ) -> anyhow::Result<T>;
+
+    /// `Create``Note`を`inbox`に送信
+    async fn post_note(
+        &self,
+        activity: &CreatePersonNote,
+        inbox: &ResourceUrl,
+        signer: &RsaSingingKey,
+        key_uri: &ResourceUrl,
+    ) -> anyhow::Result<()> {
+        self.post_activity(activity, inbox, signer, key_uri).await
+    }
 }
 
 pub fn generate_note_uri(config: &AppConfig) -> ResourceUrl {

@@ -1,40 +1,41 @@
 use std::sync::Arc;
 
 use apub_adapter::persistence::{http_client::HttpClient, postgres::PostgresDb};
+use apub_config::AppConfig;
 use apub_kernel::repository::{
     activity::ActivityRepository, rsa_key::RsaKeyRepository, user::UserRepository,
 };
-use apub_shared::config::AppConfig;
 
 #[derive(Clone)]
 pub struct AppRegistry {
-    user_repository: Arc<dyn UserRepository>,
-    rsa_key_repository: Arc<dyn RsaKeyRepository>,
-    activity_repository: Arc<dyn ActivityRepository>,
+    postgres: Arc<PostgresDb>,
+    http_client: Arc<HttpClient>,
     config: Arc<AppConfig>,
 }
 
 impl AppRegistry {
     pub fn new_postgres(pool: PostgresDb, config: AppConfig) -> Self {
         AppRegistry {
-            user_repository: Arc::new(pool.clone()),
-            rsa_key_repository: Arc::new(pool.clone()),
-            activity_repository: Arc::new(HttpClient::new()),
+            postgres: Arc::new(pool),
+            http_client: Arc::new(HttpClient::new()),
             config: Arc::new(config),
         }
     }
 }
 
 impl AppRegistryExt for AppRegistry {
-    fn user_repository(&self) -> Arc<dyn UserRepository> {
-        self.user_repository.clone()
+    type UserRepo = PostgresDb;
+    type RsaRepo = PostgresDb;
+    type ActivityRepo = HttpClient;
+    fn user_repository(&self) -> Arc<Self::UserRepo> {
+        self.postgres.clone()
     }
-    fn rsa_key_repository(&self) -> Arc<dyn RsaKeyRepository> {
-        self.rsa_key_repository.clone()
+    fn rsa_key_repository(&self) -> Arc<Self::RsaRepo> {
+        self.postgres.clone()
     }
 
-    fn activity_repository(&self) -> Arc<dyn ActivityRepository> {
-        self.activity_repository.clone()
+    fn activity_repository(&self) -> Arc<Self::ActivityRepo> {
+        self.http_client.clone()
     }
 
     fn config(&self) -> Arc<AppConfig> {
@@ -43,8 +44,11 @@ impl AppRegistryExt for AppRegistry {
 }
 
 pub trait AppRegistryExt {
-    fn user_repository(&self) -> Arc<dyn UserRepository>;
-    fn rsa_key_repository(&self) -> Arc<dyn RsaKeyRepository>;
-    fn activity_repository(&self) -> Arc<dyn ActivityRepository>;
+    type UserRepo: UserRepository;
+    type RsaRepo: RsaKeyRepository;
+    type ActivityRepo: ActivityRepository;
+    fn user_repository(&self) -> Arc<Self::UserRepo>;
+    fn rsa_key_repository(&self) -> Arc<Self::RsaRepo>;
+    fn activity_repository(&self) -> Arc<Self::ActivityRepo>;
     fn config(&self) -> Arc<AppConfig>;
 }

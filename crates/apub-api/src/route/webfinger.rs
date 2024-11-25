@@ -1,4 +1,4 @@
-use apub_activitypub::{jrd::JRD_CONTENT_TYPE, model::acct_uri::AcctUri};
+use apub_activitypub::{shared::jrd::JRD_CONTENT_TYPE, webfinger::AcctUri};
 use apub_registry::AppRegistry;
 use axum::{
     extract::{Query, State},

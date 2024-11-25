@@ -1,8 +1,9 @@
-use apub_activitypub::model::{context::Context, person::Person};
-use apub_shared::{
-    config::AppConfig,
-    model::{id::Id, resource_url::ResourceUrl},
+use apub_activitypub::model::{
+    context::Context,
+    person::{Person, PersonUrl},
 };
+use apub_config::AppConfig;
+use apub_shared::model::{id::Id, resource_url::ResourceUrl};
 use typed_builder::TypedBuilder;
 
 use super::rsa_key::KeyType;
@@ -20,13 +21,13 @@ pub struct User {
 
 impl User {
     /// `/users/{username}`
-    pub fn user_uri(&self, config: &AppConfig) -> ResourceUrl {
+    pub fn user_uri(&self, config: &AppConfig) -> PersonUrl {
         let user_uri = config
             .host_uri()
             .clone()
             .set_path(&format!("/users/{}", self.name))
             .to_owned();
-        user_uri
+        user_uri.into()
     }
 
     /// `/users/{username}/inbox`
@@ -39,6 +40,7 @@ impl User {
         inbox_uri
     }
 
+    /// `/users/{username}#keyname`
     pub fn user_key_uri<T>(&self, config: &AppConfig) -> ResourceUrl
     where
         T: KeyType,

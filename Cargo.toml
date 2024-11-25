@@ -8,6 +8,7 @@ members = [
   "crates/apub-activitypub",
   "crates/apub-adapter",
   "crates/apub-api",
+  "crates/apub-config",
   "crates/apub-kernel",
   "crates/apub-registry",
   "crates/apub-shared",
@@ -18,12 +19,14 @@ members = [
 apub-activitypub = { path = "crates/apub-activitypub" }
 apub-adapter = { path = "crates/apub-adapter" }
 apub-api = { path = "crates/apub-api" }
+apub-config = { path = "crates/apub-config" }
 apub-kernel = { path = "crates/apub-kernel" }
 apub-registry = { path = "crates/apub-registry" }
 apub-shared = { path = "crates/apub-shared" }
 apub-tracing = { path = "crates/apub-tracing" }
 
 axum = { version = "0.7", features = ["tracing", "macros"] }
+mime = { version = "0.3" }
 tokio = { version = "1", features = ["full"] }
 tower = { version = "0.5" }
 tower-http = { version = "0.6.1", features = ["trace", "normalize-path"] }
@@ -71,6 +74,7 @@ rstest = { version = "0.23" }
 apub-activitypub = { workspace = true }
 apub-adapter = { workspace = true }
 apub-api = { workspace = true }
+apub-config = { workspace = true }
 apub-kernel = { workspace = true }
 apub-registry = { workspace = true }
 apub-shared = { workspace = true }

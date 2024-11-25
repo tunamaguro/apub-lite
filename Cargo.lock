@@ -73,7 +73,9 @@ name = "apub-activitypub"
 version = "0.1.0"
 dependencies = [
  "apub-shared",
+ "async-trait",
  "axum",
+ "mime",
  "pretty_assertions",
  "rstest",
  "serde",
@@ -113,6 +115,7 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "apub-activitypub",
+ "apub-config",
  "apub-kernel",
  "apub-registry",
  "apub-shared",
@@ -127,11 +130,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "apub-config"
+version = "0.1.0"
+dependencies = [
+ "apub-shared",
+]
+
+[[package]]
 name = "apub-kernel"
 version = "0.1.0"
 dependencies = [
  "anyhow",
  "apub-activitypub",
+ "apub-config",
  "apub-shared",
  "async-trait",
  "axum",
@@ -156,6 +167,7 @@ dependencies = [
  "apub-activitypub",
  "apub-adapter",
  "apub-api",
+ "apub-config",
  "apub-kernel",
  "apub-registry",
  "apub-shared",
@@ -173,6 +185,7 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "apub-adapter",
+ "apub-config",
  "apub-kernel",
  "apub-shared",
  "axum",
@@ -188,7 +201,6 @@ dependencies = [
 name = "apub-shared"
 version = "0.1.0"
 dependencies = [
- "axum",
  "pretty_assertions",
  "rstest",
  "serde",

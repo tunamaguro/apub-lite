@@ -1,13 +1,13 @@
 use std::net::{Ipv4Addr, SocketAddr};
 
 use apub_adapter::persistence::postgres::PostgresDb;
+use apub_config::AppConfig;
 use apub_kernel::model::user::CreateUser;
 use apub_registry::{AppRegistry, AppRegistryExt};
-use apub_shared::config::AppConfig;
 use axum::{http::StatusCode, routing, Router};
 use tokio::net::TcpListener;
 
-use apub_api::route::{person, send_note, webfinger};
+use apub_api::route::{person, send_note, user_inbox, webfinger};
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
@@ -30,6 +30,10 @@ async fn bootstrap() -> anyhow::Result<()> {
     let app = Router::new()
         .route("/health", routing::get(health_check))
         .route("/users/:username", routing::get(person::person))
+        .route(
+            "/users/:username/inbox",
+            routing::post(user_inbox::user_inbox),
+        )
         .route("/send-note", routing::get(send_note::send_note))
         .route("/.well-known/webfinger", routing::get(webfinger::webfinger))
         .layer(
@@ -65,6 +69,7 @@ async fn init_registry() -> AppRegistry {
 }
 
 async fn seed_db(registry: &AppRegistry) -> anyhow::Result<()> {
+    use apub_kernel::prelude::*;
     let user_repo = registry.user_repository();
 
     user_repo

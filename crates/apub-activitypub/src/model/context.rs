@@ -3,7 +3,7 @@ use std::{collections::HashMap, sync::LazyLock};
 use apub_shared::model::resource_url::ResourceUrl;
 use serde::{Deserialize, Serialize};
 
-use super::SingleOrMany;
+use crate::shared::SingleOrMany;
 
 /// ActivityPub Context
 ///
@@ -19,6 +19,12 @@ impl Context {
             ContextInner::Uri(context_url)
         });
         &ACTIVITY_CONTEXT
+    }
+}
+
+impl Default for Context {
+    fn default() -> Self {
+        Self::activity_context_url().clone().into()
     }
 }
 

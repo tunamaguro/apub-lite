@@ -5,6 +5,7 @@ version = "0.1.0"
 
 [dependencies]
 apub-adapter = { workspace = true }
+apub-config = { workspace = true }
 apub-kernel = { workspace = true }
 apub-shared = { workspace = true }
 
