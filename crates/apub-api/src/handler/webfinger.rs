@@ -4,7 +4,7 @@ use apub_activitypub::{
 };
 use apub_kernel::prelude::*;
 use apub_registry::{AppRegistry, AppRegistryExt};
-use axum::{http::StatusCode, response::IntoResponse, Json};
+use axum::{http::StatusCode, response::IntoResponse};
 
 #[derive(Debug, thiserror::Error)]
 pub enum WebFingerError {
