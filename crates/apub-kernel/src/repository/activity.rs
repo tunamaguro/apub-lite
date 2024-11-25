@@ -1,7 +1,7 @@
 use apub_activitypub::model::activity::CreatePersonNote;
 use apub_config::AppConfig;
 use apub_shared::model::resource_url::ResourceUrl;
-use serde::Serialize;
+use serde::{de::DeserializeOwned, Serialize};
 
 use crate::model::rsa_key::RsaSingingKey;
 
@@ -15,6 +15,14 @@ pub trait ActivityRepository: Send + Sync {
         signer: &RsaSingingKey,
         key_uri: &ResourceUrl,
     ) -> anyhow::Result<()>;
+    /// reqに署名してGetリクエストする
+    async fn get_activity<T: DeserializeOwned>(
+        &self,
+        req: &ResourceUrl,
+        signer: &RsaSingingKey,
+        key_uri: &ResourceUrl,
+    ) -> anyhow::Result<T>;
+
     /// `Create``Note`を`inbox`に送信
     async fn post_note(
         &self,

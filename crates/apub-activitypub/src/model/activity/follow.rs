@@ -32,9 +32,9 @@ pub struct Follow<Act, Obj> {
     #[builder(default)]
     kind: FollowKind,
     /// フォローを実行する`Actor`(e.g. `Person`, `Service`)
-    actor: UrlId<Act>,
+    pub actor: UrlId<Act>,
     /// フォローされる`Object`(e.g. `Person`, `Service`)
-    object: UrlId<Obj>,
+    pub object: UrlId<Obj>,
 }
 
 impl<Act, Obj> Object for Follow<Act, Obj> {

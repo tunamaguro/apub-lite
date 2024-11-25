@@ -1,6 +1,6 @@
 use apub_activitypub::{
-    webfinger::AcctUri,
-    webfinger::{WebFinger, WebFingerLink},
+    shared::activity_json::ActivityJson,
+    webfinger::{AcctUri, WebFinger, WebFingerLink},
 };
 use apub_kernel::prelude::*;
 use apub_registry::{AppRegistry, AppRegistryExt};
@@ -48,5 +48,5 @@ pub async fn webfinger_handler(
         .links(vec![link])
         .build();
 
-    Ok(Json(w))
+    Ok(ActivityJson(w))
 }

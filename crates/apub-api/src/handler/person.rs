@@ -1,10 +1,11 @@
 use apub_activitypub::{
     core::actor::Actor as _,
     model::{key::PublicKeyPem, person::SecurityPerson},
+    shared::activity_json::ActivityJson,
 };
 use apub_kernel::{model::rsa_key::RsaVerifyingKey, prelude::*};
-use apub_registry::{AppRegistry, AppRegistryExt};
-use axum::{http::StatusCode, response::IntoResponse, Json};
+use apub_registry::AppRegistryExt;
+use axum::{http::StatusCode, response::IntoResponse};
 
 #[derive(Debug, thiserror::Error)]
 pub enum PersonError {
@@ -25,13 +26,13 @@ impl IntoResponse for PersonError {
 
 pub async fn person_handler(
     username: &str,
-    registry: &AppRegistry,
+    registry: &impl AppRegistryExt,
 ) -> Result<impl IntoResponse, PersonError> {
     let user = registry.user_repository().find_by_name(username).await?;
 
     let public_key = registry
         .rsa_key_repository()
-        .find_public_key(&user.id)
+        .find_public_key_or_generate(&user.id)
         .await?;
 
     let config = registry.config();
@@ -39,6 +40,7 @@ pub async fn person_handler(
 
     let person = user.to_person(&config);
     let person_id = person.id().clone();
+
     let public_key_pem = PublicKeyPem::builder()
         .public_key_pem(public_key.to_pkcs8()?)
         .id(user_key_id)
@@ -50,5 +52,7 @@ pub async fn person_handler(
         .public_key(public_key_pem)
         .build();
 
-    Ok(Json(security))
+    tracing::info!(message = "Return person", name = username);
+
+    Ok(ActivityJson(security))
 }

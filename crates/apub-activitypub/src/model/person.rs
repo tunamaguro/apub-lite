@@ -30,7 +30,7 @@ pub struct Person {
     kind: PersonKind,
     preferred_username: String,
     inbox: ResourceUrl,
-    #[builder(default,setter(strip_option))]
+    #[builder(default, setter(strip_option))]
     shared_inbox: Option<ResourceUrl>,
 }
 

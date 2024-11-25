@@ -11,6 +11,7 @@ pub trait Activity: Object {
     fn actor(&self) -> Option<&Self::ActorType> {
         None
     }
+
     /// このアクティビティの対象となる`Object`を返せれば返す
     fn activity_object(&self) -> Option<&Self::ObjectType> {
         None

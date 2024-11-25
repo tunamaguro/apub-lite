@@ -75,6 +75,7 @@ dependencies = [
  "apub-shared",
  "async-trait",
  "axum",
+ "mime",
  "pretty_assertions",
  "rstest",
  "serde",
