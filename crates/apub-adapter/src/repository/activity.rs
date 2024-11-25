@@ -62,8 +62,12 @@ async fn post_activity<T: Serialize>(
         .send()
         .await?;
     let res_status = res.status();
+
+    let body = serde_json::to_string_pretty(&activity).unwrap();
+
     tracing::info!(
         method = "POST",
+        body = body,
         req = inbox.as_str(),
         status_code = ?res_status
     );

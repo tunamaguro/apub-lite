@@ -63,7 +63,7 @@ pub async fn inbox_handler(
                 .await?;
 
             let accept = Accept::builder()
-                .actor(follow_person.id().clone())
+                .actor(user.user_uri(&config))
                 .id(generate_activity_uri(&config).into())
                 .object(follow)
                 .context(Default::default())
@@ -72,7 +72,6 @@ pub async fn inbox_handler(
             activity_repo
                 .post_activity(&accept, follow_person.inbox(), &signing_key, &user_key_id)
                 .await?;
-
             tracing::info!(kind = "Accept", actor = %follow_person.id(), object = user.name);
         }
     };
