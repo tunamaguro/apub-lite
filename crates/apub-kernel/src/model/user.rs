@@ -40,6 +40,7 @@ impl User {
         inbox_uri
     }
 
+    /// `/users/{username}#keyname`
     pub fn user_key_uri<T>(&self, config: &AppConfig) -> ResourceUrl
     where
         T: KeyType,
@@ -59,6 +60,7 @@ impl User {
             .id(self.user_uri(config))
             .preferred_username(self.name.clone())
             .inbox(self.inbox_uri(config))
+            .shared_inbox(config.shared_inbox())
             .context(Context::activity_context_url().clone().into())
             .build()
     }
