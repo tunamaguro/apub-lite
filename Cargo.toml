@@ -63,7 +63,10 @@ url = { version = "2.5.3", features = ["serde"] }
 
 anyhow = { version = "1.0.89", features = ["backtrace"] }
 thiserror = { version = "2" }
-tracing = { version = "0.1" }
+tracing = { version = "0.1", features = [
+  "max_level_trace",
+  "release_max_level_debug",
+] }
 tracing-subscriber = { version = "0.3.0", features = ["json", "env-filter"] }
 typed-builder = "0.20.0"
 

@@ -6,7 +6,7 @@ pub struct TracingGuard;
 pub fn init() -> TracingGuard {
     let env_filter = EnvFilter::try_from_default_env().unwrap_or_else(|_| {
         let level = if cfg!(debug_assertions) {
-            "debug"
+            "trace"
         } else {
             "info"
         };
