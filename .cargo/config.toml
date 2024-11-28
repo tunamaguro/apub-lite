@@ -1,0 +1,4 @@
+# Because key generation is too slow without this
+# See https://github.com/RustCrypto/RSA?tab=readme-ov-file#example
+[profile.dev.package.num-bigint-dig]
+opt-level = 3
