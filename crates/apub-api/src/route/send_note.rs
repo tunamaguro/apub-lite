@@ -1,9 +1,7 @@
 use apub_activitypub::model::{activity::CreatePersonNote, context::Context, note::Note};
 use apub_kernel::prelude::*;
+use apub_kernel::repository::activity::{generate_activity_uri, generate_note_uri};
 use apub_kernel::rsa_key::model::RsaVerifyingKey;
-use apub_kernel::{
-    repository::activity::{generate_activity_uri, generate_note_uri},
-};
 use apub_registry::{AppRegistry, AppRegistryExt};
 use apub_shared::model::resource_url::ResourceUrl;
 use axum::{
