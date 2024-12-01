@@ -1,6 +1,6 @@
 use apub_kernel::{
     prelude::UserRepository,
-    user::model::{CreateUser, User},
+    user::model::{CreateUser, User, UserId},
 };
 
 use crate::{model::user::UserRow, persistence::postgres::PostgresDb};
@@ -13,6 +13,18 @@ impl UserRepository for PostgresDb {
             UserRow,
             r#"SELECT id, name FROM users WHERE users.name = $1"#,
             name
+        )
+        .fetch_one(self.inner_ref())
+        .await?;
+        Ok(row.into())
+    }
+
+    #[tracing::instrument(skip(self))]
+    async fn find_by_id(&self, id: &UserId) -> anyhow::Result<User> {
+        let row = sqlx::query_as!(
+            UserRow,
+            r#"SELECT id, name FROM users WHERE users.id = $1"#,
+            **id
         )
         .fetch_one(self.inner_ref())
         .await?;
