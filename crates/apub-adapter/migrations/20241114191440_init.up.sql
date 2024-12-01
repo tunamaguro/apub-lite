@@ -37,6 +37,19 @@ CREATE TRIGGER set_user_rsa_key_updated_at
     BEFORE UPDATE ON user_rsa_keys FOR EACH ROW
     EXECUTE PROCEDURE set_updated_at();
 
+
+CREATE TABLE IF NOT EXISTS followers(
+    user_id UUID NOT NULL,
+    actor_url TEXT NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (user_id) REFERENCES users(id)
+    ON UPDATE CASCADE
+    ON DELETE CASCADE,
+
+    PRIMARY KEY (user_id,actor_url)
+);
+
 CREATE TABLE IF NOT EXISTS notes(
     note_id UUID PRIMARY KEY,
     user_id UUID NOT NULL,
