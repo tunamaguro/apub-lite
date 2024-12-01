@@ -1,9 +1,10 @@
 use apub_config::AppConfig;
-use apub_shared::model::{id::Id, resource_url::ResourceUrl};
+use apub_shared::model::id::{Id, UrlId};
 
 use crate::user::model::UserId;
 
 pub type NoteId = Id<Note>;
+pub type NoteUrl = UrlId<Note>;
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Note {
@@ -13,13 +14,13 @@ pub struct Note {
 }
 
 impl Note {
-    pub fn note_uri(&self, config: &AppConfig) -> ResourceUrl {
+    pub fn note_uri(&self, config: &AppConfig) -> NoteUrl {
         let note_uri = config
             .host_uri()
             .clone()
             .set_path(&format!("/notes/{}", self.id))
             .to_owned();
-        note_uri
+        note_uri.into()
     }
 }
 
