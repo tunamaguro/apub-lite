@@ -81,7 +81,7 @@ mod tests {
         let deserialized = serde_json::from_str::<AcceptPersonFollow<Person>>(accept).unwrap();
 
         let follow = FollowPerson::<Person>::builder()
-            .context(Context::activity_context_url().clone().into())
+            .context(Some(Context::activity_context_url().clone().into()))
             .id("https://example.com/activities/67890"
                 .parse::<UrlId<_>>()
                 .unwrap())
