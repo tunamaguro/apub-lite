@@ -36,7 +36,7 @@ pub struct Undo<Act, Obj> {
     #[builder(default)]
     kind: UndoKind,
     actor: UrlId<Act>,
-    object: Obj,
+    pub object: Obj,
 }
 
 impl<Act, Obj> Object for Undo<Act, Obj> {
