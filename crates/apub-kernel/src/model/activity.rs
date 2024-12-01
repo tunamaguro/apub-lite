@@ -1,6 +1,6 @@
 use apub_shared::model::resource_url::ResourceUrl;
 
-use super::rsa_key::RsaSingingKey;
+use crate::rsa_key::model::RsaSingingKey;
 
 pub struct SendActivity<T> {
     pub activity: T,

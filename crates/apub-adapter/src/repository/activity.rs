@@ -1,6 +1,6 @@
 use crate::persistence::http_client::HttpClient;
 use apub_activitypub::shared::activity_json::APPLICATION_ACTIVITY_JSON;
-use apub_kernel::{model::rsa_key::RsaSingingKey, repository::activity::ActivityRepository};
+use apub_kernel::{repository::activity::ActivityRepository, rsa_key::model::RsaSingingKey};
 use apub_shared::model::resource_url::ResourceUrl;
 use axum::http::{header, HeaderMap, HeaderName, HeaderValue};
 use base64::{prelude::BASE64_STANDARD, Engine};

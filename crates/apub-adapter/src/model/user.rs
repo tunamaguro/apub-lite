@@ -1,4 +1,4 @@
-use apub_kernel::model::user::User;
+use apub_kernel::user::model::User;
 use sqlx::types::Uuid;
 
 pub struct UserRow {

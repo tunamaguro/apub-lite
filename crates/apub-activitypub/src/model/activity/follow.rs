@@ -26,7 +26,7 @@ pub enum FollowKind {
 #[serde(rename_all = "camelCase")]
 pub struct Follow<Act, Obj> {
     #[serde(rename = "@context")]
-    context: Context,
+    context: Option<Context>,
     id: UrlId<Follow<Act, Obj>>,
     #[serde(rename = "type")]
     #[builder(default)]
@@ -75,7 +75,7 @@ mod tests {
 
         let deserialized = serde_json::from_str::<FollowPerson<Person>>(follow).unwrap();
         let expected = FollowPerson::<Person>::builder()
-            .context(Context::activity_context_url().clone().into())
+            .context(Some(Context::activity_context_url().clone().into()))
             .id("https://example.com/4849e989-2267-406c-aa84-3a4f6b0e7aab"
                 .parse::<ResourceUrl>()
                 .unwrap()

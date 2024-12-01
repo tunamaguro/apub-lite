@@ -1,4 +1,4 @@
-use apub_kernel::model::rsa_key::{RsaSingingKey, RsaVerifyingKey};
+use apub_kernel::rsa_key::model::{RsaSingingKey, RsaVerifyingKey};
 use sqlx::types::Uuid;
 
 pub struct UserPublicRsaKeyRow {

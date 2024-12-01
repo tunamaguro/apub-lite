@@ -1,12 +1,13 @@
 use apub_activitypub::{
     core::actor::Actor,
     model::{
-        activity::{Accept, Follow},
+        activity::{Accept, Follow, UndoPersonFollow},
         person::Person,
     },
 };
 use apub_kernel::{
-    model::rsa_key::RsaVerifyingKey, prelude::*, repository::activity::generate_activity_uri,
+    follower::repository::FollowerRepository, prelude::*,
+    repository::activity::generate_activity_uri, rsa_key::model::RsaVerifyingKey,
 };
 use apub_registry::AppRegistryExt;
 use axum::{http::StatusCode, response::IntoResponse};
@@ -33,13 +34,14 @@ impl IntoResponse for InboxError {
 #[serde(untagged)]
 pub enum InboxKinds {
     Follow(Follow<Person, Person>),
+    UnFollow(UndoPersonFollow<Person>),
 }
 
 pub async fn inbox_handler(
     username: &str,
     kind: InboxKinds,
     registry: &impl AppRegistryExt,
-) -> Result<(), InboxError> {
+) -> Result<impl IntoResponse, InboxError> {
     let user = registry
         .user_repository()
         .find_by_name(username)
@@ -62,6 +64,10 @@ pub async fn inbox_handler(
                 .get_activity::<Person>(&follow.actor, &signing_key, &user_key_id)
                 .await?;
 
+            let follower_repo = registry.follower_repository();
+
+            follower_repo.create(&user.id, follow_person.id()).await?;
+
             let accept = Accept::builder()
                 .actor(user.user_uri(&config))
                 .id(generate_activity_uri(&config).into())
@@ -74,7 +80,18 @@ pub async fn inbox_handler(
                 .await?;
             tracing::info!(kind = "Accept", actor = %follow_person.id(), object = user.name);
         }
+        InboxKinds::UnFollow(undo) => {
+            let actor = undo.object.actor;
+            let follow_person = activity_repo
+                .get_activity::<Person>(&actor, &signing_key, &user_key_id)
+                .await?;
+            let follower_repo = registry.follower_repository();
+
+            follower_repo.delete(&user.id, follow_person.id()).await?;
+
+            tracing::info!(kind = "Undo", actor = %follow_person.id(), object = user.name);
+        }
     };
 
-    Ok(())
+    Ok(StatusCode::ACCEPTED)
 }

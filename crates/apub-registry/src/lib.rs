@@ -2,9 +2,7 @@ use std::sync::Arc;
 
 use apub_adapter::persistence::{http_client::HttpClient, postgres::PostgresDb};
 use apub_config::AppConfig;
-use apub_kernel::repository::{
-    activity::ActivityRepository, rsa_key::RsaKeyRepository, user::UserRepository,
-};
+use apub_kernel::{follower::repository::FollowerRepository, prelude::*};
 
 #[derive(Clone)]
 pub struct AppRegistry {
@@ -26,6 +24,7 @@ impl AppRegistry {
 impl AppRegistryExt for AppRegistry {
     type UserRepo = PostgresDb;
     type RsaRepo = PostgresDb;
+    type FollowerRepo = PostgresDb;
     type ActivityRepo = HttpClient;
     fn user_repository(&self) -> Arc<Self::UserRepo> {
         self.postgres.clone()
@@ -38,6 +37,10 @@ impl AppRegistryExt for AppRegistry {
         self.http_client.clone()
     }
 
+    fn follower_repository(&self) -> Arc<Self::FollowerRepo> {
+        self.postgres.clone()
+    }
+
     fn config(&self) -> Arc<AppConfig> {
         self.config.clone()
     }
@@ -46,9 +49,11 @@ impl AppRegistryExt for AppRegistry {
 pub trait AppRegistryExt {
     type UserRepo: UserRepository;
     type RsaRepo: RsaKeyRepository;
+    type FollowerRepo: FollowerRepository;
     type ActivityRepo: ActivityRepository;
     fn user_repository(&self) -> Arc<Self::UserRepo>;
     fn rsa_key_repository(&self) -> Arc<Self::RsaRepo>;
     fn activity_repository(&self) -> Arc<Self::ActivityRepo>;
+    fn follower_repository(&self) -> Arc<Self::FollowerRepo>;
     fn config(&self) -> Arc<AppConfig>;
 }

@@ -63,7 +63,10 @@ url = { version = "2.5.3", features = ["serde"] }
 
 anyhow = { version = "1.0.89", features = ["backtrace"] }
 thiserror = { version = "2" }
-tracing = { version = "0.1" }
+tracing = { version = "0.1", features = [
+  "max_level_trace",
+  "release_max_level_debug",
+] }
 tracing-subscriber = { version = "0.3.0", features = ["json", "env-filter"] }
 typed-builder = "0.20.0"
 
@@ -86,8 +89,3 @@ tokio = { workspace = true }
 tower = { workspace = true }
 tower-http = { workspace = true }
 tracing = { workspace = true }
-
-# Because key generation is too slow without this
-# See https://github.com/RustCrypto/RSA?tab=readme-ov-file#example
-[profile.dev.package.num-bigint-dig]
-opt-level = 3

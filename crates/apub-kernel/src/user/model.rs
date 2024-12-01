@@ -6,7 +6,7 @@ use apub_config::AppConfig;
 use apub_shared::model::{id::Id, resource_url::ResourceUrl};
 use typed_builder::TypedBuilder;
 
-use super::rsa_key::KeyType;
+use crate::rsa_key::model::KeyType;
 
 pub type UserId = Id<User>;
 
