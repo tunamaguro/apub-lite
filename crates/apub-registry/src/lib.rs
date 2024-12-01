@@ -46,7 +46,7 @@ impl AppRegistryExt for AppRegistry {
     }
 }
 
-pub trait AppRegistryExt {
+pub trait AppRegistryExt: Send + Sync {
     type UserRepo: UserRepository;
     type RsaRepo: RsaKeyRepository;
     type FollowerRepo: FollowerRepository;
