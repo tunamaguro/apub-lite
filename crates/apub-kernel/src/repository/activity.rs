@@ -5,7 +5,6 @@ use serde::{de::DeserializeOwned, Serialize};
 
 use crate::rsa_key::model::RsaSingingKey;
 
-
 #[async_trait::async_trait]
 pub trait ActivityRepository: Send + Sync {
     /// Activityに署名して`inbox`に`post`する
