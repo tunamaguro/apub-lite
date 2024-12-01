@@ -50,14 +50,14 @@ impl FollowerRepository for PostgresDb {
         Ok(followers)
     }
 
-    async fn create(&self, event: &Follower) -> anyhow::Result<()> {
+    async fn create(&self, user_id: &UserId, actor_url: &ResourceUrl) -> anyhow::Result<()> {
         let _count = sqlx::query!(
             r#"
             INSERT INTO followers (user_id, actor_url) 
             VALUES ($1,$2)
             "#,
-            event.user_id.as_ref(),
-            event.actor_url.as_str()
+            user_id.as_ref(),
+            actor_url.as_str()
         )
         .execute(self.inner_ref())
         .await?;

@@ -5,7 +5,10 @@ use apub_activitypub::{
         person::Person,
     },
 };
-use apub_kernel::{prelude::*, repository::activity::generate_activity_uri, rsa_key::model::RsaVerifyingKey};
+use apub_kernel::{
+    follower::repository::FollowerRepository, prelude::*,
+    repository::activity::generate_activity_uri, rsa_key::model::RsaVerifyingKey,
+};
 use apub_registry::AppRegistryExt;
 use axum::{http::StatusCode, response::IntoResponse};
 use serde::Deserialize;
@@ -59,6 +62,10 @@ pub async fn inbox_handler(
             let follow_person = activity_repo
                 .get_activity::<Person>(&follow.actor, &signing_key, &user_key_id)
                 .await?;
+
+            let follower_repo = registry.follower_repository();
+
+            follower_repo.create(&user.id, follow_person.id()).await?;
 
             let accept = Accept::builder()
                 .actor(user.user_uri(&config))

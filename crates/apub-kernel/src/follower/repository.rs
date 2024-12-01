@@ -8,6 +8,6 @@ use super::model::Follower;
 pub trait FollowerRepository: Send + Sync {
     async fn find(&self, user_id: &UserId, actor_url: &ResourceUrl) -> anyhow::Result<bool>;
     async fn find_followee(&self, user_id: &UserId) -> anyhow::Result<Vec<Follower>>;
-    async fn create(&self, event: &Follower) -> anyhow::Result<()>;
+    async fn create(&self, user_id: &UserId, actor_url: &ResourceUrl) -> anyhow::Result<()>;
     async fn delete(&self, user_id: &UserId, actor_url: &ResourceUrl) -> anyhow::Result<()>;
 }
