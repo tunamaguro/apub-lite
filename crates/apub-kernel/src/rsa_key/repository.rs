@@ -1,7 +1,6 @@
-use crate::{
-    model::rsa_key::{RsaSingingKey, RsaVerifyingKey},
-    user::model::UserId,
-};
+use crate::user::model::UserId;
+
+use super::model::{RsaSingingKey, RsaVerifyingKey};
 
 #[async_trait::async_trait]
 pub trait RsaKeyRepository: Send + Sync {

@@ -3,7 +3,7 @@ use apub_activitypub::{
     model::{key::PublicKeyPem, person::SecurityPerson},
     shared::activity_json::ActivityJson,
 };
-use apub_kernel::{model::rsa_key::RsaVerifyingKey, prelude::*};
+use apub_kernel::{prelude::*, rsa_key::model::RsaVerifyingKey};
 use apub_registry::AppRegistryExt;
 use axum::{http::StatusCode, response::IntoResponse};
 

@@ -1,7 +1,8 @@
-use apub_kernel::{
-    model::rsa_key::{RsaSingingKey, RsaVerifyingKey},
-    repository::rsa_key::RsaKeyRepository, user::model::UserId,
+use apub_kernel::rsa_key::{
+    model::{RsaSingingKey, RsaVerifyingKey},
+    repository::RsaKeyRepository,
 };
+use apub_kernel::user::model::UserId;
 
 use crate::model::rsa_key::{UserPrivateRsaKeyRow, UserPublicRsaKeyRow};
 use crate::persistence::postgres::PostgresDb;

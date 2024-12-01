@@ -5,9 +5,7 @@ use apub_activitypub::{
         person::Person,
     },
 };
-use apub_kernel::{
-    model::rsa_key::RsaVerifyingKey, prelude::*, repository::activity::generate_activity_uri,
-};
+use apub_kernel::{prelude::*, repository::activity::generate_activity_uri, rsa_key::model::RsaVerifyingKey};
 use apub_registry::AppRegistryExt;
 use axum::{http::StatusCode, response::IntoResponse};
 use serde::Deserialize;

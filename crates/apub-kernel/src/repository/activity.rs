@@ -3,7 +3,8 @@ use apub_config::AppConfig;
 use apub_shared::model::resource_url::ResourceUrl;
 use serde::{de::DeserializeOwned, Serialize};
 
-use crate::model::rsa_key::RsaSingingKey;
+use crate::rsa_key::model::RsaSingingKey;
+
 
 #[async_trait::async_trait]
 pub trait ActivityRepository: Send + Sync {
