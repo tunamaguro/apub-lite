@@ -1,6 +1,6 @@
-use crate::model::{
-    rsa_key::{RsaSingingKey, RsaVerifyingKey},
-    user::UserId,
+use crate::{
+    model::rsa_key::{RsaSingingKey, RsaVerifyingKey},
+    user::model::UserId,
 };
 
 #[async_trait::async_trait]

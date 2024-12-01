@@ -1,9 +1,6 @@
 use apub_kernel::{
-    model::{
-        rsa_key::{RsaSingingKey, RsaVerifyingKey},
-        user::UserId,
-    },
-    repository::rsa_key::RsaKeyRepository,
+    model::rsa_key::{RsaSingingKey, RsaVerifyingKey},
+    repository::rsa_key::RsaKeyRepository, user::model::UserId,
 };
 
 use crate::model::rsa_key::{UserPrivateRsaKeyRow, UserPublicRsaKeyRow};

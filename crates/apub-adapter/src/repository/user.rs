@@ -1,6 +1,6 @@
 use apub_kernel::{
-    model::user::{CreateUser, User},
-    repository::user::UserRepository,
+    prelude::UserRepository,
+    user::model::{CreateUser, User},
 };
 
 use crate::{model::user::UserRow, persistence::postgres::PostgresDb};

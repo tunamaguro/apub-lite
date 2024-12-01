@@ -1,4 +1,5 @@
-use crate::model::user::{CreateUser, User};
+use super::model::{CreateUser, User};
+
 
 #[async_trait::async_trait]
 pub trait UserRepository: Send + Sync {
