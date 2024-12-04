@@ -40,6 +40,16 @@ impl User {
         inbox_uri
     }
 
+    /// `/users/{username}/followers`
+    pub fn followers_uri(&self, config: &AppConfig) -> ResourceUrl {
+        let followers_uri = config
+            .host_uri()
+            .clone()
+            .set_path(&format!("/users/{}/followers", self.name))
+            .to_owned();
+        followers_uri
+    }
+
     /// `/users/{username}#keyname`
     pub fn user_key_uri<T>(&self, config: &AppConfig) -> ResourceUrl
     where

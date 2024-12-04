@@ -31,6 +31,10 @@ async fn bootstrap() -> anyhow::Result<()> {
         .route("/health", routing::get(health_check))
         .route("/users/:username", routing::get(person::person))
         .route(
+            "/users/:username/followers",
+            routing::get(person::followers),
+        )
+        .route(
             "/users/:username/inbox",
             routing::post(user_inbox::user_inbox),
         )

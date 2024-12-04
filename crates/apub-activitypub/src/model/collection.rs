@@ -118,11 +118,23 @@ impl<T> OrderedCollection<T> {
 }
 
 /// `Collection` or `OrderedCollection`
-#[derive(Debug, Clone, PartialEq, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum AnyCollection<T> {
     Collection(Collection<T>),
     OrderedCollection(OrderedCollection<T>),
+}
+
+impl<T> From<Collection<T>> for AnyCollection<T> {
+    fn from(value: Collection<T>) -> Self {
+        AnyCollection::Collection(value)
+    }
+}
+
+impl<T> From<OrderedCollection<T>> for AnyCollection<T> {
+    fn from(value: OrderedCollection<T>) -> Self {
+        AnyCollection::OrderedCollection(value)
+    }
 }
 
 impl<T> AnyCollection<T> {
@@ -256,11 +268,23 @@ impl<T> OrderedCollectionPage<T> {
 }
 
 /// `CollectionPage` or `OrderedCollectionPage`
-#[derive(Debug, Clone, PartialEq, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum AnyCollectionPage<T> {
     CollectionPage(CollectionPage<T>),
     OrderedCollectionPage(OrderedCollectionPage<T>),
+}
+
+impl<T> From<CollectionPage<T>> for AnyCollectionPage<T> {
+    fn from(value: CollectionPage<T>) -> Self {
+        AnyCollectionPage::CollectionPage(value)
+    }
+}
+
+impl<T> From<OrderedCollectionPage<T>> for AnyCollectionPage<T> {
+    fn from(value: OrderedCollectionPage<T>) -> Self {
+        AnyCollectionPage::OrderedCollectionPage(value)
+    }
 }
 
 impl<T> AnyCollectionPage<T> {
