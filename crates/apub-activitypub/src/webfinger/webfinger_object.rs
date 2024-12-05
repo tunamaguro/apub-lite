@@ -25,6 +25,17 @@ pub struct WebFinger {
     links: Vec<WebFingerLink>,
 }
 
+impl WebFinger {
+    /// `rel`が`self`なリンクを返す
+    pub fn me(&self) -> Option<&ResourceUrl> {
+        self.links
+            .iter()
+            .filter(|v| "self" == &v.rel)
+            .flat_map(|v| &v.href)
+            .next()
+    }
+}
+
 /// WebFinger link item
 #[skip_serializing_none]
 #[derive(Debug, Serialize, Deserialize, PartialEq, TypedBuilder)]

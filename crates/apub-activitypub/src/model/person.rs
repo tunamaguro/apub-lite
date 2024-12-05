@@ -32,6 +32,8 @@ pub struct Person {
     inbox: ResourceUrl,
     #[builder(default, setter(strip_option))]
     shared_inbox: Option<ResourceUrl>,
+    #[builder(default, setter(strip_option))]
+    followers: Option<ResourceUrl>,
 }
 
 impl Object for Person {
