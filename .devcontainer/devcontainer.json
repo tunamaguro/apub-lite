@@ -15,6 +15,7 @@
                     "**/target/**": true
                 },
                 "rust-analyzer.checkOnSave.command": "clippy",
+                "yaml.format.singleQuote": true
             },
             "extensions": [
                 "rust-lang.rust-analyzer",
@@ -22,7 +23,8 @@
                 "tamasfe.even-better-toml",
                 "fill-labs.dependi",
                 "streetsidesoftware.code-spell-checker",
-                "mhutchie.git-graph"
+                "mhutchie.git-graph",
+                "redhat.vscode-yaml"
             ],
         },
     },
