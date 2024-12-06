@@ -22,7 +22,8 @@
                 "tamasfe.even-better-toml",
                 "fill-labs.dependi",
                 "streetsidesoftware.code-spell-checker",
-                "mhutchie.git-graph"
+                "mhutchie.git-graph",
+                "redhat.vscode-yaml"
             ],
         },
     },
