@@ -59,7 +59,7 @@ impl Serialize for AcctUri {
 
 struct AcctUriVisitor;
 
-impl<'de> Visitor<'de> for AcctUriVisitor {
+impl Visitor<'_> for AcctUriVisitor {
     type Value = AcctUri;
 
     fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
