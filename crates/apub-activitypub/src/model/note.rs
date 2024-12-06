@@ -33,7 +33,9 @@ pub struct Note {
     content: String,
     published: Option<String>,
     to: Option<SingleOrMany<ResourceUrl>>,
+    cc: Option<SingleOrMany<ResourceUrl>>,
     in_reply_to: Option<UrlId<Note>>,
+    attributed_to: Option<ResourceUrl>,
 }
 
 impl Note {

@@ -31,6 +31,12 @@ impl<T> From<ResourceUrl> for UrlId<T> {
     }
 }
 
+impl<T> AsRef<ResourceUrl> for UrlId<T> {
+    fn as_ref(&self) -> &ResourceUrl {
+        &self.resource_url
+    }
+}
+
 impl<T> From<UrlId<T>> for ResourceUrl {
     fn from(value: UrlId<T>) -> Self {
         value.resource_url

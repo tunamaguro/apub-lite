@@ -31,6 +31,10 @@ async fn bootstrap() -> anyhow::Result<()> {
         .route("/health", routing::get(health_check))
         .route("/users/:username", routing::get(person::person))
         .route(
+            "/users/:username/followers",
+            routing::get(person::followers),
+        )
+        .route(
             "/users/:username/inbox",
             routing::post(user_inbox::user_inbox),
         )
@@ -72,17 +76,21 @@ async fn seed_db(registry: &AppRegistry) -> anyhow::Result<()> {
     use apub_kernel::prelude::*;
     let user_repo = registry.user_repository();
 
-    user_repo
-        .create(CreateUser {
+    UserRepository::create(
+        &user_repo,
+        CreateUser {
             name: "alice".to_string(),
-        })
-        .await?;
+        },
+    )
+    .await?;
 
-    user_repo
-        .create(CreateUser {
+    UserRepository::create(
+        &user_repo,
+        CreateUser {
             name: "bob".to_string(),
-        })
-        .await?;
+        },
+    )
+    .await?;
 
     Ok(())
 }

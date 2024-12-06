@@ -1,0 +1,24 @@
+name: Lint GitHub Actions workflows
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/*.yml'
+      - '.github/workflows/*.yaml'
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: true
+
+jobs:
+  actionlint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check workflow files
+        # https://github.com/rhysd/actionlint/blob/main/docs/usage.md#ignore-some-errors
+        # Ignore `dependabot/fetch-metadata@v2.2.0` warning
+        run: docker run --rm -v "$(pwd):$(pwd)" -w "$(pwd)" rhysd/actionlint:latest -color -ignore 'property "meta" is not defined in object type {}'
