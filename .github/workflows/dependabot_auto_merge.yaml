@@ -15,7 +15,16 @@ jobs:
         with:
           github-token: '${{ secrets.GITHUB_TOKEN }}'
       - name: Approve Dependabot Github Action PRs
-        if: steps.meta.outputs.package-ecosystem == 'github_actions' && steps.meta.outputs.update-type != 'version-update:semver-major'
+        if: ${{ steps.meta.outputs.package-ecosystem == 'github_actions' && steps.meta.outputs.update-type != 'version-update:semver-major' }}
+        run: |
+          gh pr edit "$PR_URL" -t "(auto merged) $PR_TITLE"
+          gh pr merge --auto --merge "$PR_URL"
+        env:
+          PR_URL: ${{github.event.pull_request.html_url}}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Approve Dependabot Cargo patch PRs
+        if: ${{ contains(steps.dependabot-metadata.outputs.dependency-names, 'cargo') && steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch' }}
         run: |
           gh pr edit "$PR_URL" -t "(auto merged) $PR_TITLE"
           gh pr merge --auto --merge "$PR_URL"
