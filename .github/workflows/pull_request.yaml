@@ -2,16 +2,16 @@ name: Rust Format, Lint and Test
 
 on:
   pull_request:
-    types: 
+    types:
       - opened
       - reopened
       - synchronize
-    paths: 
-      - "**.rs"
-      - "**.toml"
-      - "**.lock"
+    paths:
+      - '**.rs'
+      - '**.toml'
+      - '**.lock'
   push:
-    branches: 
+    branches:
       - main
 
 concurrency:

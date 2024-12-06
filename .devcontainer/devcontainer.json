@@ -15,6 +15,7 @@
                     "**/target/**": true
                 },
                 "rust-analyzer.checkOnSave.command": "clippy",
+                "yaml.format.singleQuote": true
             },
             "extensions": [
                 "rust-lang.rust-analyzer",
