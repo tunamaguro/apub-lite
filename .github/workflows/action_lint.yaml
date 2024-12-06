@@ -1,10 +1,16 @@
 name: Lint GitHub Actions workflows
 on:
   pull_request:
-    types: [opened, reopened, synchronize]
-    paths: [".github/workflows/*.yml", ".github/workflows/*.yaml"]
+    types:
+      - opened
+      - reopened
+      - synchronize
+    paths:
+      - ".github/workflows/*.yml"
+      - ".github/workflows/*.yaml"
   push:
-    branches: [main]
+    branches: 
+      - main
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
