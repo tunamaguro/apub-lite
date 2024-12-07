@@ -25,7 +25,7 @@ jobs:
           PR_TITLE: ${{ github.event.pull_request.title }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Approve Dependabot Cargo patch PRs
-        if: ${{ steps.dependabot-metadata.outputs.dependency-names == 'cargo' && steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch' }}
+        if: ${{ steps.dependabot-metadata.outputs.package-ecosystem == 'cargo' && steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch' }}
         run: |
           gh pr edit "$PR_URL" -t "(auto merged) $PR_TITLE"
           gh pr merge --auto --merge "$PR_URL"
