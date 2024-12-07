@@ -1,4 +1,4 @@
-name: Rust Format, Lint and Test
+name: Rust CI
 
 on:
   pull_request:
@@ -6,10 +6,6 @@ on:
       - opened
       - reopened
       - synchronize
-    paths:
-      - '**.rs'
-      - '**.toml'
-      - '**.lock'
   push:
     branches:
       - main
