@@ -8,56 +8,63 @@ CREATE OR REPLACE FUNCTION set_updated_at() RETURNS trigger AS '
   END;
 ' LANGUAGE plpgsql;
 
+-- local users
 CREATE TABLE IF NOT EXISTS users (
-    id UUID PRIMARY KEY,
+    user_id UUID PRIMARY KEY,
     name VARCHAR(255) UNIQUE NOT NULL CHECK(trim(lower(name)) = name),
-    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
+-- external actors(not contains local users)
+CREATE TABLE IF NOT EXISTS actors(
+    actor_id UUID PRIMARY KEY,
+    actor_url TEXT NOT NULL UNIQUE CHECK(actor_url <> ''),
+    preferred_username TEXT NOT NULL,
+    inbox_url TEXT NOT NULL UNIQUE CHECK(inbox_url <> ''),
+    shared_inbox_url TEXT  CHECK(shared_inbox_url <> ''),
 
-CREATE TRIGGER set_users_updated_at
-    BEFORE UPDATE ON users FOR EACH ROW
-    EXECUTE PROCEDURE set_updated_at();
+    local_user_id UUID,
 
-CREATE TABLE IF NOT EXISTS user_rsa_keys(
-    user_id UUID PRIMARY KEY,
-    private_key TEXT NOT NULL CHECK(private_key <> ''),
-    public_key TEXT NOT NULL CHECK(public_key <> ''),
-
-    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    FOREIGN KEY (user_id) REFERENCES users(id)
+    FOREIGN KEY (local_user_id) REFERENCES users(user_id)
     ON UPDATE CASCADE
     ON DELETE CASCADE
 );
 
-CREATE TRIGGER set_user_rsa_key_updated_at
-    BEFORE UPDATE ON user_rsa_keys FOR EACH ROW
-    EXECUTE PROCEDURE set_updated_at();
+CREATE TABLE IF NOT EXISTS actor_rsa_keys(
+    actor_id UUID NOT NULL,
+    key_url TEXT NOT NULL,
+    public_key TEXT NOT NULL CHECK(public_key <> ''),
+    private_key TEXT CHECK(private_key <> ''),
 
-
-CREATE TABLE IF NOT EXISTS followers(
-    user_id UUID NOT NULL,
-    actor_url TEXT NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    FOREIGN KEY (user_id) REFERENCES users(id)
+    PRIMARY KEY (actor_id, key_url),
+
+    FOREIGN KEY (actor_id) REFERENCES actors(actor_id)
+    ON UPDATE CASCADE
+    ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS actor_follows(
+    follower_actor_id UUID NOT NULL,
+    followed_actor_id UUID NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (follower_actor_id) REFERENCES actors(actor_id)
     ON UPDATE CASCADE
     ON DELETE CASCADE,
 
-    PRIMARY KEY (user_id,actor_url)
+    FOREIGN KEY (followed_actor_id) REFERENCES actors(actor_id)
+    ON UPDATE CASCADE
+    ON DELETE CASCADE,
+
+    PRIMARY KEY (follower_actor_id, followed_actor_id)
 );
 
 CREATE TABLE IF NOT EXISTS notes(
     note_id UUID PRIMARY KEY,
-    user_id UUID NOT NULL,
+    actor_id UUID NOT NULL,
     content TEXT NOT NULL,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+    
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
-
-CREATE TRIGGER set_notes_updated_at
-    BEFORE UPDATE ON notes FOR EACH ROW
-    EXECUTE PROCEDURE set_updated_at();
