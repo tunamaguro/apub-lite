@@ -1,7 +1,7 @@
 use apub_activitypub::core::actor::Actor;
 use apub_activitypub::model::person::Person;
 use apub_activitypub::model::{activity::CreatePersonNote, context::Context, note::Note};
-use apub_kernel::activitypub::model::{generate_activity_uri, generate_note_uri};
+use apub_kernel::activitypub::activity::{generate_activity_uri, generate_note_uri};
 use apub_kernel::prelude::*;
 use apub_kernel::rsa_key::model::RsaVerifyingKey;
 use apub_registry::{AppRegistry, AppRegistryExt};
@@ -39,7 +39,7 @@ async fn send_note_handler(
     query: &SendNoteQuery,
     registry: impl AppRegistryExt,
 ) -> Result<impl IntoResponse, SendNoteError> {
-    let user_repo = registry.user_repository();
+    let user_repo = registry.user_service();
     let user = user_repo.find_by_name(&query.user).await?;
 
     let config = registry.config();
@@ -65,9 +65,8 @@ async fn send_note_handler(
     let activity_repo = registry.activity_repository();
     let user_signing_key = registry
         .rsa_key_repository()
-        .find_private_key_or_generate(&user.id)
+        .find_private_key(&user.id)
         .await?;
-    let user_key_id = user.user_key_uri::<RsaVerifyingKey>(&config);
 
     let followers = registry
         .follower_repository()
@@ -77,7 +76,7 @@ async fn send_note_handler(
     for v in followers {
         // 都度フォロワーに問い合わせて、inboxを取得する
         let follow_person = activity_repo
-            .get_activity::<Person>(&v.actor_url, &user_signing_key, &user_key_id)
+            .get_activity::<Person>(&v.actor_url)
             .await?;
 
         activity_repo

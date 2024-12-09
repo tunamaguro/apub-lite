@@ -32,7 +32,7 @@ pub async fn webfinger_handler(
         return Err(WebFingerError::OtherDomain);
     }
     let user = registry
-        .user_repository()
+        .user_service()
         .find_by_name(acct_uri.user())
         .await?;
 

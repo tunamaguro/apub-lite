@@ -53,6 +53,12 @@ impl Actor for Person {
     }
 }
 
+impl Person {
+    pub fn username(&self) -> &str {
+        &self.preferred_username
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, TypedBuilder)]
 #[serde(rename_all = "camelCase")]
 pub struct SecurityPerson {

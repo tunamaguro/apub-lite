@@ -11,7 +11,7 @@ use rsa::{
 use sha2::Sha256;
 use typed_builder::TypedBuilder;
 
-use crate::user::model::UserId;
+use crate::activitypub::actor::ActorId;
 
 pub trait KeyType {
     fn key_type() -> &'static str;
@@ -154,7 +154,7 @@ impl FromStr for RsaSingingKey {
 #[derive(Debug, TypedBuilder)]
 pub struct SavePublicKeyEvent<'a> {
     pub public_key: &'a RsaVerifyingKey,
-    pub actor_id: &'a UserId,
+    pub actor_id: &'a ActorId,
     pub key_url: &'a ResourceUrl,
 }
 
@@ -162,6 +162,6 @@ pub struct SavePublicKeyEvent<'a> {
 pub struct SaveKeyPairEvent<'a> {
     pub public_key: &'a RsaVerifyingKey,
     pub private_key: &'a RsaSingingKey,
-    pub actor_id: &'a UserId,
+    pub actor_id: &'a ActorId,
     pub key_url: &'a ResourceUrl,
 }
