@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS actor_follows(
     -- ON UPDATE CASCADE
     -- ON DELETE CASCADE,
 
-    FOREIGN KEY (followed_actor_id) REFERENCES actors(actor_id)
+    FOREIGN KEY (followed_actor_id) REFERENCES users(user_id)
     ON UPDATE CASCADE
     ON DELETE CASCADE,
 

@@ -10,6 +10,7 @@ use apub_shared::model::resource_url::ResourceUrl;
 
 #[async_trait::async_trait]
 impl FollowerRepository for PostgresDb {
+    #[tracing::instrument(skip(self))]
     async fn find(&self, user_id: &UserId, actor_url: &ResourceUrl) -> anyhow::Result<bool> {
         let r = sqlx::query_as!(
             FollowerCount,
@@ -34,21 +35,18 @@ impl FollowerRepository for PostgresDb {
         Ok(r.count() == 1)
     }
 
+    #[tracing::instrument(skip(self))]
     async fn find_followee(&self, user_id: &UserId) -> anyhow::Result<Vec<Follower>> {
         let user_id: &sqlx::types::Uuid = user_id.as_ref();
         let rows = sqlx::query_as!(
             FollowerRow,
             r#"
             SELECT
-                actors.local_user_id AS user_id, actor_url AS follower_url
+                actor_follows.followed_actor_id AS user_id, actor_follows.follower_actor_url AS follower_url
             FROM
-                actors
-            LEFT JOIN
-                actor_follows
-            ON 
-                actors.actor_id = actor_follows.followed_actor_id            
+                actor_follows    
             WHERE
-                actors.local_user_id = $1
+                actor_follows.followed_actor_id = $1
             "#,
             user_id
         )
@@ -63,6 +61,7 @@ impl FollowerRepository for PostgresDb {
         Ok(followers)
     }
 
+    #[tracing::instrument(skip(self))]
     async fn create(&self, user_id: &UserId, actor_url: &ResourceUrl) -> anyhow::Result<()> {
         let _count = sqlx::query!(
             r#"
@@ -75,11 +74,13 @@ impl FollowerRepository for PostgresDb {
             actor_url.as_str()
         )
         .execute(self.inner_ref())
-        .await?;
+        .await
+        .inspect_err(|e| tracing::error!(%e))?;
 
         Ok(())
     }
 
+    #[tracing::instrument(skip(self))]
     async fn delete(&self, user_id: &UserId, actor_url: &ResourceUrl) -> anyhow::Result<()> {
         let count = sqlx::query!(
             r#"
