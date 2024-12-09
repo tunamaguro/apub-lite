@@ -1,5 +1,5 @@
 use apub_kernel::rsa_key::{
-    model::{RsaSingingKey, RsaVerifyingKey},
+    model::{RsaSingingKey, RsaVerifyingKey, SaveKeyPairEvent, SavePublicKeyEvent},
     repository::RsaKeyRepository,
 };
 use apub_kernel::user::model::UserId;
@@ -14,7 +14,16 @@ impl RsaKeyRepository for PostgresDb {
         let row = sqlx::query_as!(
             UserPublicRsaKeyRow,
             r#"
-            SELECT user_id, public_key  FROM user_rsa_keys WHERE user_rsa_keys.user_id = $1
+            SELECT 
+                actor_rsa_keys.public_key AS public_key 
+            FROM 
+                actors 
+            LEFT JOIN 
+                actor_rsa_keys
+            ON
+                actors.actor_id = actor_rsa_keys.actor_id
+            WHERE 
+                actors.local_user_id = $1
         "#,
             user_id.as_ref()
         )
@@ -28,8 +37,17 @@ impl RsaKeyRepository for PostgresDb {
         let row = sqlx::query_as!(
             UserPrivateRsaKeyRow,
             r#"
-            SELECT user_id, private_key  FROM user_rsa_keys WHERE user_rsa_keys.user_id = $1
-        "#,
+             SELECT 
+                actor_rsa_keys.private_key AS private_key 
+            FROM 
+                actors 
+            LEFT JOIN 
+                actor_rsa_keys
+            ON
+                actors.actor_id = actor_rsa_keys.actor_id
+            WHERE 
+                actors.local_user_id = $1
+            "#,
             user_id.as_ref()
         )
         .fetch_one(self.inner_ref())
@@ -38,24 +56,47 @@ impl RsaKeyRepository for PostgresDb {
         row.try_into()
     }
     #[tracing::instrument(skip(self))]
-    async fn generate(&self, user_id: &UserId) -> anyhow::Result<(RsaSingingKey, RsaVerifyingKey)> {
-        let skey = RsaSingingKey::new()?;
-        let pkey = skey.to_public_key();
-
-        let skey_pkcs8 = skey.to_pkcs8()?;
-        let pkey_pkcs8 = pkey.to_pkcs8()?;
-
+    async fn save_public_key(&self, event: SavePublicKeyEvent<'_>) -> anyhow::Result<()> {
+        let actor_id = event.actor_id.as_ref();
+        let key_url = event.key_url.as_str();
+        let public_key = event.public_key.to_pkcs8()?;
         sqlx::query!(
             r#"
-            INSERT INTO user_rsa_keys (user_id, private_key, public_key) 
-            VALUES ($1, $2, $3)
-        "#,
-            user_id.as_ref(),
-            skey_pkcs8,
-            pkey_pkcs8
+             INSERT INTO actor_rsa_keys
+                (actor_id, key_url, public_key)
+            VALUES
+                ($1, $2, $3)
+            "#,
+            actor_id,
+            key_url,
+            &public_key
         )
         .execute(self.inner_ref())
         .await?;
-        Ok((skey, pkey))
+
+        Ok(())
+    }
+    #[tracing::instrument(skip(self))]
+    async fn save_key_pair(&self, event: SaveKeyPairEvent<'_>) -> anyhow::Result<()> {
+        let actor_id = event.actor_id.as_ref();
+        let key_url = event.key_url.as_str();
+        let public_key = event.public_key.to_pkcs8()?;
+        let private_key = event.private_key.to_pkcs8()?;
+        sqlx::query!(
+            r#"
+             INSERT INTO actor_rsa_keys
+                (actor_id, key_url, public_key, private_key)
+            VALUES
+                ($1, $2, $3, $4)
+            "#,
+            actor_id,
+            key_url,
+            &public_key,
+            &private_key
+        )
+        .execute(self.inner_ref())
+        .await?;
+
+        Ok(())
     }
 }
