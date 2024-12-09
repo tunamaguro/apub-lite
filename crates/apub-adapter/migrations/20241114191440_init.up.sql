@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS actors(
     actor_id UUID PRIMARY KEY,
     actor_url TEXT NOT NULL UNIQUE CHECK(actor_url <> ''),
+    host TEXT NOT NULL,
     preferred_username TEXT NOT NULL,
     inbox_url TEXT NOT NULL UNIQUE CHECK(inbox_url <> ''),
     shared_inbox_url TEXT  CHECK(shared_inbox_url <> ''),
