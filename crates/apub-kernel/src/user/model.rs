@@ -36,7 +36,7 @@ impl User {
     }
 
     /// `/users/{username}#keyname`
-    pub fn user_key_uri<T>(&self, config: &AppConfig)-> ResourceUrl
+    pub fn user_key_uri<T>(&self, config: &AppConfig) -> ResourceUrl
     where
         T: KeyType,
     {

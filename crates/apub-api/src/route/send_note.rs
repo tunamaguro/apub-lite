@@ -75,9 +75,7 @@ async fn send_note_handler(
 
     for v in followers {
         // 都度フォロワーに問い合わせて、inboxを取得する
-        let follow_person = activity_repo
-            .get_activity::<Person>(&v.actor_url)
-            .await?;
+        let follow_person = activity_repo.get_activity::<Person>(&v.actor_url).await?;
 
         activity_repo
             .post_note(
