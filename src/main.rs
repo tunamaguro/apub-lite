@@ -74,23 +74,19 @@ async fn init_registry() -> AppRegistry {
 
 async fn seed_db(registry: &AppRegistry) -> anyhow::Result<()> {
     use apub_kernel::prelude::*;
-    let user_repo = registry.user_repository();
+    let user_repo = registry.user_service();
 
-    UserRepository::create(
-        &user_repo,
-        CreateUser {
+    user_repo
+        .create(CreateUser {
             name: "alice".to_string(),
-        },
-    )
-    .await?;
+        })
+        .await?;
 
-    UserRepository::create(
-        &user_repo,
-        CreateUser {
+    user_repo
+        .create(CreateUser {
             name: "bob".to_string(),
-        },
-    )
-    .await?;
+        })
+        .await?;
 
     Ok(())
 }

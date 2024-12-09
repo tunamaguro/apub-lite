@@ -1,6 +1,6 @@
-use apub_kernel::{
-    prelude::UserRepository,
-    user::model::{CreateUser, User, UserId},
+use apub_kernel::user::{
+    model::{CreateUser, User, UserId},
+    repository::UserRepository,
 };
 
 use crate::{model::user::UserRow, persistence::postgres::PostgresDb};
@@ -11,7 +11,13 @@ impl UserRepository for PostgresDb {
     async fn find_by_name(&self, name: &str) -> anyhow::Result<User> {
         let row = sqlx::query_as!(
             UserRow,
-            r#"SELECT id, name FROM users WHERE users.name = $1"#,
+            r#"
+            SELECT
+                user_id, name 
+            FROM
+                users 
+            WHERE
+                users.name = $1"#,
             name
         )
         .fetch_one(self.inner_ref())
@@ -23,7 +29,12 @@ impl UserRepository for PostgresDb {
     async fn find_by_id(&self, id: &UserId) -> anyhow::Result<User> {
         let row = sqlx::query_as!(
             UserRow,
-            r#"SELECT id, name FROM users WHERE users.id = $1"#,
+            r#"SELECT
+                user_id, name 
+            FROM 
+                users 
+            WHERE
+                users.user_id = $1"#,
             **id
         )
         .fetch_one(self.inner_ref())
@@ -32,12 +43,14 @@ impl UserRepository for PostgresDb {
     }
 
     #[tracing::instrument(skip(self))]
-    async fn create(&self, event: CreateUser) -> anyhow::Result<()> {
+    async fn create(&self, event: CreateUser) -> anyhow::Result<User> {
         let user = User::from(event);
         sqlx::query!(
             r#"
-            INSERT INTO users (id, name)
-            VALUES ($1, $2)
+            INSERT INTO users 
+                (user_id, name)
+            VALUES
+                ($1, $2)
         "#,
             *user.id,
             user.name
@@ -45,7 +58,7 @@ impl UserRepository for PostgresDb {
         .execute(self.inner_ref())
         .await?;
 
-        Ok(())
+        Ok(user)
     }
 }
 
