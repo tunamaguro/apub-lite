@@ -1,5 +1,6 @@
 use std::str::FromStr;
 
+use apub_shared::model::resource_url::ResourceUrl;
 use rsa::{
     pkcs1::{DecodeRsaPrivateKey, DecodeRsaPublicKey, EncodeRsaPrivateKey, EncodeRsaPublicKey},
     pkcs1v15::{Signature, SigningKey, VerifyingKey},
@@ -8,6 +9,9 @@ use rsa::{
     RsaPrivateKey, RsaPublicKey,
 };
 use sha2::Sha256;
+use typed_builder::TypedBuilder;
+
+use crate::user::model::UserId;
 
 pub trait KeyType {
     fn key_type() -> &'static str;
@@ -145,4 +149,19 @@ impl FromStr for RsaSingingKey {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         Self::from_pem(s)
     }
+}
+
+#[derive(Debug, TypedBuilder)]
+pub struct SavePublicKeyEvent<'a> {
+    pub public_key: &'a RsaVerifyingKey,
+    pub actor_id: &'a UserId,
+    pub key_url: &'a ResourceUrl,
+}
+
+#[derive(Debug, TypedBuilder)]
+pub struct SaveKeyPairEvent<'a> {
+    pub public_key: &'a RsaVerifyingKey,
+    pub private_key: &'a RsaSingingKey,
+    pub actor_id: &'a UserId,
+    pub key_url: &'a ResourceUrl,
 }
