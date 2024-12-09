@@ -27,7 +27,8 @@ impl IntoResponse for InboxError {
             InboxError::NotFound => (StatusCode::NOT_FOUND, self.to_string()).into_response(),
             InboxError::Internal(e) => {
                 tracing::error!(error = %e);
-                (StatusCode::INTERNAL_SERVER_ERROR, "").into_response()},
+                (StatusCode::INTERNAL_SERVER_ERROR, "").into_response()
+            }
         }
     }
 }
