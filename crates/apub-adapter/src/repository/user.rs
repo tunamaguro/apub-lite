@@ -1,6 +1,6 @@
-use apub_kernel::{
-    prelude::UserRepository,
-    user::model::{CreateUser, User, UserId},
+use apub_kernel::user::{
+    model::{CreateUser, User, UserId},
+    repository::UserRepository,
 };
 
 use crate::{model::user::UserRow, persistence::postgres::PostgresDb};
@@ -43,7 +43,7 @@ impl UserRepository for PostgresDb {
     }
 
     #[tracing::instrument(skip(self))]
-    async fn create(&self, event: CreateUser) -> anyhow::Result<()> {
+    async fn create(&self, event: CreateUser) -> anyhow::Result<User> {
         let user = User::from(event);
         sqlx::query!(
             r#"
@@ -58,7 +58,7 @@ impl UserRepository for PostgresDb {
         .execute(self.inner_ref())
         .await?;
 
-        Ok(())
+        Ok(user)
     }
 }
 

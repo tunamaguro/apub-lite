@@ -33,11 +33,11 @@ pub async fn person_handler(
     username: &str,
     registry: &impl AppRegistryExt,
 ) -> Result<impl IntoResponse, PersonError> {
-    let user = registry.user_repository().find_by_name(username).await?;
+    let user = registry.user_service().find_by_name(username).await?;
 
     let public_key = registry
         .rsa_key_repository()
-        .find_public_key_or_generate(&user.id)
+        .find_public_key(&user.id)
         .await?;
 
     let config = registry.config();
@@ -73,7 +73,7 @@ pub async fn followers_handler(
     username: &str,
     registry: &impl AppRegistryExt,
 ) -> Result<impl IntoResponse, PersonError> {
-    let user = registry.user_repository().find_by_name(username).await?;
+    let user = registry.user_service().find_by_name(username).await?;
 
     let config = registry.config();
 
