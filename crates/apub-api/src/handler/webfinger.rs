@@ -18,7 +18,10 @@ impl IntoResponse for WebFingerError {
     fn into_response(self) -> axum::response::Response {
         match self {
             WebFingerError::OtherDomain => (StatusCode::NOT_FOUND, "").into_response(),
-            WebFingerError::Internal(_) => (StatusCode::INTERNAL_SERVER_ERROR, "").into_response(),
+            WebFingerError::Internal(e) => {
+                tracing::error!(error = %e);
+                (StatusCode::INTERNAL_SERVER_ERROR, "").into_response()
+            }
         }
     }
 }

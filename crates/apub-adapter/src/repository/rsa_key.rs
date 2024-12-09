@@ -55,7 +55,7 @@ impl RsaKeyRepository for PostgresDb {
 
         row.try_into()
     }
-    #[tracing::instrument(skip(self))]
+    #[tracing::instrument(skip_all)]
     async fn save_public_key(&self, event: SavePublicKeyEvent<'_>) -> anyhow::Result<()> {
         let actor_id = event.actor_id.as_ref();
         let key_url = event.key_url.as_str();
@@ -76,7 +76,7 @@ impl RsaKeyRepository for PostgresDb {
 
         Ok(())
     }
-    #[tracing::instrument(skip(self))]
+    #[tracing::instrument(skip_all)]
     async fn save_key_pair(&self, event: SaveKeyPairEvent<'_>) -> anyhow::Result<()> {
         let actor_id = event.actor_id.as_ref();
         let key_url = event.key_url.as_str();

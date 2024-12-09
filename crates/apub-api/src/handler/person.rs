@@ -24,7 +24,10 @@ impl IntoResponse for PersonError {
     fn into_response(self) -> axum::response::Response {
         match self {
             PersonError::NotFound => (StatusCode::NOT_FOUND, self.to_string()).into_response(),
-            PersonError::Internal(_) => (StatusCode::INTERNAL_SERVER_ERROR, "").into_response(),
+            PersonError::Internal(e) => {
+                tracing::error!(error = %e);
+                (StatusCode::INTERNAL_SERVER_ERROR, "").into_response()
+            }
         }
     }
 }
