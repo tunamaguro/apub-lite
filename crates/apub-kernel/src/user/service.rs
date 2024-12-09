@@ -55,6 +55,7 @@ where
         Ok(bind)
     }
 
+    #[tracing::instrument(skip(self))]
     async fn create(&self, event: CreateUser) -> anyhow::Result<User> {
         let user = self.user.create(event).await?;
         let create_actor = CreateActorEvent::builder()

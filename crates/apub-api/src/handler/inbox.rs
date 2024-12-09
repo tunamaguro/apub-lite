@@ -25,7 +25,9 @@ impl IntoResponse for InboxError {
     fn into_response(self) -> axum::response::Response {
         match self {
             InboxError::NotFound => (StatusCode::NOT_FOUND, self.to_string()).into_response(),
-            InboxError::Internal(_) => (StatusCode::INTERNAL_SERVER_ERROR, "").into_response(),
+            InboxError::Internal(e) => {
+                tracing::error!(error = %e);
+                (StatusCode::INTERNAL_SERVER_ERROR, "").into_response()},
         }
     }
 }
