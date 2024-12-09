@@ -22,46 +22,25 @@ pub struct User {
 impl User {
     /// `/users/{username}`
     pub fn user_uri(&self, config: &AppConfig) -> PersonUrl {
-        let user_uri = config
-            .host_uri()
-            .clone()
-            .set_path(&format!("/users/{}", self.name))
-            .to_owned();
-        user_uri.into()
+        create_user_uri(config, &self.name)
     }
 
     /// `/users/{username}/inbox`
     pub fn inbox_uri(&self, config: &AppConfig) -> ResourceUrl {
-        let inbox_uri = config
-            .host_uri()
-            .clone()
-            .set_path(&format!("/users/{}/inbox", self.name))
-            .to_owned();
-        inbox_uri
+        create_user_inbox(config, &self.name)
     }
 
     /// `/users/{username}/followers`
     pub fn followers_uri(&self, config: &AppConfig) -> ResourceUrl {
-        let followers_uri = config
-            .host_uri()
-            .clone()
-            .set_path(&format!("/users/{}/followers", self.name))
-            .to_owned();
-        followers_uri
+        create_followers_url(config, &self.name)
     }
 
     /// `/users/{username}#keyname`
-    pub fn user_key_uri<T>(&self, config: &AppConfig) -> ResourceUrl
+    pub fn user_key_uri<T>(&self, config: &AppConfig)-> ResourceUrl
     where
         T: KeyType,
     {
-        let key_uri = config
-            .host_uri()
-            .clone()
-            .set_path(&format!("/users/{}", self.name))
-            .set_fragment(T::key_type())
-            .to_owned();
-        key_uri
+        create_user_key_url::<T>(config, &self.name)
     }
 
     /// Create Person actor
@@ -73,6 +52,46 @@ impl User {
             .context(Context::activity_context_url().clone().into())
             .build()
     }
+}
+
+pub(crate) fn create_user_uri(config: &AppConfig, name: &str) -> PersonUrl {
+    let user_uri = config
+        .host_uri()
+        .clone()
+        .set_path(&format!("/users/{}", name))
+        .to_owned();
+    user_uri.into()
+}
+
+pub(crate) fn create_user_inbox(config: &AppConfig, name: &str) -> ResourceUrl {
+    let inbox_uri = config
+        .host_uri()
+        .clone()
+        .set_path(&format!("/users/{}/inbox", name))
+        .to_owned();
+    inbox_uri
+}
+
+pub(crate) fn create_followers_url(config: &AppConfig, name: &str) -> ResourceUrl {
+    let followers_uri = config
+        .host_uri()
+        .clone()
+        .set_path(&format!("/users/{}/followers", name))
+        .to_owned();
+    followers_uri
+}
+
+pub(crate) fn create_user_key_url<T>(config: &AppConfig, name: &str) -> ResourceUrl
+where
+    T: KeyType,
+{
+    let key_uri = config
+        .host_uri()
+        .clone()
+        .set_path(&format!("/users/{}", name))
+        .set_fragment(T::key_type())
+        .to_owned();
+    key_uri
 }
 
 #[derive(Debug, Clone, PartialEq)]
