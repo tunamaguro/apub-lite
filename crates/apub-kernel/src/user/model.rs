@@ -83,7 +83,7 @@ pub struct CreateUser {
 impl From<CreateUser> for User {
     fn from(value: CreateUser) -> Self {
         let CreateUser { name, .. } = value;
-        let id = Id::new();
+        let id = UserId::new();
         User { id, name }
     }
 }
