@@ -3,8 +3,11 @@ use std::sync::Arc;
 use apub_adapter::persistence::{http_client::HttpClient, postgres::PostgresDb};
 use apub_config::AppConfig;
 use apub_kernel::{
-    activitypub::actor::ActorRepository, follower::repository::FollowerRepository,
-    note::repository::NoteRepository, prelude::*, user::{repository::UserRepository, service::UserServiceImpl},
+    activitypub::actor::ActorRepository,
+    follower::repository::FollowerRepository,
+    note::repository::NoteRepository,
+    prelude::*,
+    user::{repository::UserRepository, service::UserServiceImpl},
 };
 
 #[derive(Clone)]

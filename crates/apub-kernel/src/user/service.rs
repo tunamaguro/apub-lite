@@ -10,7 +10,10 @@ use crate::{
     },
 };
 
-use super::{model::{CreateUser, User, UserId}, repository::UserRepository};
+use super::{
+    model::{CreateUser, User, UserId},
+    repository::UserRepository,
+};
 
 pub trait UserService: Send + Sync {
     fn find_by_name(&self, name: &str) -> impl Future<Output = anyhow::Result<User>>;
