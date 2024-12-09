@@ -11,11 +11,11 @@ pub type ActorId = Id<Actor>;
 pub struct Actor {
     pub actor_id: ActorId,
     pub actor_url: ResourceUrl,
-    preferred_name: String,
-    display_name: Option<String>,
-    inbox: ResourceUrl,
-    shared_inbox: Option<ResourceUrl>,
-    local_id: Option<UserId>,
+    pub preferred_name: String,
+    pub display_name: Option<String>,
+    pub inbox: ResourceUrl,
+    pub shared_inbox: Option<ResourceUrl>,
+    pub local_id: Option<UserId>,
 }
 
 #[derive(Debug, Clone, PartialEq, TypedBuilder)]

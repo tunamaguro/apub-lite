@@ -1,3 +1,4 @@
+pub(crate) mod actor;
 pub(crate) mod follower;
 pub(crate) mod note;
 pub(crate) mod rsa_key;
