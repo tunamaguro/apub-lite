@@ -15,8 +15,10 @@ pub trait ActivityRepository: Send + Sync {
         signer: &RsaSingingKey,
         key_uri: &ResourceUrl,
     ) -> anyhow::Result<()>;
+    /// reqにGetリクエストする
+    async fn get_activity<T: DeserializeOwned>(&self, req: &ResourceUrl) -> anyhow::Result<T>;
     /// reqに署名してGetリクエストする
-    async fn get_activity<T: DeserializeOwned>(
+    async fn get_activity_with_sign<T: DeserializeOwned>(
         &self,
         req: &ResourceUrl,
         signer: &RsaSingingKey,
@@ -35,24 +37,3 @@ pub trait ActivityRepository: Send + Sync {
     }
 }
 
-pub fn generate_note_uri(config: &AppConfig) -> ResourceUrl {
-    let id = uuid::Uuid::now_v7();
-    let note_uri = config
-        .host_uri()
-        .clone()
-        .set_path(&format!("/notes/{}", id))
-        .to_owned();
-
-    note_uri
-}
-
-pub fn generate_activity_uri(config: &AppConfig) -> ResourceUrl {
-    let id = uuid::Uuid::now_v7();
-    let activity_uri = config
-        .host_uri()
-        .clone()
-        .set_path(&format!("/activities/{}", id))
-        .to_owned();
-
-    activity_uri
-}

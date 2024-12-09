@@ -7,7 +7,7 @@ use apub_activitypub::{
 };
 use apub_kernel::{
     follower::repository::FollowerRepository, prelude::*,
-    repository::activity::generate_activity_uri, rsa_key::model::RsaVerifyingKey,
+    activitypub::model::generate_activity_uri, rsa_key::model::RsaVerifyingKey,
 };
 use apub_registry::AppRegistryExt;
 use axum::{http::StatusCode, response::IntoResponse};
