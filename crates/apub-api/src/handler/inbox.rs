@@ -6,8 +6,8 @@ use apub_activitypub::{
     },
 };
 use apub_kernel::{
-    follower::repository::FollowerRepository, prelude::*,
-    repository::activity::generate_activity_uri, rsa_key::model::RsaVerifyingKey,
+    activitypub::activity::generate_activity_uri, follower::repository::FollowerRepository,
+    prelude::*, rsa_key::model::RsaVerifyingKey,
 };
 use apub_registry::AppRegistryExt;
 use axum::{http::StatusCode, response::IntoResponse};
@@ -25,7 +25,10 @@ impl IntoResponse for InboxError {
     fn into_response(self) -> axum::response::Response {
         match self {
             InboxError::NotFound => (StatusCode::NOT_FOUND, self.to_string()).into_response(),
-            InboxError::Internal(_) => (StatusCode::INTERNAL_SERVER_ERROR, "").into_response(),
+            InboxError::Internal(e) => {
+                tracing::error!(error = %e);
+                (StatusCode::INTERNAL_SERVER_ERROR, "").into_response()
+            }
         }
     }
 }
@@ -43,14 +46,14 @@ pub async fn inbox_handler(
     registry: &impl AppRegistryExt,
 ) -> Result<impl IntoResponse, InboxError> {
     let user = registry
-        .user_repository()
+        .user_service()
         .find_by_name(username)
         .await
         .map_err(|_| InboxError::NotFound)?;
 
     let signing_key = registry
         .rsa_key_repository()
-        .find_private_key_or_generate(&user.id)
+        .find_private_key(&user.id)
         .await?;
 
     let config = registry.config();
@@ -60,9 +63,7 @@ pub async fn inbox_handler(
     let activity_repo = registry.activity_repository();
     match kind {
         InboxKinds::Follow(follow) => {
-            let follow_person = activity_repo
-                .get_activity::<Person>(&follow.actor, &signing_key, &user_key_id)
-                .await?;
+            let follow_person = activity_repo.get_activity::<Person>(&follow.actor).await?;
 
             let follower_repo = registry.follower_repository();
 
@@ -82,9 +83,7 @@ pub async fn inbox_handler(
         }
         InboxKinds::UnFollow(undo) => {
             let actor = undo.object.actor;
-            let follow_person = activity_repo
-                .get_activity::<Person>(&actor, &signing_key, &user_key_id)
-                .await?;
+            let follow_person = activity_repo.get_activity::<Person>(&actor).await?;
             let follower_repo = registry.follower_repository();
 
             follower_repo.delete(&user.id, follow_person.id()).await?;
