@@ -3,7 +3,11 @@ use std::sync::Arc;
 use apub_adapter::persistence::{http_client::HttpClient, postgres::PostgresDb};
 use apub_config::AppConfig;
 use apub_kernel::{
-    follower::repository::FollowerRepository, note::repository::NoteRepository, prelude::*,
+    activitypub::{actor::ActorRepository, service::ActivityServiceImpl},
+    follower::repository::FollowerRepository,
+    note::repository::NoteRepository,
+    prelude::*,
+    user::{repository::UserRepository, service::UserServiceImpl},
 };
 
 #[derive(Clone)]
@@ -29,15 +33,27 @@ impl AppRegistryExt for AppRegistry {
     type FollowerRepo = PostgresDb;
     type NoteRepo = PostgresDb;
     type ActivityRepo = HttpClient;
-    fn user_repository(&self) -> Self::UserRepo {
-        self.postgres.clone()
+    type ActorRepo = PostgresDb;
+    fn user_service(&self) -> UserServiceImpl<Self::UserRepo, Self::ActorRepo, Self::RsaRepo> {
+        UserServiceImpl::new(
+            self.postgres.clone(),
+            self.postgres.clone(),
+            self.postgres.clone(),
+            self.config(),
+        )
     }
     fn rsa_key_repository(&self) -> Self::RsaRepo {
         self.postgres.clone()
     }
 
-    fn activity_repository(&self) -> Self::ActivityRepo {
-        self.http_client.clone()
+    fn activity_service(
+        &self,
+    ) -> ActivityServiceImpl<Self::ActivityRepo, Self::ActorRepo, Self::RsaRepo> {
+        ActivityServiceImpl::new(
+            self.http_client.clone(),
+            self.postgres.clone(),
+            self.postgres.clone(),
+        )
     }
 
     fn follower_repository(&self) -> Self::FollowerRepo {
@@ -59,9 +75,12 @@ pub trait AppRegistryExt: Send + Sync {
     type FollowerRepo: FollowerRepository;
     type ActivityRepo: ActivityRepository;
     type NoteRepo: NoteRepository;
-    fn user_repository(&self) -> Self::UserRepo;
+    type ActorRepo: ActorRepository;
+    fn user_service(&self) -> UserServiceImpl<Self::UserRepo, Self::ActorRepo, Self::RsaRepo>;
     fn rsa_key_repository(&self) -> Self::RsaRepo;
-    fn activity_repository(&self) -> Self::ActivityRepo;
+    fn activity_service(
+        &self,
+    ) -> ActivityServiceImpl<Self::ActivityRepo, Self::ActorRepo, Self::RsaRepo>;
     fn follower_repository(&self) -> Self::FollowerRepo;
     fn note_repository(&self) -> Self::NoteRepo;
     fn config(&self) -> Arc<AppConfig>;

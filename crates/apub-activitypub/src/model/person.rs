@@ -7,27 +7,104 @@ use crate::core::{actor::Actor, object::Object};
 
 use super::{context::Context, key::PublicKeyPem};
 
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum AnyActorKind {
+    Application(ApplicationKind),
+    Group(GroupKind),
+    Organization(OrganizationKind),
+    Person(PersonKind),
+    Service(ServiceKind),
+}
+
+impl Default for AnyActorKind {
+    fn default() -> Self {
+        AnyActorKind::Person(PersonKind::Person)
+    }
+}
+
+pub trait ActorKind: Serialize + for<'a> Deserialize<'a> + Default {
+    fn actor_kind(&self) -> AnyActorKind;
+}
+
+impl ActorKind for AnyActorKind {
+    fn actor_kind(&self) -> AnyActorKind {
+        self.clone()
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
+pub enum ApplicationKind {
+    #[default]
+    Application,
+}
+
+impl ActorKind for ApplicationKind {
+    fn actor_kind(&self) -> AnyActorKind {
+        AnyActorKind::Application(self.clone())
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
+pub enum GroupKind {
+    #[default]
+    Group,
+}
+
+impl ActorKind for GroupKind {
+    fn actor_kind(&self) -> AnyActorKind {
+        AnyActorKind::Group(self.clone())
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
+pub enum OrganizationKind {
+    #[default]
+    Organization,
+}
+
+impl ActorKind for OrganizationKind {
+    fn actor_kind(&self) -> AnyActorKind {
+        AnyActorKind::Organization(self.clone())
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
 pub enum PersonKind {
     #[default]
     Person,
 }
 
-pub type PersonUrl = UrlId<Person>;
+impl ActorKind for PersonKind {
+    fn actor_kind(&self) -> AnyActorKind {
+        AnyActorKind::Person(self.clone())
+    }
+}
 
-/// Activity Person object  
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
+pub enum ServiceKind {
+    #[default]
+    Service,
+}
+
+impl ActorKind for ServiceKind {
+    fn actor_kind(&self) -> AnyActorKind {
+        AnyActorKind::Service(self.clone())
+    }
+}
+
+/// Activity Actor Object
 ///
 /// See https://www.w3.org/ns/activitystreams#Person
 #[skip_serializing_none]
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, TypedBuilder)]
-#[serde(rename_all = "camelCase")]
-pub struct Person {
+#[serde(rename_all = "camelCase", bound = "Kind:ActorKind")]
+pub struct AnyActorImpl<Kind> {
     #[serde(rename = "@context")]
     context: Context,
-    id: UrlId<Person>,
+    id: UrlId<AnyActorImpl<Kind>>,
     #[serde(rename = "type")]
-    #[builder(default)]
-    kind: PersonKind,
+    kind: Kind,
     preferred_username: String,
     inbox: ResourceUrl,
     #[builder(default, setter(strip_option))]
@@ -36,11 +113,15 @@ pub struct Person {
     followers: Option<ResourceUrl>,
 }
 
-impl Object for Person {
-    type Kind = PersonKind;
+impl<Kind: ActorKind> Object for AnyActorImpl<Kind> {
+    type Kind = Kind;
+
+    fn kind() -> Self::Kind {
+        Self::Kind::default()
+    }
 }
 
-impl Actor for Person {
+impl<Kind: ActorKind> Actor for AnyActorImpl<Kind> {
     type Item = Self;
     fn id(&self) -> &UrlId<Self> {
         &self.id
@@ -53,38 +134,64 @@ impl Actor for Person {
     }
 }
 
+impl<Kind> AnyActorImpl<Kind> {
+    pub fn username(&self) -> &str {
+        &self.preferred_username
+    }
+}
+
+pub type AnyActor = AnyActorImpl<AnyActorKind>;
+pub type Application = AnyActorImpl<ApplicationKind>;
+pub type Group = AnyActorImpl<GroupKind>;
+pub type Organization = AnyActorImpl<OrganizationKind>;
+pub type Person = AnyActorImpl<PersonKind>;
+pub type Service = AnyActorImpl<ServiceKind>;
+
+pub type AnyActorUrl = UrlId<AnyActor>;
+pub type ApplicationUrl = UrlId<Application>;
+pub type GroupUrl = UrlId<Group>;
+pub type OrganizationUrl = UrlId<Organization>;
+pub type PersonUrl = UrlId<Person>;
+pub type ServiceUrl = UrlId<Service>;
+
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, TypedBuilder)]
 #[serde(rename_all = "camelCase")]
-pub struct SecurityPerson {
+pub struct Security<T> {
     #[serde(flatten)]
-    person: Person,
+    inner: T,
     public_key: PublicKeyPem,
 }
 
-impl std::ops::Deref for SecurityPerson {
-    type Target = Person;
-    fn deref(&self) -> &Self::Target {
-        &self.person
-    }
+impl<T: Object> Object for Security<T> {
+    type Kind = <T as Object>::Kind;
 }
 
-impl Object for SecurityPerson {
-    type Kind = PersonKind;
-}
-
-impl Actor for SecurityPerson {
-    type Item = Person;
-    fn id(&self) -> &UrlId<Person> {
-        self.person.id()
+impl<T: Actor> Actor for Security<T> {
+    type Item = <T as Actor>::Item;
+    fn id(&self) -> &UrlId<Self::Item> {
+        self.inner.id()
     }
-
     fn inbox(&self) -> &ResourceUrl {
-        self.person.inbox()
+        self.inner.inbox()
     }
     fn outbox(&self) -> Option<&ResourceUrl> {
-        self.person.outbox()
+        self.inner.outbox()
     }
 }
+
+impl<T> std::ops::Deref for Security<T> {
+    type Target = T;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+pub type SecurityAnyActor = Security<AnyActor>;
+pub type SecurityApplication = Security<Application>;
+pub type SecurityGroup = Security<Group>;
+pub type SecurityOrganization = Security<Organization>;
+pub type SecurityPerson = Security<Person>;
+pub type SecurityService = Security<Service>;
 
 #[cfg(test)]
 mod tests {

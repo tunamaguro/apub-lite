@@ -24,7 +24,10 @@ impl IntoResponse for PersonError {
     fn into_response(self) -> axum::response::Response {
         match self {
             PersonError::NotFound => (StatusCode::NOT_FOUND, self.to_string()).into_response(),
-            PersonError::Internal(_) => (StatusCode::INTERNAL_SERVER_ERROR, "").into_response(),
+            PersonError::Internal(e) => {
+                tracing::error!(error = %e);
+                (StatusCode::INTERNAL_SERVER_ERROR, "").into_response()
+            }
         }
     }
 }
@@ -33,11 +36,11 @@ pub async fn person_handler(
     username: &str,
     registry: &impl AppRegistryExt,
 ) -> Result<impl IntoResponse, PersonError> {
-    let user = registry.user_repository().find_by_name(username).await?;
+    let user = registry.user_service().find_by_name(username).await?;
 
     let public_key = registry
         .rsa_key_repository()
-        .find_public_key_or_generate(&user.id)
+        .find_public_key(&user.id)
         .await?;
 
     let config = registry.config();
@@ -49,6 +52,7 @@ pub async fn person_handler(
         .inbox(user.inbox_uri(&config))
         .context(Context::activity_context_url().clone().into())
         .followers(user.followers_uri(&config))
+        .kind(Default::default())
         .build();
 
     let person_id = person.id().clone();
@@ -60,7 +64,7 @@ pub async fn person_handler(
         .build();
 
     let security = SecurityPerson::builder()
-        .person(person)
+        .inner(person)
         .public_key(public_key_pem)
         .build();
 
@@ -73,7 +77,7 @@ pub async fn followers_handler(
     username: &str,
     registry: &impl AppRegistryExt,
 ) -> Result<impl IntoResponse, PersonError> {
-    let user = registry.user_repository().find_by_name(username).await?;
+    let user = registry.user_service().find_by_name(username).await?;
 
     let config = registry.config();
 

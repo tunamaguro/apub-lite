@@ -1,8 +1,6 @@
 use apub_kernel::rsa_key::model::{RsaSingingKey, RsaVerifyingKey};
-use sqlx::types::Uuid;
 
 pub struct UserPublicRsaKeyRow {
-    pub user_id: Uuid,
     pub public_key: String,
 }
 
@@ -14,13 +12,15 @@ impl TryFrom<UserPublicRsaKeyRow> for RsaVerifyingKey {
 }
 
 pub struct UserPrivateRsaKeyRow {
-    pub user_id: Uuid,
-    pub private_key: String,
+    pub private_key: Option<String>,
 }
 
 impl TryFrom<UserPrivateRsaKeyRow> for RsaSingingKey {
     type Error = anyhow::Error;
     fn try_from(row: UserPrivateRsaKeyRow) -> Result<Self, Self::Error> {
-        RsaSingingKey::from_pem(&row.private_key)
+        match row.private_key {
+            Some(ref k) => RsaSingingKey::from_pem(k),
+            None => Err(anyhow::anyhow!("private key is not found")),
+        }
     }
 }

@@ -1,6 +1,6 @@
 use crate::persistence::http_client::HttpClient;
 use apub_activitypub::shared::activity_json::APPLICATION_ACTIVITY_JSON;
-use apub_kernel::{repository::activity::ActivityRepository, rsa_key::model::RsaSingingKey};
+use apub_kernel::{activitypub::activity::ActivityRepository, rsa_key::model::RsaSingingKey};
 use apub_shared::model::resource_url::ResourceUrl;
 use axum::http::{header, HeaderMap, HeaderName, HeaderValue};
 use base64::{prelude::BASE64_STANDARD, Engine};
@@ -78,6 +78,23 @@ async fn post_activity<T: Serialize>(
 async fn get_activity<T: DeserializeOwned>(
     client: &HttpClient,
     req: &ResourceUrl,
+) -> anyhow::Result<T> {
+    let headers = HeaderMap::from_iter([(header::ACCEPT, APPLICATION_ACTIVITY_JSON)]);
+    let res = client
+        .inner_ref()
+        .get(req.as_str())
+        .headers(headers)
+        .send()
+        .await?;
+
+    let d = res.json().await?;
+    Ok(d)
+}
+
+/// 署名してGetリクエストする
+async fn get_activity_with_sign<T: DeserializeOwned>(
+    client: &HttpClient,
+    req: &ResourceUrl,
     signer: &RsaSingingKey,
     key_uri: &ResourceUrl,
 ) -> anyhow::Result<T> {
@@ -139,14 +156,18 @@ impl ActivityRepository for HttpClient {
     ) -> anyhow::Result<()> {
         post_activity(self, activity, inbox, signer, key_uri).await
     }
+    #[tracing::instrument(skip(self))]
+    async fn get_activity<T: DeserializeOwned>(&self, req: &ResourceUrl) -> anyhow::Result<T> {
+        get_activity(self, req).await
+    }
 
     #[tracing::instrument(skip(self, signer))]
-    async fn get_activity<T: DeserializeOwned>(
+    async fn get_activity_with_sign<T: DeserializeOwned>(
         &self,
         req: &ResourceUrl,
         signer: &RsaSingingKey,
         key_uri: &ResourceUrl,
     ) -> anyhow::Result<T> {
-        get_activity(self, req, signer, key_uri).await
+        get_activity_with_sign(self, req, signer, key_uri).await
     }
 }

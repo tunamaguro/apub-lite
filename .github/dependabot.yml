@@ -8,4 +8,4 @@ updates:
     directories:
       - /
     schedule:
-      interval: daily
+      interval: weekly
