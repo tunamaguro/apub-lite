@@ -50,6 +50,7 @@ impl User {
             .preferred_username(self.name.clone())
             .inbox(self.inbox_uri(config))
             .context(Context::activity_context_url().clone().into())
+            .kind(Default::default())
             .build()
     }
 }

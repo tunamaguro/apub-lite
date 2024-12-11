@@ -52,6 +52,7 @@ pub async fn person_handler(
         .inbox(user.inbox_uri(&config))
         .context(Context::activity_context_url().clone().into())
         .followers(user.followers_uri(&config))
+        .kind(Default::default())
         .build();
 
     let person_id = person.id().clone();
@@ -63,7 +64,7 @@ pub async fn person_handler(
         .build();
 
     let security = SecurityPerson::builder()
-        .person(person)
+        .inner(person)
         .public_key(public_key_pem)
         .build();
 
