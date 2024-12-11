@@ -19,7 +19,7 @@ pub trait ActivityService: ActivityRepository {
 pub struct ActivityServiceImpl<ActivityRepo, ActorRepo, KeyRepo> {
     activity: ActivityRepo,
     actor: ActorRepo,
-    rsa_key: KeyRepo,
+    _rsa_key: KeyRepo,
 }
 
 impl<ActivityRepo, ActorRepo, KeyRepo> ActivityServiceImpl<ActivityRepo, ActorRepo, KeyRepo> {
@@ -27,7 +27,7 @@ impl<ActivityRepo, ActorRepo, KeyRepo> ActivityServiceImpl<ActivityRepo, ActorRe
         Self {
             activity,
             actor,
-            rsa_key,
+            _rsa_key: rsa_key,
         }
     }
 }
@@ -91,7 +91,7 @@ where
         Ok(actor)
     }
 
-    async fn get_actor_by_acct(&self, acct: &AcctUri) -> anyhow::Result<Actor> {
+    async fn get_actor_by_acct(&self, _acct: &AcctUri) -> anyhow::Result<Actor> {
         // resolve webfinger
 
         // then, send get request
