@@ -1,4 +1,8 @@
-use apub_activitypub::{core::actor::Actor as _, model::person::Person, webfinger::AcctUri};
+use apub_activitypub::{
+    core::actor::Actor as _,
+    model::person::{ActorKind, AnyActorImpl},
+    webfinger::AcctUri,
+};
 use apub_shared::model::{id::Id, resource_url::ResourceUrl};
 use typed_builder::TypedBuilder;
 
@@ -57,9 +61,9 @@ impl From<CreateActorEvent> for Actor {
     }
 }
 
-impl From<Person> for CreateActorEvent {
-    fn from(value: Person) -> Self {
-        let actor_url = value.id().clone();
+impl<Kind: ActorKind> From<AnyActorImpl<Kind>> for CreateActorEvent {
+    fn from(value: AnyActorImpl<Kind>) -> Self {
+        let actor_url = value.id().as_ref().clone();
         let inbox = value.inbox().clone();
         let name = value.username().to_owned();
         CreateActorEvent::builder()

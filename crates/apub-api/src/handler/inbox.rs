@@ -1,9 +1,6 @@
-use apub_activitypub::{
-    core::actor::Actor,
-    model::{
-        activity::{Accept, Follow, UndoPersonFollow},
-        person::Person,
-    },
+use apub_activitypub::model::{
+    activity::{Accept, Follow, UndoPersonFollow},
+    person::Person,
 };
 use apub_kernel::{
     activitypub::activity::generate_activity_uri, follower::repository::FollowerRepository,
@@ -60,14 +57,18 @@ pub async fn inbox_handler(
     let user_key_id = user.user_key_uri::<RsaVerifyingKey>(&config);
 
     let config = registry.config();
-    let activity_repo = registry.activity_repository();
+    let activity_service = registry.activity_service();
     match kind {
         InboxKinds::Follow(follow) => {
-            let follow_person = activity_repo.get_activity::<Person>(&follow.actor).await?;
+            let follow_person = activity_service
+                .get_actor_by_url(follow.actor.as_ref())
+                .await?;
 
             let follower_repo = registry.follower_repository();
 
-            follower_repo.create(&user.id, follow_person.id()).await?;
+            follower_repo
+                .create(&user.id, &follow_person.actor_url)
+                .await?;
 
             let accept = Accept::builder()
                 .actor(user.user_uri(&config))
@@ -76,19 +77,21 @@ pub async fn inbox_handler(
                 .context(Default::default())
                 .build();
 
-            activity_repo
-                .post_activity(&accept, follow_person.inbox(), &signing_key, &user_key_id)
+            activity_service
+                .post_activity(&accept, &follow_person.inbox, &signing_key, &user_key_id)
                 .await?;
-            tracing::info!(kind = "Accept", actor = %follow_person.id(), object = user.name);
+            tracing::info!(kind = "Accept", actor = %follow_person.actor_url, object = user.name);
         }
         InboxKinds::UnFollow(undo) => {
             let actor = undo.object.actor;
-            let follow_person = activity_repo.get_activity::<Person>(&actor).await?;
+            let follow_person = activity_service.get_actor_by_url(actor.as_ref()).await?;
             let follower_repo = registry.follower_repository();
 
-            follower_repo.delete(&user.id, follow_person.id()).await?;
+            follower_repo
+                .delete(&user.id, &follow_person.actor_url)
+                .await?;
 
-            tracing::info!(kind = "Undo", actor = %follow_person.id(), object = user.name);
+            tracing::info!(kind = "Undo", actor = %follow_person.actor_url, object = user.name);
         }
     };
 

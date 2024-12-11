@@ -1,5 +1,3 @@
-use apub_activitypub::core::actor::Actor;
-use apub_activitypub::model::person::Person;
 use apub_activitypub::model::{activity::CreatePersonNote, context::Context, note::Note};
 use apub_kernel::activitypub::activity::{generate_activity_uri, generate_note_uri};
 use apub_kernel::prelude::*;
@@ -62,7 +60,7 @@ async fn send_note_handler(
         .id(create_uri.into())
         .build();
 
-    let activity_repo = registry.activity_repository();
+    let activity_service = registry.activity_service();
     let user_signing_key = registry
         .rsa_key_repository()
         .find_private_key(&user.id)
@@ -75,12 +73,12 @@ async fn send_note_handler(
 
     for v in followers {
         // 都度フォロワーに問い合わせて、inboxを取得する
-        let follow_person = activity_repo.get_activity::<Person>(&v.actor_url).await?;
+        let follow_person = activity_service.get_actor_by_url(&v.actor_url).await?;
 
-        activity_repo
+        activity_service
             .post_note(
                 &create,
-                follow_person.inbox(),
+                &follow_person.inbox,
                 &user_signing_key,
                 &user.user_key_uri::<RsaVerifyingKey>(&config),
             )

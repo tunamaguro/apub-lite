@@ -27,6 +27,12 @@ pub trait ActorKind: Serialize + for<'a> Deserialize<'a> + Default {
     fn actor_kind(&self) -> AnyActorKind;
 }
 
+impl ActorKind for AnyActorKind {
+    fn actor_kind(&self) -> AnyActorKind {
+        self.clone()
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
 pub enum ApplicationKind {
     #[default]
