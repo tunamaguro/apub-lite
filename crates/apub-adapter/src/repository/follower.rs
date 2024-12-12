@@ -119,3 +119,62 @@ impl FollowerRepository for PostgresDb {
     }
 }
 
+#[cfg(test)]
+mod tests {
+    use std::sync::LazyLock;
+
+    use super::*;
+    use apub_kernel::user::model::User;
+    use apub_shared::model::id::Id;
+    use pretty_assertions::assert_eq;
+
+    static USER_ID: LazyLock<Id<User>> =
+        LazyLock::new(|| "ce68da5d-692e-4c9c-ab36-3322dd6bf214".parse::<_>().unwrap());
+    static ALICE_URL: LazyLock<ResourceUrl> =
+        LazyLock::new(|| "https://example.com/users/alice".parse::<_>().unwrap());
+    static BOB_URL: LazyLock<ResourceUrl> =
+        LazyLock::new(|| "https://sub1.example.com/users/bob".parse::<_>().unwrap());
+    static CHARLIE_URL: LazyLock<ResourceUrl> = LazyLock::new(|| {
+        "https://sub2.example.com/users/charlie"
+            .parse::<_>()
+            .unwrap()
+    });
+    #[sqlx::test(fixtures(path = "fixtures", scripts("users", "actors")))]
+    async fn test_add_followers(pool: sqlx::PgPool) {
+        let repo = PostgresDb::new(pool);
+
+        // Add follower
+        repo.create(&USER_ID, &ALICE_URL).await.unwrap();
+        repo.create(&USER_ID, &BOB_URL).await.unwrap();
+
+        // find follower
+        assert!(repo.find(&USER_ID, &ALICE_URL).await.unwrap());
+        assert!(repo.find(&USER_ID, &BOB_URL).await.unwrap());
+        assert!(!repo.find(&USER_ID, &CHARLIE_URL).await.unwrap());
+
+        let list = repo.find_followee(&USER_ID).await.unwrap();
+        assert_eq!(list.len(), 2)
+    }
+
+    #[sqlx::test(fixtures(path = "fixtures", scripts("users", "actors")))]
+    async fn test_delete_followers(pool: sqlx::PgPool) {
+        let repo = PostgresDb::new(pool);
+
+        // Add follower
+        repo.create(&USER_ID, &ALICE_URL).await.unwrap();
+        repo.create(&USER_ID, &BOB_URL).await.unwrap();
+
+        let list = repo.find_followee(&USER_ID).await.unwrap();
+        assert_eq!(list.len(), 2);
+
+        repo.delete(&USER_ID, &ALICE_URL).await.unwrap();
+
+        let list = repo.find_followee(&USER_ID).await.unwrap();
+        assert_eq!(list.len(), 1);
+        let bob = list.first().unwrap();
+        assert_eq!(
+            bob.actor_inbox.as_str(),
+            "https://sub1.example.com/users/bob/inbox"
+        )
+    }
+}
