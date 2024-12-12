@@ -16,12 +16,13 @@ alias r:= ready
 # Install tools
 install:
     cargo install cargo-binstall 
-    cargo binstall cargo-watch taplo-cli cargo-nextest sqlx-cli
+    cargo binstall cargo-watch taplo-cli cargo-nextest sqlx-cli sqruff
 
 # Format `.rs` files
 format:
     cargo fmt
     taplo format
+    sqruff lint --force
 
 # Run clippy
 lint:

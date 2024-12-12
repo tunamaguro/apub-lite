@@ -1,5 +1,5 @@
 -- Add up migration script here
-CREATE OR REPLACE FUNCTION set_updated_at() RETURNS trigger AS '
+CREATE OR REPLACE FUNCTION set_updated_at() RETURNS TRIGGER AS '
   BEGIN
     IF NEW.updated_at IS NULL THEN
     END IF;
@@ -11,44 +11,44 @@ CREATE OR REPLACE FUNCTION set_updated_at() RETURNS trigger AS '
 -- local users
 CREATE TABLE IF NOT EXISTS users (
     user_id UUID PRIMARY KEY,
-    name VARCHAR(255) UNIQUE NOT NULL CHECK(trim(lower(name)) = name),
-    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+    name VARCHAR(255) UNIQUE NOT NULL CHECK (trim(lower(name)) = name),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT current_timestamp
 );
 
-CREATE TABLE IF NOT EXISTS actors(
+CREATE TABLE IF NOT EXISTS actors (
     actor_id UUID PRIMARY KEY,
-    actor_url TEXT NOT NULL UNIQUE CHECK(actor_url <> ''),
+    actor_url TEXT NOT NULL UNIQUE CHECK (actor_url <> ''),
     host TEXT NOT NULL,
     preferred_username TEXT NOT NULL,
-    inbox_url TEXT NOT NULL UNIQUE CHECK(inbox_url <> ''),
-    shared_inbox_url TEXT  CHECK(shared_inbox_url <> ''),
+    inbox_url TEXT NOT NULL UNIQUE CHECK (inbox_url <> ''),
+    shared_inbox_url TEXT CHECK (shared_inbox_url <> ''),
 
     local_user_id UUID,
 
-    FOREIGN KEY (local_user_id) REFERENCES users(user_id)
+    FOREIGN KEY (local_user_id) REFERENCES users (user_id)
     ON UPDATE CASCADE
     ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS actor_rsa_keys(
+CREATE TABLE IF NOT EXISTS actor_rsa_keys (
     actor_id UUID NOT NULL,
     key_url TEXT NOT NULL,
-    public_key TEXT NOT NULL CHECK(public_key <> ''),
-    private_key TEXT CHECK(private_key <> ''),
+    public_key TEXT NOT NULL CHECK (public_key <> ''),
+    private_key TEXT CHECK (private_key <> ''),
 
-    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT current_timestamp,
 
     PRIMARY KEY (actor_id, key_url),
 
-    FOREIGN KEY (actor_id) REFERENCES actors(actor_id)
+    FOREIGN KEY (actor_id) REFERENCES actors (actor_id)
     ON UPDATE CASCADE
     ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS actor_follows(
+CREATE TABLE IF NOT EXISTS actor_follows (
     follower_actor_id UUID NOT NULL,
     followed_user_id UUID NOT NULL,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT current_timestamp,
 
     FOREIGN KEY (follower_actor_id) REFERENCES actors (actor_id)
     ON UPDATE CASCADE
@@ -61,14 +61,14 @@ CREATE TABLE IF NOT EXISTS actor_follows(
     PRIMARY KEY (follower_actor_id, followed_user_id)
 );
 
-CREATE TABLE IF NOT EXISTS notes(
+CREATE TABLE IF NOT EXISTS notes (
     note_id UUID PRIMARY KEY,
     user_id UUID NOT NULL,
     content TEXT NOT NULL,
-    
-    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    
-    FOREIGN KEY (user_id) REFERENCES users(user_id)
+
+    created_at TIMESTAMPTZ NOT NULL DEFAULT current_timestamp,
+
+    FOREIGN KEY (user_id) REFERENCES users (user_id)
     ON UPDATE CASCADE
     ON DELETE CASCADE
 );

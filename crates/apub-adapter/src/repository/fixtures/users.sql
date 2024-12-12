@@ -1,28 +1,36 @@
 -- Add `testuser`
 
 INSERT INTO users (user_id, name) VALUES (
-  'ce68da5d-692e-4c9c-ab36-3322dd6bf214',
-  'testuser'
+    'ce68da5d-692e-4c9c-ab36-3322dd6bf214',
+    'testuser'
 );
 
-INSERT INTO actors (actor_id, actor_url, host, preferred_username, inbox_url, shared_inbox_url, local_user_id)
+INSERT INTO actors (
+    actor_id,
+    actor_url,
+    host,
+    preferred_username,
+    inbox_url,
+    shared_inbox_url,
+    local_user_id
+)
 VALUES (
-  gen_random_uuid(),
-  'https://example.com/users/testuser',
-  'example.com',
-  'testuser',
-  'https://example.com/users/testuser/inbox',
-  'https://example.com/inbox',
-  (SELECT user_id FROM users WHERE name = 'testuser')
+    gen_random_uuid(),
+    'https://example.com/users/testuser',
+    'example.com',
+    'testuser',
+    'https://example.com/users/testuser/inbox',
+    'https://example.com/inbox',
+    (SELECT user_id FROM users WHERE name = 'testuser')
 );
 
 
 -- These keys were taken from https://www.rfc-editor.org/rfc/rfc9421.html#name-example-rsa-key
 INSERT INTO actor_rsa_keys (actor_id, key_url, public_key, private_key)
 VALUES (
-  (SELECT actor_id FROM actors WHERE preferred_username = 'testuser'),
-  'https://example.com/users/testuser#main-key',
-  '-----BEGIN RSA PUBLIC KEY-----
+    (SELECT actor_id FROM actors WHERE preferred_username = 'testuser'),
+    'https://example.com/users/testuser#main-key',
+    '-----BEGIN RSA PUBLIC KEY-----
 MIIBCgKCAQEAhAKYdtoeoy8zcAcR874L8cnZxKzAGwd7v36APp7Pv6Q2jdsPBRrw
 WEBnez6d0UDKDwGbc6nxfEXAy5mbhgajzrw3MOEt8uA5txSKobBpKDeBLOsdJKFq
 MGmXCQvEG7YemcxDTRPxAleIAgYYRjTSd/QBwVW9OwNFhekro3RtlinV0a75jfZg
@@ -30,7 +38,7 @@ kne/YiktSvLG34lw2zqXBDTC5NHROUqGTlML4PlNZS5Ri2U4aCNx2rUPRcKIlE0P
 uKxI4T+HIaFpv8+rdV6eUgOrB2xeI1dSFFn/nnv5OoZJEIB+VmuKn3DCUcCZSFlQ
 PSXSfBDiUGhwOw76WuSSsf1D4b/vLoJ10wIDAQAB
 -----END RSA PUBLIC KEY-----',
-  '-----BEGIN RSA PRIVATE KEY-----
+    '-----BEGIN RSA PRIVATE KEY-----
 MIIEqAIBAAKCAQEAhAKYdtoeoy8zcAcR874L8cnZxKzAGwd7v36APp7Pv6Q2jdsP
 BRrwWEBnez6d0UDKDwGbc6nxfEXAy5mbhgajzrw3MOEt8uA5txSKobBpKDeBLOsd
 JKFqMGmXCQvEG7YemcxDTRPxAleIAgYYRjTSd/QBwVW9OwNFhekro3RtlinV0a75

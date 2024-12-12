@@ -3,6 +3,7 @@ FROM rust:1.83.0-slim-bookworm as dev
 RUN apt-get update -y && \
     apt-get install -y \
     git \
+    build-essential \
     # `openssl` dependencies 
     # see https://docs.rs/openssl/latest/openssl/#automatic
     pkg-config \

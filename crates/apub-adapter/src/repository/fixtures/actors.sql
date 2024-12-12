@@ -1,4 +1,12 @@
-INSERT INTO actors (actor_id, actor_url, host, preferred_username, inbox_url, shared_inbox_url)
+INSERT INTO actors (
+    actor_id,
+    actor_url,
+    host,
+    preferred_username,
+    inbox_url,
+    shared_inbox_url
+)
+
 VALUES
 (
     gen_random_uuid(),
@@ -45,7 +53,11 @@ VALUES
 INSERT INTO actor_rsa_keys (actor_id, key_url, public_key, private_key)
 VALUES
 (
-    (SELECT actor_id FROM actors WHERE actor_url = 'https://example.com/users/alice'),
+    (
+        SELECT actor_id
+        FROM actors
+        WHERE actor_url = 'https://example.com/users/alice'
+    ),
     'https://example.com/users/alice#main-key',
     '-----BEGIN RSA PUBLIC KEY-----
 MIIBCgKCAQEAhAKYdtoeoy8zcAcR874L8cnZxKzAGwd7v36APp7Pv6Q2jdsPBRrw
@@ -84,7 +96,11 @@ EQeNC8fHGg4UXU8mhHnSBt3EA10qQJfRDs15M38eG2cYwB1PZpDHScDnDA0=
 -----END RSA PRIVATE KEY-----'
 ),
 (
-    (SELECT actor_id FROM actors WHERE actor_url = 'https://sub1.example.com/users/bob'),
+    (
+        SELECT actor_id
+        FROM actors
+        WHERE actor_url = 'https://sub1.example.com/users/bob'
+    ),
     'https://sub1.example.com/users/bob#main-key',
     '-----BEGIN RSA PUBLIC KEY-----
 MIIBCgKCAQEAhAKYdtoeoy8zcAcR874L8cnZxKzAGwd7v36APp7Pv6Q2jdsPBRrw
@@ -123,7 +139,11 @@ EQeNC8fHGg4UXU8mhHnSBt3EA10qQJfRDs15M38eG2cYwB1PZpDHScDnDA0=
 -----END RSA PRIVATE KEY-----'
 ),
 (
-    (SELECT actor_id FROM actors WHERE actor_url = 'https://sub2.example.com/users/charlie'),
+    (
+        SELECT actor_id
+        FROM actors
+        WHERE actor_url = 'https://sub2.example.com/users/charlie'
+    ),
     'https://sub2.example.com/users/charlie#main-key',
     '-----BEGIN RSA PUBLIC KEY-----
 MIIBCgKCAQEAhAKYdtoeoy8zcAcR874L8cnZxKzAGwd7v36APp7Pv6Q2jdsPBRrw
@@ -162,7 +182,11 @@ EQeNC8fHGg4UXU8mhHnSBt3EA10qQJfRDs15M38eG2cYwB1PZpDHScDnDA0=
 -----END RSA PRIVATE KEY-----'
 ),
 (
-    (SELECT actor_id FROM actors WHERE actor_url = 'https://sub3.example.com/~david'),
+    (
+        SELECT actor_id
+        FROM actors
+        WHERE actor_url = 'https://sub3.example.com/~david'
+    ),
     'https://sub3.example.com/~david#main-key',
     '-----BEGIN RSA PUBLIC KEY-----
 MIIBCgKCAQEAhAKYdtoeoy8zcAcR874L8cnZxKzAGwd7v36APp7Pv6Q2jdsPBRrw
@@ -201,7 +225,11 @@ EQeNC8fHGg4UXU8mhHnSBt3EA10qQJfRDs15M38eG2cYwB1PZpDHScDnDA0=
 -----END RSA PRIVATE KEY-----'
 ),
 (
-    (SELECT actor_id FROM actors WHERE actor_url = 'https://sub4.example.com/users/erin'),
+    (
+        SELECT actor_id
+        FROM actors
+        WHERE actor_url = 'https://sub4.example.com/users/erin'
+    ),
     'https://sub4.example.com/users/erin#main-key',
     '-----BEGIN RSA PUBLIC KEY-----
 MIIBCgKCAQEAhAKYdtoeoy8zcAcR874L8cnZxKzAGwd7v36APp7Pv6Q2jdsPBRrw
