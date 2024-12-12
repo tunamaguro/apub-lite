@@ -60,7 +60,7 @@ impl<T> FromStr for UrlId<T> {
     }
 }
 
-#[derive(Debug, Clone, Deserialize, Serialize, PartialEq)]
+#[derive(Debug, Clone, Deserialize, Serialize, PartialEq, PartialOrd, Eq, Ord)]
 #[serde(transparent)]
 pub struct Id<T> {
     uuid: uuid::Uuid,

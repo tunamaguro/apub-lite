@@ -8,4 +8,3 @@ DROP TABLE IF EXISTS actor_follows;
 DROP TABLE IF EXISTS actors;
 
 DROP TABLE IF EXISTS users;
-

@@ -71,14 +71,13 @@ async fn send_note_handler(
         .find_followee(&user.id)
         .await?;
 
-    for v in followers {
-        // 都度フォロワーに問い合わせて、inboxを取得する
-        let follow_person = activity_service.get_actor_by_url(&v.actor_url).await?;
+    for f in followers {
+        let follower_inbox = &f.inbox;
 
         activity_service
             .post_note(
                 &create,
-                &follow_person.inbox,
+                follower_inbox,
                 &user_signing_key,
                 &user.user_key_uri::<RsaVerifyingKey>(&config),
             )
