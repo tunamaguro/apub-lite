@@ -9,5 +9,5 @@ pub struct Follower {
     pub user_id: UserId,
     pub acct: AcctUri,
     pub actor_url: ResourceUrl,
-    pub actor_inbox: ResourceUrl,
+    pub inbox: ResourceUrl,
 }

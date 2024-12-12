@@ -40,7 +40,7 @@ impl TryFrom<FollowerRow> for Follower {
 
         let follower = Follower::builder()
             .acct(acct)
-            .actor_inbox(inbox_url)
+            .inbox(inbox_url)
             .actor_url(actor_url)
             .user_id(user_id)
             .build();
