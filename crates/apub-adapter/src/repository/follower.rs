@@ -173,7 +173,7 @@ mod tests {
         assert_eq!(list.len(), 1);
         let bob = list.first().unwrap();
         assert_eq!(
-            bob.actor_inbox.as_str(),
+            bob.inbox.as_str(),
             "https://sub1.example.com/users/bob/inbox"
         )
     }
