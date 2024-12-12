@@ -22,7 +22,7 @@ install:
 format:
     cargo fmt
     taplo format
-    sqruff lint --force
+    sqruff fix --force
 
 # Run clippy
 lint:
