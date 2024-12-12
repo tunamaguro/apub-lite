@@ -22,6 +22,19 @@ pub struct AcctUri {
 }
 
 impl AcctUri {
+    pub fn new(host: impl AsRef<str>, user: impl AsRef<str>) -> Result<Self, AcctUriError> {
+        use axum::http::uri;
+        let host =
+            uri::Authority::from_str(host.as_ref()).map_err(|_| AcctUriError::InvalidHost)?;
+        let user =
+            uri::Authority::from_str(user.as_ref()).map_err(|_| AcctUriError::InvalidUser)?;
+
+        Ok(Self {
+            host: host.to_string(),
+            user: user.to_string(),
+        })
+    }
+
     pub fn host(&self) -> &str {
         &self.host
     }

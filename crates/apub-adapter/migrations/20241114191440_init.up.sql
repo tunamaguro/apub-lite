@@ -46,19 +46,19 @@ CREATE TABLE IF NOT EXISTS actor_rsa_keys(
 );
 
 CREATE TABLE IF NOT EXISTS actor_follows(
-    follower_actor_url TEXT NOT NULL,
-    followed_actor_id UUID NOT NULL,
+    follower_actor_id UUID NOT NULL,
+    followed_user_id UUID NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    -- FOREIGN KEY (follower_actor_id) REFERENCES actors(actor_id)
-    -- ON UPDATE CASCADE
-    -- ON DELETE CASCADE,
-
-    FOREIGN KEY (followed_actor_id) REFERENCES users(user_id)
+    FOREIGN KEY (follower_actor_id) REFERENCES actors (actor_id)
     ON UPDATE CASCADE
     ON DELETE CASCADE,
 
-    PRIMARY KEY (follower_actor_url, followed_actor_id)
+    FOREIGN KEY (followed_user_id) REFERENCES users (user_id)
+    ON UPDATE CASCADE
+    ON DELETE CASCADE,
+
+    PRIMARY KEY (follower_actor_id, followed_user_id)
 );
 
 CREATE TABLE IF NOT EXISTS notes(
