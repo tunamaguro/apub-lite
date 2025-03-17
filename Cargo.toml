@@ -68,7 +68,7 @@ tracing = { version = "0.1", features = [
   "release_max_level_debug",
 ] }
 tracing-subscriber = { version = "0.3.19", features = ["json", "env-filter"] }
-typed-builder = "0.20.0"
+typed-builder = "0.20.1"
 
 pretty_assertions = { version = "1" }
 rstest = { version = "0.23" }
