@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout PR branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Install Rust
         uses: moonrepo/setup-rust@v1
         with:
@@ -58,7 +58,7 @@ jobs:
           POSTGRES_DB: app
     steps:
       - name: Checkout PR branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Install Rust
         uses: moonrepo/setup-rust@v1
         with:
@@ -86,7 +86,7 @@ jobs:
           POSTGRES_DB: app
     steps:
       - name: Checkout PR branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Install Rust
         uses: moonrepo/setup-rust@v1
         with:

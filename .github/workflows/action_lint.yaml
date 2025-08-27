@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Check workflow files
         # https://github.com/rhysd/actionlint/blob/main/docs/usage.md#ignore-some-errors
         # Ignore `dependabot/fetch-metadata@v2.2.0` warning
