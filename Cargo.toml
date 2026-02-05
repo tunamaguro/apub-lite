@@ -25,7 +25,7 @@ apub-registry = { path = "crates/apub-registry" }
 apub-shared = { path = "crates/apub-shared" }
 apub-tracing = { path = "crates/apub-tracing" }
 
-axum = { version = "0.7", features = ["tracing", "macros"] }
+axum = { version = "0.8", features = ["tracing", "macros"] }
 mime = { version = "0.3" }
 tokio = { version = "1", features = ["full"] }
 tower = { version = "0.5" }
